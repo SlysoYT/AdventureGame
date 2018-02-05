@@ -123,7 +123,7 @@ public class HUD
 
 	public void render(Graphics g, boolean debugMode)
 	{
-		Chat.render(g);
+		Chat.render(g, level.getClientPlayer().isChatting());
 		renderTimer(g);
 		renderPlayerNames(g);
 		if(!player.isDead()) renderAlert(g);

@@ -22,13 +22,13 @@ public class ServerListScreen
 		key.tick();
 		inputField = TextInput.getTextInput();
 
-		if(key.enter && Game.getGameStateTicksPassed() > 30)
+		if((key.enterToggle || key.spaceToggle) && Game.getGameStateTicksPassed() > 30)
 		{
 			Game.hostIp = inputField;
 			Game.setGameState(GameState.ConnectToServer);
 		}
 
-		if(key.escape)
+		if(key.escapeToggle)
 		{
 			Game.setGameState(GameState.TitleScreen);
 			inputField = "";

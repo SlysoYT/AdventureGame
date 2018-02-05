@@ -1,18 +1,17 @@
-package game.entity.mob.abilities;
+package game.entity.mob.ability;
 
-import game.entity.mob.Mob;
+import game.entity.mob.player.Player;
 
 public abstract class Ability
 {
 	protected int currentCooldown, cooldown;
-
-	protected Mob mob;
+	protected Player player;
 
 	protected abstract void onEnable();
 
-	public Ability(Mob mob, int cooldown)
+	public Ability(Player player, int cooldown)
 	{
-		this.mob = mob;
+		this.player = player;
 
 		if(cooldown > 0) this.cooldown = cooldown;
 		else this.cooldown = 1;
@@ -42,5 +41,10 @@ public abstract class Ability
 	public int getCooldown()
 	{
 		return cooldown;
+	}
+
+	public void setCooldown(int cooldown)
+	{
+		this.cooldown = cooldown;
 	}
 }

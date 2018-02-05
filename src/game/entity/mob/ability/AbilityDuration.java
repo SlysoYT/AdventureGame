@@ -1,19 +1,20 @@
-package game.entity.mob.abilities;
+package game.entity.mob.ability;
 
-import game.entity.mob.Mob;
+import game.entity.mob.player.Player;
 
 public abstract class AbilityDuration extends Ability
 {
 	private boolean enabled = false;
-	private int duration, durationLeft;
+	protected int duration;
+	private int durationLeft;
 
 	protected abstract void onDisable();
 
 	protected abstract void tickAbility();
 
-	public AbilityDuration(Mob mob, int cooldown, int duration)
+	public AbilityDuration(Player player, int cooldown, int duration)
 	{
-		super(mob, cooldown);
+		super(player, cooldown);
 
 		if(duration > 0) this.duration = duration;
 		else this.duration = 1;

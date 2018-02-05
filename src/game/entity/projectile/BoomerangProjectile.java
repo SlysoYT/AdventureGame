@@ -7,6 +7,7 @@ import game.Game;
 import game.audio.PlaySound;
 import game.audio.Sounds;
 import game.entity.mob.Mob;
+import game.entity.mob.effect.EffectMovementSpeed;
 import game.entity.spawner.ParticleSpawner;
 import game.graphics.Screen;
 import game.graphics.Sprite;
@@ -42,7 +43,7 @@ public class BoomerangProjectile extends Projectile
 			if(distance < 3.0D)
 			{
 				this.remove();
-				source.setSpeed(source.getSpeed() * 1.3F); //TODO:Effects
+				source.applyEffect(new EffectMovementSpeed(120, 2, source));
 			}
 		}
 

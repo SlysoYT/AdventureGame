@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -29,6 +30,7 @@ import game.level.Level;
 import game.network.Connection;
 import game.settings.Settings;
 import game.util.GameState;
+import game.util.Print;
 
 public class Game extends Canvas implements Runnable
 {
@@ -106,7 +108,7 @@ public class Game extends Canvas implements Runnable
 		}
 		catch(InterruptedException e)
 		{
-			e.printStackTrace();
+			Print.printError(e.getMessage());
 		}
 	}
 
@@ -187,7 +189,7 @@ public class Game extends Canvas implements Runnable
 			level.tick();
 			hud.tick(width, height, clientPlayer, level, key);
 
-			if(key.escape)
+			if(key.escapeToggle)
 			{
 				unloadLevel();
 				setGameState(GameState.TitleScreen);
@@ -197,7 +199,7 @@ public class Game extends Canvas implements Runnable
 		{
 			hud.tick(width, height, clientPlayer, level, key);
 			key.tick();
-			hud.tickLevelEnd(key.enter);
+			hud.tickLevelEnd(key.enterToggle || key.spaceToggle);
 		}
 		else if(gameState == GameState.ServerListScreen)
 		{
@@ -222,7 +224,7 @@ public class Game extends Canvas implements Runnable
 		else
 		{
 			key.tick();
-			if(key.escape) setGameState(GameState.TitleScreen);
+			if(key.escapeToggle) setGameState(GameState.TitleScreen);
 		}
 	}
 
@@ -327,12 +329,11 @@ public class Game extends Canvas implements Runnable
 	private static void makeWindow(Game game)
 	{
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image cursor = toolkit.getImage("res/textures/cursors/cursor.png");
+		Image cursor = toolkit.getImage(Game.class.getResource("/textures/cursors/cursor.png"));
 
 		game.frame.setResizable(false);
 		game.frame.setTitle("2D Adventure" + " (" + VERSION + ")");
-		//TODO: Not working in the final build; invisible cursor
-		//game.frame.setCursor(toolkit.createCustomCursor(cursor, new Point(game.frame.getX(), game.frame.getY()), "cursor"));
+		game.frame.setCursor(toolkit.createCustomCursor(cursor, new Point(game.frame.getX(), game.frame.getY()), "cursor"));
 		game.frame.add(game);
 		game.frame.pack(); //Apply the size to the window
 		game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Makes that the process gets terminated when closing the window
@@ -355,9 +356,7 @@ public class Game extends Canvas implements Runnable
 		Game.level = newLevel;
 		Level.loadLevel(newLevel);
 		clientPlayer = new Player(Game.level.getSpawnLocation().getX(), Game.level.getSpawnLocation().getY(), key);
-		//otherPlayer = new OnlinePlayer(30, 27);
 		level.add(clientPlayer);
-		//level.add(otherPlayer);
 	}
 
 	private static void unloadLevel()

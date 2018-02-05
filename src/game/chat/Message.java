@@ -34,4 +34,9 @@ public class Message
 	{
 		return "<" + this.sender + "> " + this.message;
 	}
+
+	public String getMessage()
+	{
+		return message;
+	}
 }

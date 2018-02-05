@@ -18,7 +18,7 @@ public class Slime extends Mob
 	private boolean shouldDecreaseY = false;
 	private byte delay = 0;
 
-	private int xOffsetRandom = random.nextInt(40) - 20;
+	private int xOffsetRandom = rand.nextInt(40) - 20;
 
 	public Slime(int x, int y, float speed)
 	{
@@ -57,11 +57,11 @@ public class Slime extends Mob
 		else jumpHeightOffset = 0.0F;
 
 		yChange -= yVelocity;
-		if(yVelocity > -(jumpHeight + jumpHeightOffset + (random.nextFloat() - 0.5F))) yVelocity -= gravity;
+		if(yVelocity > -(jumpHeight + jumpHeightOffset + (rand.nextFloat() - 0.5F))) yVelocity -= gravity;
 		else
 		{
 			resetJump();
-			delay = (byte) (5 + random.nextInt(40));
+			delay = (byte) (5 + rand.nextInt(40));
 			level.add(new ParticleSpawner((int) (x), (int) (y + 11), 0.01F, 0.01F, 30, 3, level, Sprite.particleSlime));
 			level.add(new ParticleSpawner((int) (x + 4), (int) (y + 11), 0.5F, 0.15F, 30, 3, level, Sprite.particleSlime));
 			level.add(new ParticleSpawner((int) (x - 4), (int) (y + 11), 0.5F, 0.15F, 30, 3, level, Sprite.particleSlime));

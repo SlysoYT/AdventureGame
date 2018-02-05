@@ -1,18 +1,16 @@
 package game.audio;
 
-import java.io.File;
-
 public class Sound
 {
-	File file;
+	String path;
 
 	public Sound(String path)
 	{
-		this.file = new File(path);
+		this.path = path;
 	}
 
-	public File getFile()
+	public String getPath()
 	{
-		return file;
+		return path;
 	}
 }

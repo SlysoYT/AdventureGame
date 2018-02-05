@@ -13,7 +13,7 @@ public abstract class Entity
 
 	protected int x, y;
 	protected Level level;
-	protected final Random random = new Random();
+	protected final Random rand = new Random();
 
 	public void tick()
 	{

@@ -61,7 +61,7 @@ public class Connection
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			Print.printError(e.getMessage());
 		}
 	}
 
@@ -73,7 +73,7 @@ public class Connection
 		}
 		catch(SocketException e)
 		{
-			e.printStackTrace();
+			Print.printError(e.getMessage());
 		}
 	}
 
@@ -176,7 +176,7 @@ public class Connection
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			Print.printError(e.getMessage());
 			return null;
 		}
 	}

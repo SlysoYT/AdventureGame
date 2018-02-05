@@ -19,6 +19,49 @@ public class Chat
 	public static void addMessage(Message message)
 	{
 		messages.add(message);
+		handleCommands(message);
+	}
+
+	private static void handleCommands(Message message)
+	{
+		if(!message.getMessage().startsWith("!")) return;
+
+		int counter = 0;
+		String string = message.getMessage().substring(1, message.getMessage().length());
+		String command = "";
+		List<String> args = new ArrayList<String>();
+
+		for(int i = 0; i < string.length() + 1; i++)
+		{
+			if(i >= string.length())
+			{
+				if(counter == 0) command = string.substring(0, i).toLowerCase();
+				else args.add(string.substring(0, i).toLowerCase());
+				break;
+			}
+			if(string.charAt(i) == ' ')
+			{
+				if(counter == 0) command = string.substring(0, i).toLowerCase();
+				else args.add(string.substring(0, i).toLowerCase());
+				string = string.substring(i + 1, string.length());
+				counter++;
+				i = 0;
+			}
+		}
+
+		if(command.equals("help"))
+		{
+			if(!args.isEmpty())
+			{
+				addMessage(new Message("No arguments expected. Usage: !help", "Server"));
+				return;
+			}
+			addMessage(new Message("can't help anymore!", "Server"));
+		}
+		else
+		{
+			addMessage(new Message("Unknown command. Type !help to see a list of commands.", "Server"));
+		}
 	}
 
 	public static void tick(Keyboard key)
@@ -31,9 +74,10 @@ public class Chat
 			messages.get(i).tick();
 	}
 
-	public static void render(Graphics g)
+	public static void render(Graphics g, boolean playerIsChatting)
 	{
-		renderVisibleChatMessages(g);
+		if(!playerIsChatting) renderVisibleChatMessages(g);
+		else renderNewestChatMessages(g);
 		renderInputField(g);
 	}
 
@@ -47,13 +91,31 @@ public class Chat
 			visibleMessages.add(messages.get(i));
 		}
 
+		renderMessages(g, visibleMessages);
+	}
+
+	private static void renderNewestChatMessages(Graphics g)
+	{
+		List<Message> visibleMessages = new ArrayList<Message>();
+
+		for(int i = messages.size() - 1; i >= 0; i--)
+		{
+			visibleMessages.add(messages.get(i));
+			if(visibleMessages.size() > 15) break;
+		}
+
+		renderMessages(g, visibleMessages);
+	}
+
+	private static void renderMessages(Graphics g, List<Message> messages)
+	{
 		int y = Game.height * Game.SCALE - font.getSize() - 5;
 		g.setFont(font);
 		g.setColor(Color.GREEN);
 
-		for(int i = 0; i < visibleMessages.size(); i++)
+		for(int i = 0; i < messages.size(); i++)
 		{
-			g.drawString(visibleMessages.get(i).getChatMessage(), 0, y);
+			g.drawString(messages.get(i).getChatMessage(), 0, y);
 			y -= font.getSize();
 			if(y < Game.height * Game.SCALE / 2) break; //-> The chat won't fill the whole screen
 		}

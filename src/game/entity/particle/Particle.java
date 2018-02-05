@@ -22,12 +22,12 @@ public class Particle extends Entity
 		this.y = y;
 		this.xx = x;
 		this.yy = y;
-		this.life = life + (random.nextInt((int) (life * 0.8F)) - (int) (life * 0.4F));
-		this.sprite = sprite[random.nextInt(sprite.length)];
+		this.life = life + (rand.nextInt((int) (life * 0.8F)) - (int) (life * 0.4F));
+		this.sprite = sprite[rand.nextInt(sprite.length)];
 
-		this.xAmount = random.nextGaussian() * xSpeed;
-		this.yAmount = random.nextGaussian() * ySpeed;
-		this.zz = random.nextFloat() * 5;
+		this.xAmount = rand.nextGaussian() * xSpeed;
+		this.yAmount = rand.nextGaussian() * ySpeed;
+		this.zz = rand.nextFloat() * 5;
 	}
 
 	public void tick()
@@ -35,7 +35,7 @@ public class Particle extends Entity
 		deltaTicks++;
 		if(deltaTicks > life) remove();
 		zAmount -= 0.2D;
-		
+
 		if(zz < 0)
 		{
 			zz = 0;
@@ -43,7 +43,7 @@ public class Particle extends Entity
 			xAmount *= 0.55D;
 			yAmount *= 0.55D;
 		}
-		
+
 		move(xx + xAmount, (yy + yAmount) + (zz + zAmount));
 	}
 
@@ -59,7 +59,7 @@ public class Particle extends Entity
 		this.yy += yAmount;
 		this.zz += zAmount;
 	}
-	
+
 	private boolean collision(double x, double y)
 	{
 		boolean solid = false;

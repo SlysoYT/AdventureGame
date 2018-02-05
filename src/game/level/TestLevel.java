@@ -28,8 +28,7 @@ public class TestLevel extends Level
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
-			Print.printError("Unable to load level file");
+			Print.printError(e.getMessage());
 		}
 	}
 

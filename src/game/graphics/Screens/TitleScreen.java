@@ -12,13 +12,12 @@ import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.input.Keyboard;
 import game.util.GameState;
+import game.util.Print;
 
 public class TitleScreen
 {
 	private static boolean scrollTitleScreenRight = true;
 	private static byte currentTitleScreenSelection = 0;
-	private static int keyDownTicks = 0;
-	private static int keyUpTicks = 0;
 
 	private static float xOffsetTitleScreen;
 
@@ -36,7 +35,7 @@ public class TitleScreen
 		if(scrollTitleScreenRight) xOffsetTitleScreen -= xOffset;
 		else xOffsetTitleScreen += xOffset;
 
-		if(input.enter)
+		if(input.enterToggle || input.spaceToggle)
 		{
 			if(currentTitleScreenSelection == 0) Game.setGameState(GameState.IngameOffline);
 			else if(currentTitleScreenSelection == 1) Game.setGameState(GameState.OnlineScreen);
@@ -44,18 +43,8 @@ public class TitleScreen
 			else if(currentTitleScreenSelection == 3) Game.terminate();
 		}
 
-		if(input.down && keyDownTicks == 0)
-		{
-			keyDownTicks = 15;
-			currentTitleScreenSelection++;
-		}
-		else if(input.up && keyUpTicks == 0)
-		{
-			keyUpTicks = 12;
-			currentTitleScreenSelection--;
-		}
-		else if(keyDownTicks > 0) keyDownTicks--;
-		else if(keyUpTicks > 0) keyUpTicks--;
+		if(input.downToggle) currentTitleScreenSelection++;
+		else if(input.upToggle) currentTitleScreenSelection--;
 
 		if(currentTitleScreenSelection > 3) currentTitleScreenSelection = 0;
 		if(currentTitleScreenSelection < 0) currentTitleScreenSelection = 3;
@@ -79,19 +68,12 @@ public class TitleScreen
 			}
 		}
 
-		//screen.renderSprite(Game.width / 2 - Sprite.playButton.getWidth() / 2, getYPos(0), Sprite.playButton, false);
-		//screen.renderSprite(Game.width / 2 - Sprite.playButton.getWidth() / 2, getYPos(1), Sprite.playButton, false);
-		//screen.renderSprite(Game.width / 2 - Sprite.optionsButton.getWidth() / 2, getYPos(2), Sprite.optionsButton, false);
-		//screen.renderSprite(Game.width / 2 - Sprite.quitButton.getWidth() / 2, getYPos(3), Sprite.quitButton, false);
-		int white = 0xFFFFFF;
-		int black = 0x000000;
-
 		String[] selections = { "Singleplayer", "Multiplayer", "Settings", "Quit" };
 
 		for(int i = 0; i < 4; i++)
 		{
-			if(currentTitleScreenSelection == i) Sprite.writeText(selections[i], screen, screen.width / 2, getYPos(i), white);
-			else Sprite.writeText(selections[i], screen, screen.width / 2, getYPos(i), black);
+			if(currentTitleScreenSelection == i) Sprite.writeText(selections[i], screen, screen.width / 2, getYPos(i), 0xFFFFFF);
+			else Sprite.writeText(selections[i], screen, screen.width / 2, getYPos(i), 0x000000);
 		}
 	}
 
@@ -103,7 +85,7 @@ public class TitleScreen
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			Print.printError(e.getMessage());
 		}
 
 		int w = fullTitleScreen.getWidth();

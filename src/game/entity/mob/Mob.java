@@ -1,8 +1,12 @@
 package game.entity.mob;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import game.audio.PlaySound;
 import game.audio.Sounds;
 import game.entity.Entity;
+import game.entity.mob.effect.Effect;
 import game.entity.mob.player.Player;
 import game.entity.projectile.Projectile;
 import game.entity.spawner.ParticleSpawner;
@@ -28,6 +32,8 @@ public abstract class Mob extends Entity
 	private float attackDamage;
 	private int attackSpeed;
 	private int currentAttackCooldown;
+
+	private List<Effect> effects = new ArrayList<Effect>();
 
 	public abstract void tick();
 
@@ -168,6 +174,7 @@ public abstract class Mob extends Entity
 		}
 
 		updateCurrentAttackCooldown();
+		tickEffects();
 
 		if(xVelocity != 0)
 		{
@@ -221,6 +228,20 @@ public abstract class Mob extends Entity
 	private void updateCurrentAttackCooldown()
 	{
 		if(currentAttackCooldown > 0) currentAttackCooldown--;
+	}
+
+	private void tickEffects()
+	{
+		for(int i = 0; i < effects.size(); i++)
+		{
+			if(effects.get(i).isActive()) effects.get(i).tick();
+			else effects.remove(i);
+		}
+	}
+
+	public void applyEffect(Effect effect)
+	{
+		effects.add(effect);
 	}
 
 	/**

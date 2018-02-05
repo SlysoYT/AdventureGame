@@ -14,11 +14,11 @@ public class OnlineScreen
 	{
 		key.tick();
 
-		if(key.escape) Game.setGameState(GameState.TitleScreen);
+		if(key.escapeToggle) Game.setGameState(GameState.TitleScreen);
 		else if(key.down) selection = 1;
 		else if(key.up) selection = 0;
 
-		if(key.enter && Game.getGameStateTicksPassed() > 30)
+		if((key.enterToggle || key.spaceToggle) && Game.getGameStateTicksPassed() > 30)
 		{
 			if(selection == 0)
 			{

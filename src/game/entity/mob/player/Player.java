@@ -6,11 +6,11 @@ import game.Game;
 import game.chat.Chat;
 import game.chat.Message;
 import game.entity.mob.Mob;
-import game.entity.mob.abilities.Ability;
-import game.entity.mob.abilities.MovementSpeed;
-import game.entity.mob.abilities.Shooting;
+import game.entity.mob.ability.Ability;
+import game.entity.mob.ability.AbilityRage;
+import game.entity.mob.ability.AbilityShooting;
+import game.entity.mob.ability.AbilityTeleporting;
 import game.entity.projectile.BoomerangProjectile;
-import game.entity.projectile.WizardProjectile;
 import game.entity.spawner.ParticleSpawner;
 import game.graphics.Screen;
 import game.graphics.Sprite;
@@ -50,9 +50,9 @@ public class Player extends Mob
 		initMob(x, y, hitbox, Sprite.playerDown[0], 50.0F, 1.0F, 1.2F, 10);
 		this.input = input;
 
-		primaryAbility = new Shooting(this, new BoomerangProjectile(0, 0, 0, null, null));
-		secondaryAbility = new Shooting(this, new WizardProjectile(0, 0, 0, null, null));
-		passiveAbility = new MovementSpeed(this, 600, 180, 2.0F);
+		primaryAbility = new AbilityShooting(this, new BoomerangProjectile(0, 0, 0, null, null));
+		secondaryAbility = new AbilityTeleporting(this, 360, 200);
+		passiveAbility = new AbilityRage(this, 600, 240);
 	}
 
 	public Player(int x, int y, String IPAddress)
@@ -82,7 +82,7 @@ public class Player extends Mob
 		if(isMoving())
 		{
 			if(walkParticleTicks % 5 == 0)
-				new ParticleSpawner(x + (random.nextInt(6) - 3), y + (4 + random.nextInt(4)), 0.2F, 0.05F, 30, 1, level, Sprite.particleQuartz);
+				new ParticleSpawner(x + (rand.nextInt(6) - 3), y + (4 + rand.nextInt(4)), 0.2F, 0.05F, 30, 1, level, Sprite.particleQuartz);
 			walkParticleTicks++;
 			anim++;
 		}
@@ -94,15 +94,16 @@ public class Player extends Mob
 		{
 			typingMessage = true;
 			TextInput.clearTextInput();
+			return;
 		}
 		if(typingMessage)
 		{
 			chatLine = TextInput.getTextInput();
 			Chat.typingMessage(chatLine);
 
-			if(input.enterToggle && !chatLine.isEmpty())
+			if(input.enterToggle)
 			{
-				Chat.addMessage(new Message(chatLine, this.getClass().getSimpleName().toString()));
+				if(!chatLine.isEmpty()) Chat.addMessage(new Message(chatLine, this.getClass().getSimpleName().toString()));
 				chatLine = "";
 				typingMessage = false;
 			}
@@ -182,11 +183,15 @@ public class Player extends Mob
 			sprite = Sprite.playerRight[0];
 			if(isMoving())
 			{
-				if(anim % 25 < 8)
+				if(anim % 32 < 8)
 				{
 					sprite = Sprite.playerRight[1];
 				}
-				else if(anim % 25 < 17)
+				else if(anim % 32 < 16)
+				{
+					sprite = Sprite.playerRight[0];
+				}
+				else if(anim % 32 < 24)
 				{
 					sprite = Sprite.playerRight[2];
 				}
@@ -226,11 +231,15 @@ public class Player extends Mob
 			sprite = Sprite.playerLeft[0];
 			if(isMoving())
 			{
-				if(anim % 25 < 8)
+				if(anim % 32 < 8)
 				{
 					sprite = Sprite.playerLeft[1];
 				}
-				else if(anim % 25 < 17)
+				else if(anim % 32 < 16)
+				{
+					sprite = Sprite.playerLeft[0];
+				}
+				else if(anim % 32 < 24)
 				{
 					sprite = Sprite.playerLeft[2];
 				}
@@ -263,6 +272,11 @@ public class Player extends Mob
 
 	//Getters
 
+	public Ability getPrimaryAbility()
+	{
+		return primaryAbility;
+	}
+
 	public float getPrimaryAbilityCooldownProgress()
 	{
 		return (float) primaryAbility.getCurrentCooldown() / primaryAbility.getCooldown();
@@ -286,6 +300,11 @@ public class Player extends Mob
 	public int getRespawnCooldown()
 	{
 		return RESPAWN_COOLDOWN;
+	}
+
+	public boolean isChatting()
+	{
+		return typingMessage;
 	}
 
 	public String getIPAddress()

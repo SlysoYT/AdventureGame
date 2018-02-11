@@ -31,9 +31,9 @@ public class HUD
 	private static String titleText = "";
 	private static int titleTextTimer;
 
-	private Font font = new Font("Verdana", Font.BOLD, 25);
-	private Font playerNameFont = new Font("Verdana", 0, 22);
-	private Font debugFont = new Font("Verdana", 0, 14);
+	private final Font FONT = new Font("Verdana", Font.BOLD, 25);
+	private Font PLAYER_NAME_FONT = new Font("Verdana", 0, 22);
+	private Font DEBUG_FONT = new Font("Verdana", 0, 14);
 
 	public HUD(int width, int height, Player player, Level level)
 	{
@@ -80,7 +80,7 @@ public class HUD
 		{
 			if(health <= ((i + 1) * (1.0F / 9)))
 			{
-				bar = Sprite.healthBar[i];
+				bar = Sprite.BAR_HEALTH[i];
 				break;
 			}
 		}
@@ -91,7 +91,7 @@ public class HUD
 		{
 			if(cooldown0 <= ((i + 1) * (1.0F / 9)))
 			{
-				bar = Sprite.cooldownBar0[i];
+				bar = Sprite.BAR_COOLDOWN_0[i];
 				break;
 			}
 		}
@@ -102,7 +102,7 @@ public class HUD
 		{
 			if(cooldown1 <= ((i + 1) * (1.0F / 9)))
 			{
-				bar = Sprite.cooldownBar1[i];
+				bar = Sprite.BAR_COOLDOWN_1[i];
 				break;
 			}
 		}
@@ -113,7 +113,7 @@ public class HUD
 		{
 			if(cooldown2 <= ((i + 1) * (1.0F / 9)))
 			{
-				bar = Sprite.cooldownBar0[i];
+				bar = Sprite.BAR_COOLDOWN_0[i];
 				break;
 			}
 		}
@@ -137,16 +137,16 @@ public class HUD
 
 	private void renderTimer(Graphics g)
 	{
-		g.setFont(font);
+		g.setFont(FONT);
 		g.setColor(Color.ORANGE);
 		float time = Timer.getPassedTime(false);
 		String timeStr = String.format("%.1f", time);
-		g.drawString(timeStr, width * SCALE - g.getFontMetrics().stringWidth(timeStr), font.getSize());
+		g.drawString(timeStr, width * SCALE - g.getFontMetrics().stringWidth(timeStr), FONT.getSize());
 	}
 
 	private void renderPlayerNames(Graphics g)
 	{
-		g.setFont(playerNameFont);
+		g.setFont(PLAYER_NAME_FONT);
 		g.setColor(Color.BLUE);
 
 		List<Player> players = level.getPlayers();
@@ -159,7 +159,7 @@ public class HUD
 				int xPos = player.getX() * Game.SCALE - level.getClientPlayer().getX() * Game.SCALE + Game.width * Game.SCALE / 2
 						- g.getFontMetrics().stringWidth(playerName) / 2;
 				int yPos = player.getY() * Game.SCALE - level.getClientPlayer().getY() * Game.SCALE + Game.height * Game.SCALE / 2
-						- player.getHitbox().getHeight() / 2 - playerNameFont.getSize();
+						- player.getHitbox().getHeight() / 2 - PLAYER_NAME_FONT.getSize();
 				g.drawString(playerName, xPos, yPos);
 			}
 		}
@@ -169,7 +169,7 @@ public class HUD
 	{
 		if(titleTextTimer > 0)
 		{
-			g.setFont(font);
+			g.setFont(FONT);
 			g.setColor(Color.BLUE);
 			g.drawString(titleText, ((width / 2) * SCALE) - g.getFontMetrics().stringWidth(titleText) / 2, height / 4 * SCALE);
 		}
@@ -177,15 +177,15 @@ public class HUD
 
 	private void renderDebugScreen(Graphics g)
 	{
-		g.setFont(debugFont);
+		g.setFont(DEBUG_FONT);
 		g.setColor(Color.BLUE);
-		g.drawString("Debug mode (Version: " + Game.getVersion() + ")", 5, (debugFont.getSize() + 3) * 1);
+		g.drawString("Debug mode (Version: " + Game.getVersion() + ")", 5, (DEBUG_FONT.getSize() + 3) * 1);
 		g.setColor(Color.WHITE);
-		g.drawString("X: " + player.getX() + " | Y: " + player.getY(), 5, (debugFont.getSize() + 3) * 2);
-		g.drawString("Velocity: " + player.getXVelocity() + ", " + player.getYVelocity(), 5, (debugFont.getSize() + 3) * 3);
-		g.drawString("Dir: " + player.getDir(), 5, (debugFont.getSize() + 3) * 4);
-		g.drawString("Mouse: " + Mouse.getX() + ", " + Mouse.getY() + ", " + Mouse.getButton(), 5, (debugFont.getSize() + 3) * 5);
-		g.drawString("Level: " + Game.getLevel().getLevelName(), 5, (debugFont.getSize() + 3) * 6);
+		g.drawString("X: " + player.getX() + " | Y: " + player.getY(), 5, (DEBUG_FONT.getSize() + 3) * 2);
+		g.drawString("Velocity: " + player.getXVelocity() + ", " + player.getYVelocity(), 5, (DEBUG_FONT.getSize() + 3) * 3);
+		g.drawString("Dir: " + player.getDir(), 5, (DEBUG_FONT.getSize() + 3) * 4);
+		g.drawString("Mouse: " + Mouse.getX() + ", " + Mouse.getY() + ", " + Mouse.getButton(), 5, (DEBUG_FONT.getSize() + 3) * 5);
+		g.drawString("Level: " + Game.getLevel().getLevelName(), 5, (DEBUG_FONT.getSize() + 3) * 6);
 
 		String fpsTpsInfo = "FPS: " + Game.getCurrentFPS() + " | TPS: " + Game.getCurrentTPS();
 		g.drawString(fpsTpsInfo, Game.width * SCALE - g.getFontMetrics().stringWidth(fpsTpsInfo) - 3, Game.height * SCALE - 3);
@@ -197,7 +197,7 @@ public class HUD
 		if(cooldown > level.getClientPlayer().getRespawnCooldown() * 0.5)
 		{
 			titleText = "You died!";
-			g.setFont(font);
+			g.setFont(FONT);
 			g.setColor(Color.BLUE);
 			g.drawString(titleText, ((width / 2) * SCALE) - g.getFontMetrics().stringWidth(titleText) / 2, height / 4 * SCALE);
 		}
@@ -205,10 +205,10 @@ public class HUD
 
 	public void renderLevelEnd(Graphics g)
 	{
-		g.setFont(font);
+		g.setFont(FONT);
 		g.setColor(Color.ORANGE);
 		String time = Timer.getPassedTime(true) + "";
-		g.drawString(time, width * SCALE / 2 - g.getFontMetrics().stringWidth(time) / 2, height * SCALE / 2 - font.getSize() / 2);
+		g.drawString(time, width * SCALE / 2 - g.getFontMetrics().stringWidth(time) / 2, height * SCALE / 2 - FONT.getSize() / 2);
 	}
 
 	public static void setTitleText(String text, int displayTimeInTicks)

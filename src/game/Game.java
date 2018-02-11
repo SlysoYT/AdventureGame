@@ -37,8 +37,8 @@ public class Game extends Canvas implements Runnable
 	private static final long serialVersionUID = 1L; //Default serial version
 
 	public static int width, height;
-	public final static byte SCALE = 3;
-	private final static String VERSION = "Alpha 0.1";
+	public static final byte SCALE = 3;
+	private static final String VERSION = "Alpha 0.1";
 
 	private boolean debugMode;
 	private static boolean running = false;
@@ -60,7 +60,7 @@ public class Game extends Canvas implements Runnable
 	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); //Creating image
 	private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData(); //Accessing image
 
-	private final static byte TPS = 60;
+	private static final byte TPS = 60;
 	private static int gameStateTicksPassed = -1;
 	private static GameState gameState = GameState.TitleScreen;
 
@@ -116,7 +116,6 @@ public class Game extends Canvas implements Runnable
 	{
 		long lastTime = System.nanoTime();
 		long timer = System.currentTimeMillis();
-		final int TPS = Game.TPS;
 		final double NS_PER_TICK = 1_000_000_000.0 / TPS;
 		double delta = 0;
 		int fpsCount = 0;
@@ -270,6 +269,10 @@ public class Game extends Canvas implements Runnable
 		{
 			//TODO
 		}
+
+		//Filters are to place here!
+		screen.blur();
+		screen.applyAlpha(2.0F);
 
 		for(int i = 0; i < pixels.length; i++)
 		{

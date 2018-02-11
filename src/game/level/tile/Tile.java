@@ -9,38 +9,24 @@ public class Tile
 
 	public static final byte DEFAULT_TILE_SIZE = 16;
 
-	public static Tile boosterTile = new BoosterTile(Sprite.boosterSprite);
-	public static Tile checkpointTile = new CheckpointTile(Sprite.checkpointSprite);
-	public static Tile errorTile = new ErrorTile(Sprite.errorSprite);
-	public static Tile iceTile = new IceTile(Sprite.iceSprite);
-	public static Tile killerTile = new KillerTile(Sprite.killerSprite);
-	public static Tile voidTile = new VoidTile(Sprite.voidSprite);
-	public static Tile quartzTile = new QuartzTile(Sprite.quartzSprite);
-	public static Tile quartzWallTile = new QuartzWallTile(Sprite.quartzWallSprite);
+	public static final Tile TILE_ERROR = new ErrorTile(Sprite.SPRITE_ERROR);
+	public static final Tile TILE_VOID = new VoidTile(Sprite.SPRITE_VOID);
 
-	public static Tile blockTile = new BlockTile(Sprite.blockSprite);
-	public static Tile dirtTile = new DirtTile(Sprite.dirtSprite);
-	public static Tile grassTile = new GrassTile(Sprite.grassSprite);
-	public static Tile sandTile = new SandTile(Sprite.sandSprite);
-	public static Tile waterTile0 = new WaterTile(Sprite.waterSprite0);
-	public static Tile waterTile1 = new WaterTile(Sprite.waterSprite1);
-	public static Tile waterTile2 = new WaterTile(Sprite.waterSprite2);
-	public static Tile waterTile3 = new WaterTile(Sprite.waterSprite3);
+	public static final Tile TILE_BOOSTER = new BoosterTile(Sprite.SPRITE_BOOSTER);
+	public static final Tile TILE_CHECKPOINT = new CheckpointTile(Sprite.SPRITE_CHECKPOINT);
+	public static final Tile TILE_ICE = new IceTile(Sprite.SPRITE_ICE);
+	public static final Tile TILE_KILLER = new KillerTile(Sprite.SPRITE_KILLER);
+	public static final Tile TILE_QUARTZ = new QuartzTile(Sprite.SPRITE_QUARTZ);
+	public static final Tile TILE_QUARTZ_WALL = new QuartzWallTile(Sprite.SPRITE_QUARTZ_WALL);
 
 	//Colors of tiles in level files
-	public static final int colBoosterTile = 0xFF00FF66;
-	public static final int colCheckpointTile = 0xFFCC00FF;
-	public static final int colIceTile = 0xFFA0CFFF;
-	public static final int colKillerTile = 0xFFFF0000;
-	public static final int colVoidTile = 0xFF0000;
-	public static final int colQuartzTile = 0xFFFFFFFF;
-	public static final int colQuartzWallTile = 0xFFB4B4B4;
-
-	public static final int colBlockTile = 0xFF805030;
-	public static final int colDirtTile = 0xFF907040;
-	public static final int colGrassTile = 0xFF15FF00;
-	public static final int colSandTile = 0xFFF4E4B4;
-	public static final int colWaterTile = 0xFF0066FF;
+	public static final int COL_TILE_BOOSTER = 0xFF00FF66;
+	public static final int COL_TILE_CHECKPOINT = 0xFFCC00FF;
+	public static final int COL_TILE_ICE = 0xFFA0CFFF;
+	public static final int COL_TILE_KILLER = 0xFFFF0000;
+	public static final int COL_TILE_VOID = 0xFF0000;
+	public static final int COL_TILE_QUARTZ = 0xFFFFFFFF;
+	public static final int COL_TILE_QUARTZ_WALL = 0xFFB4B4B4;
 
 	public Tile(Sprite sprite)
 	{

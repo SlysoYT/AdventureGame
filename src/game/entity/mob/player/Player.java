@@ -8,10 +8,10 @@ import game.chat.Message;
 import game.entity.mob.Mob;
 import game.entity.mob.ability.Ability;
 import game.entity.mob.ability.AbilityRage;
-import game.entity.mob.ability.AbilityShooting;
 import game.entity.mob.ability.AbilityTeleporting;
-import game.entity.projectile.BoomerangProjectile;
+import game.entity.mob.ability.AbilityTrap;
 import game.entity.spawner.ParticleSpawner;
+import game.entity.trap.Traps;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.input.Keyboard;
@@ -47,10 +47,11 @@ public class Player extends Mob
 		isClient = true;
 
 		hitbox = new Hitbox(-5, -8, 9, 15);
-		initMob(x, y, hitbox, Sprite.playerDown[0], 50.0F, 1.0F, 1.2F, 10);
+		initMob(x, y, hitbox, Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
 		this.input = input;
 
-		primaryAbility = new AbilityShooting(this, new BoomerangProjectile(0, 0, 0, null, null));
+		//primaryAbility = new AbilityShooting(this, Projectiles.ProjectileBoomerang, 100);
+		primaryAbility = new AbilityTrap(this, Traps.TrapBounce, 200);
 		secondaryAbility = new AbilityTeleporting(this, 360, 200);
 		passiveAbility = new AbilityRage(this, 600, 240);
 	}
@@ -61,7 +62,7 @@ public class Player extends Mob
 		this.IPAddress = IPAddress;
 
 		hitbox = new Hitbox(-5, -8, 9, 15);
-		initMob(x, y, hitbox, Sprite.playerDown[0], 50.0F, 1.0F, 1.2F, 10);
+		initMob(x, y, hitbox, Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
 	}
 
 	public Player(int x, int y, UUID uuid)
@@ -70,7 +71,7 @@ public class Player extends Mob
 		setUUID(uuid);
 
 		hitbox = new Hitbox(-5, -8, 9, 15);
-		initMob(x, y, hitbox, Sprite.playerDown[0], 50.0F, 1.0F, 1.2F, 10);
+		initMob(x, y, hitbox, Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
 	}
 
 	public void tick()
@@ -82,7 +83,7 @@ public class Player extends Mob
 		if(isMoving())
 		{
 			if(walkParticleTicks % 5 == 0)
-				new ParticleSpawner(x + (rand.nextInt(6) - 3), y + (4 + rand.nextInt(4)), 0.2F, 0.05F, 30, 1, level, Sprite.particleQuartz);
+				new ParticleSpawner(x + (rand.nextInt(6) - 3), y + (4 + rand.nextInt(4)), 0.2F, 0.05F, 30, 1, level, Sprite.PARTICLE_QUARTZ);
 			walkParticleTicks++;
 			anim++;
 		}
@@ -149,103 +150,103 @@ public class Player extends Mob
 
 		getWalkingSprite();
 
-		screen.renderMob(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, this);
+		screen.renderSprite(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, sprite, true);
 	}
 
 	protected void getWalkingSprite()
 	{
 		if(dir == 0)
 		{
-			sprite = Sprite.playerUp[0];
+			sprite = Sprite.PLAYER_UP[0];
 			if(isMoving())
 			{
 				if(anim % 34 < 11)
 				{
-					sprite = Sprite.playerUp[1];
+					sprite = Sprite.PLAYER_UP[1];
 				}
 				else if(anim % 34 < 17)
 				{
-					sprite = Sprite.playerUp[0];
+					sprite = Sprite.PLAYER_UP[0];
 				}
 				else if(anim % 34 < 26)
 				{
-					sprite = Sprite.playerUp[2];
+					sprite = Sprite.PLAYER_UP[2];
 				}
 				else
 				{
-					sprite = Sprite.playerUp[0];
+					sprite = Sprite.PLAYER_UP[0];
 				}
 			}
 		}
 
 		if(dir == 1)
 		{
-			sprite = Sprite.playerRight[0];
+			sprite = Sprite.PLAYER_RIGHT[0];
 			if(isMoving())
 			{
 				if(anim % 32 < 8)
 				{
-					sprite = Sprite.playerRight[1];
+					sprite = Sprite.PLAYER_RIGHT[1];
 				}
 				else if(anim % 32 < 16)
 				{
-					sprite = Sprite.playerRight[0];
+					sprite = Sprite.PLAYER_RIGHT[0];
 				}
 				else if(anim % 32 < 24)
 				{
-					sprite = Sprite.playerRight[2];
+					sprite = Sprite.PLAYER_RIGHT[2];
 				}
 				else
 				{
-					sprite = Sprite.playerRight[0];
+					sprite = Sprite.PLAYER_RIGHT[0];
 				}
 			}
 		}
 
 		if(dir == 2)
 		{
-			sprite = Sprite.playerDown[0];
+			sprite = Sprite.PLAYER_DOWN[0];
 			if(isMoving())
 			{
 				if(anim % 34 < 11)
 				{
-					sprite = Sprite.playerDown[1];
+					sprite = Sprite.PLAYER_DOWN[1];
 				}
 				else if(anim % 34 < 17)
 				{
-					sprite = Sprite.playerDown[0];
+					sprite = Sprite.PLAYER_DOWN[0];
 				}
 				else if(anim % 34 < 26)
 				{
-					sprite = Sprite.playerDown[2];
+					sprite = Sprite.PLAYER_DOWN[2];
 				}
 				else
 				{
-					sprite = Sprite.playerDown[0];
+					sprite = Sprite.PLAYER_DOWN[0];
 				}
 			}
 		}
 
 		if(dir == 3)
 		{
-			sprite = Sprite.playerLeft[0];
+			sprite = Sprite.PLAYER_LEFT[0];
 			if(isMoving())
 			{
 				if(anim % 32 < 8)
 				{
-					sprite = Sprite.playerLeft[1];
+					sprite = Sprite.PLAYER_LEFT[1];
 				}
 				else if(anim % 32 < 16)
 				{
-					sprite = Sprite.playerLeft[0];
+					sprite = Sprite.PLAYER_LEFT[0];
 				}
 				else if(anim % 32 < 24)
 				{
-					sprite = Sprite.playerLeft[2];
+					sprite = Sprite.PLAYER_LEFT[2];
 				}
 				else
 				{
-					sprite = Sprite.playerLeft[0];
+					sprite = Sprite.PLAYER_LEFT[0];
 				}
 			}
 		}

@@ -1,35 +1,93 @@
 package game.entity.projectile;
 
+import java.util.List;
 import java.util.UUID;
 
+import game.Game;
+import game.audio.PlaySound;
+import game.audio.Sounds;
 import game.entity.Entity;
 import game.entity.mob.Mob;
+import game.entity.spawner.ParticleSpawner;
 import game.graphics.Sprite;
+import game.util.GameState;
 import game.util.Hitbox;
 
 public abstract class Projectile extends Entity
 {
-	protected final int xOrigin, yOrigin;
+	private final int xOrigin, yOrigin;
+	private double x, y;
+	private double newX, newY;
+	private Hitbox hitbox;
+	private Mob source;
+
 	protected double angle;
 	protected Sprite sprite;
-	protected double x, y;
-	protected double newX, newY;
 	protected double distance;
-	protected double speed, range;
+	protected double speed;
+	protected int range;
 	protected float damage;
-	protected int fireCooldown;
-	protected Hitbox hitbox;
-	protected Mob source;
+	protected int cooldown;
 
-	public Projectile(int x, int y, double direction, Mob source, UUID uuid)
+	protected Projectile(int x, int y, double direction, double speed, int range, float damage, int cooldown, Mob source, Hitbox hitbox,
+			Sprite sprite, UUID uuid)
 	{
-		setUUID(uuid);
+		this.x = x;
+		this.y = y;
 		xOrigin = x;
 		yOrigin = y;
 		angle = direction;
-		this.x = x;
-		this.y = y;
+		this.speed = speed;
+		this.range = range;
+		this.damage = damage;
+		this.cooldown = cooldown;
 		this.source = source;
+		this.hitbox = hitbox;
+		this.sprite = sprite;
+		setUUID(uuid);
+	}
+
+	protected abstract void tickProjectile();
+
+	protected abstract void onMobHit(Mob mob);
+
+	public void tick()
+	{
+		tickProjectile();
+
+		if(!level.hitboxCollidesWithSolid(getX() + getNewX(), getY() + getNewY(), getHitbox())) move();
+		else
+		{
+			level.add(new ParticleSpawner((int) getX(), (int) getY(), 1.0F, 1.0F, 80, 20, level, Sprite.PARTICLE_QUARTZ));
+			PlaySound.playSound(Sounds.hit);
+			this.remove();
+			return;
+		}
+
+		if(Game.getGameState() == GameState.IngameOnline && !Game.isHostingGame) return;
+
+		//Call onMobHit() if hit
+		List<Mob> mobs = level.getMobs();
+		for(Mob mob : mobs)
+		{
+			if(mob == this.getSource()) continue;
+
+			for(int corner = 0; corner < 4; corner++)
+			{
+				int projectileX = this.getX() + this.getHitbox().getXOffset() + this.getHitbox().getWidth() * (corner % 2);
+				int projectileY = this.getY() + this.getHitbox().getYOffset() + this.getHitbox().getHeight() * (corner / 2);
+
+				if(projectileX >= mob.getX() + mob.getHitbox().getXOffset()
+						&& projectileX <= mob.getX() + mob.getHitbox().getXOffset() + mob.getHitbox().getWidth()
+						&& projectileY >= mob.getY() + mob.getHitbox().getYOffset()
+						&& projectileY <= mob.getY() + mob.getHitbox().getYOffset() + mob.getHitbox().getHeight())
+				{
+					onMobHit(mob);
+					this.remove();
+					return;
+				}
+			}
+		}
 	}
 
 	protected void move()
@@ -52,6 +110,16 @@ public abstract class Projectile extends Entity
 	public int getY()
 	{
 		return (int) y;
+	}
+
+	public int getNewX()
+	{
+		return (int) newX;
+	}
+
+	public int getNewY()
+	{
+		return (int) newY;
 	}
 
 	public Sprite getSprite()
@@ -84,9 +152,9 @@ public abstract class Projectile extends Entity
 		return sprite.SIZE;
 	}
 
-	public int getFireCooldown()
+	public int getCooldown()
 	{
-		return fireCooldown;
+		return cooldown;
 	}
 
 	public Mob getSource()

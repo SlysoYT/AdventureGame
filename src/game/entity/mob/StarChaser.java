@@ -15,7 +15,7 @@ public class StarChaser extends Mob
 
 	public StarChaser(int x, int y, float speed)
 	{
-		initMob(x, y, new Hitbox(-5, -8, 9, 15), Sprite.playerDown[0], 10.0F, speed, 10.0F, 60);
+		initMob(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 10.0F, speed, 10.0F, 60);
 	}
 
 	public void tick()
@@ -48,8 +48,8 @@ public class StarChaser extends Mob
 
 	public void render(Screen screen)
 	{
-		sprite = Sprite.playerDown[0];
+		sprite = Sprite.PLAYER_DOWN[0];
 
-		screen.renderMob(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, this);
+		screen.renderSprite(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, sprite, true);
 	}
 }

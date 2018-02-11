@@ -10,6 +10,7 @@ import game.entity.mob.effect.Effect;
 import game.entity.mob.player.Player;
 import game.entity.projectile.Projectile;
 import game.entity.spawner.ParticleSpawner;
+import game.entity.trap.Trap;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.level.Level;
@@ -203,8 +204,14 @@ public abstract class Mob extends Entity
 		level.add(projectile);
 	}
 
+	public void setTrap(Trap trap)
+	{
+		level.add(trap);
+	}
+
 	public void damage(float damage)
 	{
+		if(damage == 0F) return;
 		currentHealth -= Math.abs(damage);
 		PlaySound.playSound(Sounds.hurt);
 		spawnBlood();
@@ -222,7 +229,7 @@ public abstract class Mob extends Entity
 
 	private void spawnBlood()
 	{
-		new ParticleSpawner(x, y, 0.85F, 0.75F, 100, 55, level, Sprite.particleBlood);
+		new ParticleSpawner(x, y, 0.85F, 0.75F, 100, 55, level, Sprite.PARTICLE_BLOOD);
 	}
 
 	private void updateCurrentAttackCooldown()
@@ -406,11 +413,6 @@ public abstract class Mob extends Entity
 	public float getSpeed()
 	{
 		return speed;
-	}
-
-	public Sprite getSprite()
-	{
-		return sprite;
 	}
 
 	public boolean isMoving()

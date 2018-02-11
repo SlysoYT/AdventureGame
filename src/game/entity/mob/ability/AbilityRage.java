@@ -2,7 +2,7 @@ package game.entity.mob.ability;
 
 import game.entity.mob.effect.EffectMovementSpeed;
 import game.entity.mob.player.Player;
-import game.entity.projectile.WizardProjectile;
+import game.entity.projectile.Projectiles;
 
 public class AbilityRage extends AbilityDuration
 {
@@ -11,7 +11,7 @@ public class AbilityRage extends AbilityDuration
 	public AbilityRage(Player player, int cooldown, int duration)
 	{
 		super(player, cooldown, duration);
-		abilityShooting = new AbilityShooting(player, new WizardProjectile(0, 0, 0, null, null), 10);
+		abilityShooting = new AbilityShooting(player, Projectiles.ProjectileBullet, 10);
 
 	}
 

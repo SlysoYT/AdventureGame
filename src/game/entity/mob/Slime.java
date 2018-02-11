@@ -62,9 +62,9 @@ public class Slime extends Mob
 		{
 			resetJump();
 			delay = (byte) (5 + rand.nextInt(40));
-			level.add(new ParticleSpawner((int) (x), (int) (y + 11), 0.01F, 0.01F, 30, 3, level, Sprite.particleSlime));
-			level.add(new ParticleSpawner((int) (x + 4), (int) (y + 11), 0.5F, 0.15F, 30, 3, level, Sprite.particleSlime));
-			level.add(new ParticleSpawner((int) (x - 4), (int) (y + 11), 0.5F, 0.15F, 30, 3, level, Sprite.particleSlime));
+			level.add(new ParticleSpawner((int) (x), (int) (y + 11), 0.01F, 0.01F, 30, 3, level, Sprite.PARTICLE_SLIME));
+			level.add(new ParticleSpawner((int) (x + 4), (int) (y + 11), 0.5F, 0.15F, 30, 3, level, Sprite.PARTICLE_SLIME));
+			level.add(new ParticleSpawner((int) (x - 4), (int) (y + 11), 0.5F, 0.15F, 30, 3, level, Sprite.PARTICLE_SLIME));
 		}
 		if(xGoal < x) xChange -= getSpeed();
 		else if(xGoal > x) xChange += getSpeed();
@@ -82,7 +82,7 @@ public class Slime extends Mob
 	{
 		sprite = Sprite.slimeDown;
 
-		screen.renderMob(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, this);
+		screen.renderSprite(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, sprite, true);
 	}
 
 	private void resetJump()

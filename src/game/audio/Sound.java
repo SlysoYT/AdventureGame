@@ -2,7 +2,7 @@ package game.audio;
 
 public class Sound
 {
-	String path;
+	private String path;
 
 	public Sound(String path)
 	{

@@ -12,5 +12,5 @@ public class Settings
 	public static boolean serverIsPublic = true;
 
 	//Advanced
-	public static boolean debugMode = false;
+	public static boolean debugMode = true;
 }

@@ -7,7 +7,7 @@ import game.Game;
 import game.entity.mob.player.OnlinePlayer;
 import game.entity.mob.player.Player;
 import game.entity.projectile.Projectile;
-import game.entity.projectile.WizardProjectile;
+import game.entity.projectile.ProjectileBullet;
 import game.level.Level;
 import game.network.Serialization.SField;
 import game.network.Serialization.SObject;
@@ -224,7 +224,7 @@ public class NetworkPackage
 			//Add projectile to level
 			if(projectile == null)
 			{
-				level.add(new WizardProjectile(xPos, yPos, angle, null, uuid));
+				level.add(new ProjectileBullet(xPos, yPos, angle, null, uuid));
 			}
 			//Tick projectile
 			else
@@ -272,13 +272,13 @@ public class NetworkPackage
 			if(object.findField("prDir") != null)
 			{
 				float angle = SerializationReader.readFloat(object.findField("prDir").getData(), 0);
-				level.add(new WizardProjectile(senderPlayer.getX(), senderPlayer.getY(), angle, senderPlayer, null));
+				level.add(new ProjectileBullet(senderPlayer.getX(), senderPlayer.getY(), angle, senderPlayer, null));
 			}
 		}
 
 		if(projectile != null)
 		{
-			level.add(new WizardProjectile(level.getClientPlayer().getX(), level.getClientPlayer().getY(), projectile.getDirection(),
+			level.add(new ProjectileBullet(level.getClientPlayer().getX(), level.getClientPlayer().getY(), projectile.getDirection(),
 					level.getClientPlayer(), null));
 			projectile = null;
 		}

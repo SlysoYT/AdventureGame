@@ -2,24 +2,17 @@ package game.entity.mob.ability;
 
 import game.Game;
 import game.entity.mob.player.Player;
-import game.entity.projectile.BoomerangProjectile;
-import game.entity.projectile.Projectile;
-import game.entity.projectile.WizardProjectile;
+import game.entity.projectile.ProjectileBoomerang;
+import game.entity.projectile.ProjectileBullet;
+import game.entity.projectile.Projectiles;
 import game.input.Mouse;
-import game.network.NetworkPackage;
 import game.util.GameState;
 
 public class AbilityShooting extends Ability
 {
-	Projectile projectile;
+	Projectiles projectile;
 
-	public AbilityShooting(Player player, Projectile projectile)
-	{
-		super(player, projectile.getFireCooldown());
-		this.projectile = projectile;
-	}
-
-	public AbilityShooting(Player player, Projectile projectile, int cooldown)
+	public AbilityShooting(Player player, Projectiles projectile, int cooldown)
 	{
 		super(player, cooldown);
 		this.projectile = projectile;
@@ -35,13 +28,12 @@ public class AbilityShooting extends Ability
 
 		if(Game.getGameState() == GameState.IngameOffline)
 		{
-			if(projectile instanceof WizardProjectile) player.shoot(new WizardProjectile(player.getX(), player.getY(), angle, player, null));
-			else if(projectile instanceof BoomerangProjectile)
-				player.shoot(new BoomerangProjectile(player.getX(), player.getY(), angle, player, null));
+			if(projectile.ordinal() == 0) player.shoot(new ProjectileBoomerang(player.getX(), player.getY(), angle, player, null));
+			else if(projectile.ordinal() == 1) player.shoot(new ProjectileBullet(player.getX(), player.getY(), angle, player, null));
 		}
 		else
 		{
-			if(projectile instanceof WizardProjectile) NetworkPackage.shoot(new WizardProjectile(player.getX(), player.getY(), angle, player, null));
+			//if(projectile instanceof WizardProjectile) NetworkPackage.shoot(new WizardProjectile(player.getX(), player.getY(), angle, player, null));
 			//TODO
 		}
 	}

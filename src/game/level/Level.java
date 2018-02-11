@@ -12,10 +12,11 @@ import java.util.UUID;
 import game.Game;
 import game.entity.Entity;
 import game.entity.mob.Mob;
-import game.entity.mob.player.Player;
 import game.entity.mob.Slime;
+import game.entity.mob.player.Player;
 import game.entity.particle.Particle;
 import game.entity.projectile.Projectile;
+import game.entity.trap.Trap;
 import game.graphics.Screen;
 import game.level.tile.Tile;
 import game.network.NetworkPackage;
@@ -37,7 +38,6 @@ public class Level
 	private Random rand = new Random();
 
 	private List<Entity> entities = new ArrayList<Entity>();
-	private List<Projectile> projectiles = new ArrayList<Projectile>();
 	private List<Particle> particles = new ArrayList<Particle>();
 	private List<Player> players = new ArrayList<Player>();
 
@@ -76,7 +76,6 @@ public class Level
 		playerSpawn = null;
 
 		entities.clear();
-		projectiles.clear();
 		particles.clear();
 		players.clear();
 	}
@@ -99,7 +98,7 @@ public class Level
 					{
 						xSpawn = rand.nextInt(width * Tile.DEFAULT_TILE_SIZE);
 						ySpawn = rand.nextInt(height * Tile.DEFAULT_TILE_SIZE);
-						
+
 						if(!new Slime(0, 0, 0.75F).collision(xSpawn, ySpawn))
 						{
 							this.add(new Slime(xSpawn, ySpawn, 0.75F));
@@ -117,10 +116,6 @@ public class Level
 		{
 			entities.get(i).tick();
 		}
-		for(int i = 0; i < projectiles.size(); i++)
-		{
-			projectiles.get(i).tick();
-		}
 		for(int i = 0; i < particles.size(); i++)
 		{
 			particles.get(i).tick();
@@ -128,7 +123,6 @@ public class Level
 		for(int i = 0; i < players.size(); i++)
 		{
 			players.get(i).tick();
-			//players.get(i).motion(0.5f, 0f);
 		}
 	}
 
@@ -146,10 +140,6 @@ public class Level
 		for(int i = 0; i < entities.size(); i++)
 		{
 			if(entities.get(i).isRemoved()) entities.remove(i);
-		}
-		for(int i = 0; i < projectiles.size(); i++)
-		{
-			if(projectiles.get(i).isRemoved()) projectiles.remove(i);
 		}
 		for(int i = 0; i < particles.size(); i++)
 		{
@@ -173,10 +163,6 @@ public class Level
 		{
 			particles.get(i).render(screen);
 		}
-		for(int i = 0; i < projectiles.size(); i++)
-		{
-			projectiles.get(i).render(screen);
-		}
 		for(int i = 0; i < players.size(); i++)
 		{
 			players.get(i).render(screen);
@@ -193,13 +179,13 @@ public class Level
 
 	}
 
-	public boolean tileCollision(int x, int y, int size, int xOffset, int yOffset)
+	public boolean hitboxCollidesWithSolid(int x, int y, Hitbox hitbox)
 	{
 		for(int corner = 0; corner < 4; corner++)
 		{
 			//Transforms pixel into tile precision and "asks" the appropriate tile, if it's solid
-			double xt = (x - corner % 2 * size + xOffset) >> TILE_SIZE_SHIFTING; //With values after corner % 2 or corner / 2, it's possible
-			double yt = (y - corner / 2 * size + yOffset) >> TILE_SIZE_SHIFTING; //to modify the position and size of the hitbox
+			double xt = (x + corner % 2 * hitbox.getWidth() + hitbox.getXOffset()) >> TILE_SIZE_SHIFTING; //With values after corner % 2 or corner / 2, it's possible
+			double yt = (y + corner / 2 * hitbox.getHeight() + hitbox.getYOffset()) >> TILE_SIZE_SHIFTING; //to modify the position and size of the hitbox
 			if(getTile((int) (xt), (int) (yt)).solid()) return true;
 		}
 
@@ -256,13 +242,20 @@ public class Level
 						Game.SCALE * (entities.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
 						(hitbox.getHeight() + 1) * Game.SCALE);
 			}
-		}
-		for(int i = 0; i < projectiles.size(); i++)
-		{
-			Hitbox hitbox = projectiles.get(i).getHitbox();
-			g.drawRect(Game.SCALE * (projectiles.get(i).getX() - Screen.getXOffset() + hitbox.getXOffset()),
-					Game.SCALE * (projectiles.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
-					(hitbox.getHeight() + 1) * Game.SCALE);
+			else if(entities.get(i) instanceof Projectile)
+			{
+				Hitbox hitbox = ((Projectile) entities.get(i)).getHitbox();
+				g.drawRect(Game.SCALE * (entities.get(i).getX() - Screen.getXOffset() + hitbox.getXOffset()),
+						Game.SCALE * (entities.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
+						(hitbox.getHeight() + 1) * Game.SCALE);
+			}
+			else if(entities.get(i) instanceof Trap)
+			{
+				Hitbox hitbox = ((Trap) entities.get(i)).getHitbox();
+				g.drawRect(Game.SCALE * (entities.get(i).getX() - Screen.getXOffset() + hitbox.getXOffset()),
+						Game.SCALE * (entities.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
+						(hitbox.getHeight() + 1) * Game.SCALE);
+			}
 		}
 		for(int i = 0; i < players.size(); i++)
 		{
@@ -280,7 +273,7 @@ public class Level
 		if(e instanceof Particle) particles.add((Particle) e);
 		else if(e instanceof Projectile)
 		{
-			projectiles.add((Projectile) e);
+			entities.add((Projectile) e);
 			if(((Projectile) e).getSource() == getClientPlayer() && Game.getGameState() == GameState.IngameOnline)
 				NetworkPackage.shoot(((Projectile) e));
 		}
@@ -301,8 +294,6 @@ public class Level
 			entities.add(player);
 		for(Particle particle : particles)
 			entities.add(particle);
-		for(Projectile projectile : projectiles)
-			entities.add(projectile);
 		for(Entity entity : this.entities)
 			entities.add(entity);
 
@@ -359,6 +350,11 @@ public class Level
 
 	public List<Projectile> getProjectiles()
 	{
+		List<Projectile> projectiles = new ArrayList<Projectile>();
+		for(int i = 0; i < entities.size(); i++)
+		{
+			if((entities.get(i) instanceof Projectile)) projectiles.add((Projectile) entities.get(i));
+		}
 		return projectiles;
 	}
 
@@ -366,9 +362,10 @@ public class Level
 	{
 		if(uuid == null) return null;
 
-		for(int i = 0; i < projectiles.size(); i++)
+		for(int i = 0; i < entities.size(); i++)
 		{
-			if(projectiles.get(i).getUUID().compareTo(uuid) == 0) return projectiles.get(i);
+			if(!(entities.get(i) instanceof Projectile)) continue;
+			if(entities.get(i).getUUID().compareTo(uuid) == 0) return (Projectile) entities.get(i);
 		}
 
 		return null;
@@ -446,32 +443,18 @@ public class Level
 	public static Tile getTile(int x, int y)
 	{
 		//If out of bounds, return void tile
-		if(x < 0 || y < 0 || x >= width || y >= height) return Tile.voidTile;
+		if(x < 0 || y < 0 || x >= width || y >= height) return Tile.TILE_VOID;
 		//Tiles: If color in level file at specific location is e.g. equal to grass, then return a grass tile
-		if(tiles[x + y * width] == Tile.colBoosterTile) return Tile.boosterTile;
-		if(tiles[x + y * width] == Tile.colCheckpointTile) return Tile.checkpointTile;
-		if(tiles[x + y * width] == Tile.colIceTile) return Tile.iceTile;
-		if(tiles[x + y * width] == Tile.colKillerTile) return Tile.killerTile;
-		if(tiles[x + y * width] == Tile.colVoidTile) return Tile.voidTile;
-		if(tiles[x + y * width] == Tile.colQuartzTile) return Tile.quartzTile;
-		if(tiles[x + y * width] == Tile.colQuartzWallTile) return Tile.quartzWallTile;
-
-		if(tiles[x + y * width] == Tile.colBlockTile) return Tile.blockTile;
-		if(tiles[x + y * width] == Tile.colDirtTile) return Tile.dirtTile;
-		if(tiles[x + y * width] == Tile.colGrassTile) return Tile.grassTile;
-		if(tiles[x + y * width] == Tile.colSandTile) return Tile.sandTile;
-
-		//Water
-		if(tiles[x + y * width] == Tile.colWaterTile)
-		{
-			if(x % 2 == 0 && y % 2 == 0) return Tile.waterTile0;
-			else if(x % 2 == 1 && y % 2 == 0) return Tile.waterTile1;
-			else if(x % 2 == 0 && y % 2 == 1) return Tile.waterTile2;
-			return Tile.waterTile3;
-		}
+		if(tiles[x + y * width] == Tile.COL_TILE_BOOSTER) return Tile.TILE_BOOSTER;
+		if(tiles[x + y * width] == Tile.COL_TILE_CHECKPOINT) return Tile.TILE_CHECKPOINT;
+		if(tiles[x + y * width] == Tile.COL_TILE_ICE) return Tile.TILE_ICE;
+		if(tiles[x + y * width] == Tile.COL_TILE_KILLER) return Tile.TILE_KILLER;
+		if(tiles[x + y * width] == Tile.COL_TILE_VOID) return Tile.TILE_VOID;
+		if(tiles[x + y * width] == Tile.COL_TILE_QUARTZ) return Tile.TILE_QUARTZ;
+		if(tiles[x + y * width] == Tile.COL_TILE_QUARTZ_WALL) return Tile.TILE_QUARTZ_WALL;
 
 		//Unknown color in level file:
-		return Tile.errorTile;
+		return Tile.TILE_ERROR;
 	}
 
 	public void finishedLevel()

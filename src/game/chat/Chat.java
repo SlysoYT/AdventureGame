@@ -8,6 +8,7 @@ import java.util.List;
 
 import game.Game;
 import game.input.Keyboard;
+import game.util.GameState;
 
 public class Chat
 {
@@ -18,8 +19,9 @@ public class Chat
 
 	public static void addMessage(Message message)
 	{
+		//TODO: Send to server or if server recieve messages and send to all clients
 		messages.add(message);
-		handleCommands(message);
+		if(Game.getGameState() == GameState.IngameOffline) handleCommands(message);
 	}
 
 	private static void handleCommands(Message message)
@@ -56,7 +58,16 @@ public class Chat
 				addMessage(new Message("No arguments expected. Usage: !help", "Server"));
 				return;
 			}
-			addMessage(new Message("can't help anymore!", "Server"));
+			addMessage(new Message("can't help anymore!", "Server")); //TODO
+		}
+		else if(command.equals("kill"))
+		{
+			if(!args.isEmpty())
+			{
+				addMessage(new Message("No arguments expected. Usage: !kill", "Server"));
+				return;
+			}
+			Game.getLevel().getClientPlayer().kill();
 		}
 		else
 		{

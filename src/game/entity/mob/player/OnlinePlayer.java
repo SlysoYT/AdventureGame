@@ -27,7 +27,7 @@ public class OnlinePlayer extends Player
 
 		getWalkingSprite();
 
-		screen.renderMob(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, this);
+		screen.renderSprite(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, sprite, true);
 	}
 
 	public String getPlayerName()

@@ -96,37 +96,163 @@ public class Screen
 		}
 	}
 
-	public void blur(int size)
+	public void blur()
 	{
+		//A for loop would be much more readable, but this way it's more than twice as fast
 		for(int x = 0; x < width; x++)
 		{
 			for(int y = 0; y < height; y++)
 			{
-				int rSum = 0;
-				int gSum = 0;
-				int bSum = 0;
-				int count = 0;
-
-				for(int i = -size; i <= size; i++)
+				//4 corner pixel
+				if(x == 0 && y == 0)
 				{
-					for(int j = -size; j <= size; j++)
-					{
-						if((x + i) < 0 || (x + i) >= width || (y + j) < 0 || (y + j) >= height) continue;
+					int rSum = ((pixels[(x + 0) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + 0) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 0) + (y + 1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + 1) * width] & 0xFF0000) >> 16);
 
-						int weight = 2 * size - (Math.abs(i) + Math.abs(j));
-						count += weight;
+					int gSum = ((pixels[(x + 0) + (y + 0) * width] & 0x00FF00) >> 8) + ((pixels[(x + 1) + (y + 0) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 0) + (y + 1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 1) + (y + 1) * width] & 0x00FF00) >> 8);
 
-						rSum += weight * ((pixels[(x + i) + (y + j) * width] & 0xFF0000) >> 16);
-						gSum += weight * ((pixels[(x + i) + (y + j) * width] & 0x00FF00) >> 8);
-						bSum += weight * ((pixels[(x + i) + (y + j) * width] & 0x0000FF));
-					}
+					int bSum = ((pixels[(x + 0) + (y + 0) * width] & 0x0000FF)) + ((pixels[(x + 1) + (y + 0) * width] & 0x0000FF))
+							+ ((pixels[(x + 0) + (y + 1) * width] & 0x0000FF)) + ((pixels[(x + 1) + (y + 1) * width] & 0x0000FF));
+
+					pixels[x + y * width] = ((rSum / 4) << 16) | ((gSum / 4) << 8) | ((bSum / 4));
+					continue;
 				}
+				else if(x == 0 && y == height - 1)
+				{
+					int rSum = ((pixels[(x + 0) + (y + -1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + -1) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + 0) * width] & 0xFF0000) >> 16);
 
-				int r = rSum / count;
-				int g = gSum / count;
-				int b = bSum / count;
+					int gSum = ((pixels[(x + 0) + (y + -1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 1) + (y + -1) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0x00FF00) >> 8) + ((pixels[(x + 1) + (y + 0) * width] & 0x00FF00) >> 8);
 
-				pixels[x + y * width] = (r << 16) | (g << 8) | (b << 0);
+					int bSum = ((pixels[(x + 0) + (y + -1) * width] & 0x0000FF)) + ((pixels[(x + 1) + (y + -1) * width] & 0x0000FF))
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0x0000FF)) + ((pixels[(x + 1) + (y + 0) * width] & 0x0000FF));
+
+					pixels[x + y * width] = ((rSum / 4) << 16) | ((gSum / 4) << 8) | ((bSum / 4));
+					continue;
+				}
+				else if(x == width - 1 && y == 0)
+				{
+					int rSum = ((pixels[(x + -1) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + 0) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + -1) + (y + 1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + 1) * width] & 0xFF0000) >> 16);
+
+					int gSum = ((pixels[(x + -1) + (y + 0) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + 0) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + -1) + (y + 1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + 1) * width] & 0x00FF00) >> 8);
+
+					int bSum = ((pixels[(x + -1) + (y + 0) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + 0) * width] & 0x0000FF))
+							+ ((pixels[(x + -1) + (y + 1) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + 1) * width] & 0x0000FF));
+
+					pixels[x + y * width] = ((rSum / 4) << 16) | ((gSum / 4) << 8) | ((bSum / 4));
+					continue;
+				}
+				else if(x == width - 1 && y == height - 1)
+				{
+					int rSum = ((pixels[(x + -1) + (y + -1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + -1) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + -1) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + 0) * width] & 0xFF0000) >> 16);
+
+					int gSum = ((pixels[(x + -1) + (y + -1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + -1) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + -1) + (y + 0) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + 0) * width] & 0x00FF00) >> 8);
+
+					int bSum = ((pixels[(x + -1) + (y + -1) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + -1) * width] & 0x0000FF))
+							+ ((pixels[(x + -1) + (y + 0) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + 0) * width] & 0x0000FF));
+
+					pixels[x + y * width] = ((rSum / 4) << 16) | ((gSum / 4) << 8) | ((bSum / 4));
+					continue;
+				}
+				//Edge pixels
+				else if(x == 0)
+				{
+					int rSum = ((pixels[(x + 0) + (y + -1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + -1) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + 0) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 0) + (y + 1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + 1) * width] & 0xFF0000) >> 16);
+
+					int gSum = ((pixels[(x + 0) + (y + -1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 1) + (y + -1) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0x00FF00) >> 8) + ((pixels[(x + 1) + (y + 0) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 0) + (y + 1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 1) + (y + 1) * width] & 0x00FF00) >> 8);
+
+					int bSum = ((pixels[(x + 0) + (y + -1) * width] & 0x0000FF)) + ((pixels[(x + 1) + (y + -1) * width] & 0x0000FF))
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0x0000FF)) + ((pixels[(x + 1) + (y + 0) * width] & 0x0000FF))
+							+ ((pixels[(x + 0) + (y + 1) * width] & 0x0000FF)) + ((pixels[(x + 1) + (y + 1) * width] & 0x0000FF));
+
+					pixels[x + y * width] = ((rSum / 6) << 16) | ((gSum / 6) << 8) | ((bSum / 6));
+					continue;
+				}
+				else if(y == 0)
+				{
+					int rSum = ((pixels[(x + -1) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + 0) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 1) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + -1) + (y + 1) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 0) + (y + 1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + 1) * width] & 0xFF0000) >> 16);
+
+					int gSum = ((pixels[(x + -1) + (y + 0) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + 0) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 1) + (y + 0) * width] & 0x00FF00) >> 8) + ((pixels[(x + -1) + (y + 1) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 0) + (y + 1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 1) + (y + 1) * width] & 0x00FF00) >> 8);
+
+					int bSum = ((pixels[(x + -1) + (y + 0) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + 0) * width] & 0x0000FF))
+							+ ((pixels[(x + 1) + (y + 0) * width] & 0x0000FF)) + ((pixels[(x + -1) + (y + 1) * width] & 0x0000FF))
+							+ ((pixels[(x + 0) + (y + 1) * width] & 0x0000FF)) + ((pixels[(x + 1) + (y + 1) * width] & 0x0000FF));
+
+					pixels[x + y * width] = ((rSum / 6) << 16) | ((gSum / 6) << 8) | ((bSum / 6));
+
+					continue;
+				}
+				else if(x == width - 1)
+				{
+					int rSum = ((pixels[(x + -1) + (y + -1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + -1) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + -1) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + 0) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + -1) + (y + 1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + 1) * width] & 0xFF0000) >> 16);
+
+					int gSum = ((pixels[(x + -1) + (y + -1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + -1) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + -1) + (y + 0) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + 0) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + -1) + (y + 1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + 1) * width] & 0x00FF00) >> 8);
+
+					int bSum = ((pixels[(x + -1) + (y + -1) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + -1) * width] & 0x0000FF))
+							+ ((pixels[(x + -1) + (y + 0) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + 0) * width] & 0x0000FF))
+							+ ((pixels[(x + -1) + (y + 1) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + 1) * width] & 0x0000FF));
+
+					pixels[x + y * width] = ((rSum / 6) << 16) | ((gSum / 6) << 8) | ((bSum / 6));
+					continue;
+				}
+				else if(y == height - 1)
+				{
+					int rSum = ((pixels[(x + -1) + (y + -1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + -1) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 1) + (y + -1) * width] & 0xFF0000) >> 16) + ((pixels[(x + -1) + (y + 0) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + 0) * width] & 0xFF0000) >> 16);
+
+					int gSum = ((pixels[(x + -1) + (y + -1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + -1) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 1) + (y + -1) * width] & 0x00FF00) >> 8) + ((pixels[(x + -1) + (y + 0) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0x00FF00) >> 8) + ((pixels[(x + 1) + (y + 0) * width] & 0x00FF00) >> 8);
+
+					int bSum = ((pixels[(x + -1) + (y + -1) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + -1) * width] & 0x0000FF))
+							+ ((pixels[(x + 1) + (y + -1) * width] & 0x0000FF)) + ((pixels[(x + -1) + (y + 0) * width] & 0x0000FF))
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0x0000FF)) + ((pixels[(x + 1) + (y + 0) * width] & 0x0000FF));
+
+					pixels[x + y * width] = ((rSum / 6) << 16) | ((gSum / 6) << 8) | ((bSum / 6));
+					continue;
+				}
+				//Normal pixels
+				else
+				{
+					int rSum = ((pixels[(x + -1) + (y + -1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + -1) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 1) + (y + -1) * width] & 0xFF0000) >> 16) + ((pixels[(x + -1) + (y + 0) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + 0) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + -1) + (y + 1) * width] & 0xFF0000) >> 16) + ((pixels[(x + 0) + (y + 1) * width] & 0xFF0000) >> 16)
+							+ ((pixels[(x + 1) + (y + 1) * width] & 0xFF0000) >> 16);
+
+					int gSum = ((pixels[(x + -1) + (y + -1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + -1) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 1) + (y + -1) * width] & 0x00FF00) >> 8) + ((pixels[(x + -1) + (y + 0) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0x00FF00) >> 8) + ((pixels[(x + 1) + (y + 0) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + -1) + (y + 1) * width] & 0x00FF00) >> 8) + ((pixels[(x + 0) + (y + 1) * width] & 0x00FF00) >> 8)
+							+ ((pixels[(x + 1) + (y + 1) * width] & 0x00FF00) >> 8);
+
+					int bSum = ((pixels[(x + -1) + (y + -1) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + -1) * width] & 0x0000FF))
+							+ ((pixels[(x + 1) + (y + -1) * width] & 0x0000FF)) + ((pixels[(x + -1) + (y + 0) * width] & 0x0000FF))
+							+ ((pixels[(x + 0) + (y + 0) * width] & 0x0000FF)) + ((pixels[(x + 1) + (y + 0) * width] & 0x0000FF))
+							+ ((pixels[(x + -1) + (y + 1) * width] & 0x0000FF)) + ((pixels[(x + 0) + (y + 1) * width] & 0x0000FF))
+							+ ((pixels[(x + 1) + (y + 1) * width] & 0x0000FF));
+
+					pixels[x + y * width] = ((rSum / 9) << 16) | ((gSum / 9) << 8) | ((bSum / 9));
+				}
 			}
 		}
 	}

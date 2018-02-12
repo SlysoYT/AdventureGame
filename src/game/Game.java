@@ -83,8 +83,6 @@ public class Game extends Canvas implements Runnable
 		addMouseMotionListener(mouse);
 
 		PlaySound.initAudioSystem();
-
-		TitleScreen.initTitleScreen();
 	}
 
 	public synchronized void start()
@@ -164,7 +162,7 @@ public class Game extends Canvas implements Runnable
 
 		if(gameState == GameState.TitleScreen)
 		{
-			TitleScreen.tickTitleScreen(0.5F, key);
+			TitleScreen.tickTitleScreen(key);
 		}
 		else if(gameState == GameState.IngameOnline || gameState == GameState.IngameOffline)
 		{
@@ -271,8 +269,8 @@ public class Game extends Canvas implements Runnable
 		}
 
 		//Filters are to place here!
-		screen.blur();
-		screen.applyAlpha(2.0F);
+		//screen.applyAlpha(0.5F);
+		//screen.blur(2);
 
 		for(int i = 0; i < pixels.length; i++)
 		{
@@ -358,11 +356,12 @@ public class Game extends Canvas implements Runnable
 		if(Game.level != null) unloadLevel();
 		Game.level = newLevel;
 		Level.loadLevel(newLevel);
+		if(newLevel.getLevelName().equals("TitleScreen")) return;
 		clientPlayer = new Player(Game.level.getSpawnLocation().getX(), Game.level.getSpawnLocation().getY(), key);
 		level.add(clientPlayer);
 	}
 
-	private static void unloadLevel()
+	public static void unloadLevel()
 	{
 		Game.level.unloadLevel();
 		Game.level = null;

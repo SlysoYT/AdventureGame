@@ -1,42 +1,35 @@
 package game.graphics.Screens;
 
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
+import java.util.Random;
 
 import game.Game;
+import game.entity.mob.Slime;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.input.Keyboard;
+import game.level.GameLevel;
+import game.level.tile.Tile;
 import game.util.GameState;
-import game.util.Print;
 
 public class TitleScreen
 {
-	private static boolean scrollTitleScreenRight = true;
 	private static byte currentTitleScreenSelection = 0;
+	private static float xOffset = 0;
+	private static float yOffset = 0;
+	private static float xVelocity = 0.5F;
+	private static float yVelocity = 0.5F;
+	private static Random rand = new Random();
 
-	private static float xOffsetTitleScreen;
-
-	private static BufferedImage fullTitleScreen = null;
-	private static BufferedImage scaledTitleScreen = null;
-	private static double titleScreenScaling;
-
-	public static void tickTitleScreen(float xOffset, Keyboard input)
+	public static void tickTitleScreen(Keyboard input)
 	{
+		if(Game.getLevel() == null) initTitleScreen();
+
 		input.tick();
-
-		if((xOffsetTitleScreen - Game.width) <= -(scaledTitleScreen.getWidth() * titleScreenScaling)) scrollTitleScreenRight = false;
-		if(xOffsetTitleScreen >= 0) scrollTitleScreenRight = true;
-
-		if(scrollTitleScreenRight) xOffsetTitleScreen -= xOffset;
-		else xOffsetTitleScreen += xOffset;
+		Game.getLevel().tick();
 
 		if(input.enterToggle || input.spaceToggle)
 		{
+			unloadTitleScreen();
 			if(currentTitleScreenSelection == 0) Game.setGameState(GameState.IngameOffline);
 			else if(currentTitleScreenSelection == 1) Game.setGameState(GameState.OnlineScreen);
 			else if(currentTitleScreenSelection == 2) Game.setGameState(GameState.Options);
@@ -52,54 +45,49 @@ public class TitleScreen
 
 	public static void renderTitleScreen(Screen screen)
 	{
-		for(int y = 0; y < scaledTitleScreen.getHeight(); y++)
+		if(Game.getLevel() != null)
 		{
-			int yAbsolute = y + 0;
-			if(yAbsolute > Game.height || yAbsolute < 0) continue; //Performance, don't render image if out of screen
+			Game.getLevel().render((int) xOffset, (int) yOffset, screen);
 
-			for(int x = 0; x < scaledTitleScreen.getWidth(); x++)
-			{
-				int xAbsolute = (int) (x + xOffsetTitleScreen);
-				if(xAbsolute > Game.width || xAbsolute < 0) continue; //Performance, don't render image if out of screen
-				if(xAbsolute >= screen.width || yAbsolute < 0 || yAbsolute >= screen.height) break;
-				if(xAbsolute < 0) continue; //Prevents array index out of bounds exception
+			xOffset += xVelocity;
+			yOffset += yVelocity;
 
-				screen.pixels[xAbsolute + yAbsolute * screen.width] = scaledTitleScreen.getRGB(x, y);
-			}
+			if(yOffset > Game.getLevel().getLevelHeight() * Tile.DEFAULT_TILE_SIZE - screen.height) yVelocity = -yVelocity;
+			else if(yOffset < 0) yVelocity = -yVelocity;
+			if(xOffset > Game.getLevel().getLevelWidth() * Tile.DEFAULT_TILE_SIZE - screen.width) xVelocity = -xVelocity;
+			else if(xOffset < 0) xVelocity = -xVelocity;
 		}
+
+		screen.blur(2);
 
 		String[] selections = { "Singleplayer", "Multiplayer", "Settings", "Quit" };
 
 		for(int i = 0; i < 4; i++)
 		{
-			if(currentTitleScreenSelection == i) Sprite.writeText(selections[i], screen, screen.width / 2, getYPos(i), 0xFFFFFF);
-			else Sprite.writeText(selections[i], screen, screen.width / 2, getYPos(i), 0x000000);
+			if(currentTitleScreenSelection == i) Sprite.writeText(selections[i], screen, screen.width / 2, Game.height / 2 + (i * 50 - 70), 0x45C95E);
+			else Sprite.writeText(selections[i], screen, screen.width / 2, Game.height / 2 + (i * 50 - 70), 0x000000);
 		}
 	}
 
-	public static void initTitleScreen()
+	private static void initTitleScreen()
 	{
-		try
-		{
-			fullTitleScreen = ImageIO.read(Screen.class.getResource("/textures/titleScreen/c.jpg"));
-		}
-		catch(IOException e)
-		{
-			Print.printError(e.getMessage());
-		}
+		Game.loadLevel(new GameLevel("/levels/TitleScreen.png", "TitleScreen", 2, 2));
 
-		int w = fullTitleScreen.getWidth();
-		int h = fullTitleScreen.getHeight();
-		scaledTitleScreen = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		AffineTransform at = new AffineTransform();
-		titleScreenScaling = 1 / ((double) (h) / (double) (Game.height));
-		at.scale(titleScreenScaling, titleScreenScaling);
-		AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-		scaledTitleScreen = scaleOp.filter(fullTitleScreen, scaledTitleScreen);
+		for(int i = 0; i < 10; i++)
+		{
+			int xSpawn = 0, ySpawn = 0;
+			while(true)
+			{
+				xSpawn = rand.nextInt(Tile.DEFAULT_TILE_SIZE * Game.getLevel().getLevelWidth());
+				ySpawn = rand.nextInt(Tile.DEFAULT_TILE_SIZE * Game.getLevel().getLevelHeight());
+				if(!Game.getLevel().hitboxCollidesWithSolid(xSpawn, ySpawn, new Slime(xSpawn, ySpawn, 0.5F).getHitbox())) break;
+			}
+			Game.getLevel().add(new Slime(xSpawn, ySpawn, 1.0F));
+		}
 	}
 
-	private static int getYPos(int number)
+	private static void unloadTitleScreen()
 	{
-		return Game.height / 2 + (number * 50 - 70);
+		Game.unloadLevel();
 	}
 }

@@ -35,7 +35,7 @@ public class Keyboard implements KeyListener
 		backspace = keys[KeyEvent.VK_BACK_SPACE];
 
 		upToggle = keysToggle[KeyEvent.VK_W] || keysToggle[KeyEvent.VK_UP];
-		downToggle = keysToggle[KeyEvent.VK_S] || keys[KeyEvent.VK_DOWN];
+		downToggle = keysToggle[KeyEvent.VK_S] || keysToggle[KeyEvent.VK_DOWN];
 		enterToggle = keysToggle[KeyEvent.VK_ENTER];
 		spaceToggle = keysToggle[KeyEvent.VK_SPACE];
 		escapeToggle = keysToggle[KeyEvent.VK_ESCAPE];

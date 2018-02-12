@@ -7,20 +7,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.Game;
+import game.chat.commands.Command;
+import game.chat.commands.CommandHelp;
+import game.chat.commands.CommandKill;
+import game.chat.commands.CommandTeleport;
 import game.input.Keyboard;
+import game.level.Level;
 import game.util.GameState;
 
 public class Chat
 {
 	private static List<Message> messages = new ArrayList<Message>();
+	private static List<Command> commands = new ArrayList<Command>();
 	private static Font font = new Font("Verdana", Font.BOLD, 18);
 
+	private Level level;
 	private static String inputField = "";
+
+	public Chat(Level level)
+	{
+		this.level = level;
+		commands.add(new CommandKill());
+		commands.add(new CommandHelp());
+		commands.add(new CommandTeleport());
+	}
 
 	public static void addMessage(Message message)
 	{
 		//TODO: Send to server or if server recieve messages and send to all clients
 		messages.add(message);
+		if(message.getSender().equals("Server")) return;
 		if(Game.getGameState() == GameState.IngameOffline) handleCommands(message);
 	}
 
@@ -51,28 +67,16 @@ public class Chat
 			}
 		}
 
-		if(command.equals("help"))
+		for(Command cmd : commands)
 		{
-			if(!args.isEmpty())
+			if(cmd.getName().equals(command))
 			{
-				addMessage(new Message("No arguments expected. Usage: !help", "Server"));
+				cmd.enableCommand(args, Game.getLevel().getClientPlayer());
 				return;
 			}
-			addMessage(new Message("can't help anymore!", "Server")); //TODO
 		}
-		else if(command.equals("kill"))
-		{
-			if(!args.isEmpty())
-			{
-				addMessage(new Message("No arguments expected. Usage: !kill", "Server"));
-				return;
-			}
-			Game.getLevel().getClientPlayer().kill();
-		}
-		else
-		{
-			addMessage(new Message("Unknown command. Type !help to see a list of commands.", "Server"));
-		}
+
+		addMessage(new Message("Unknown command. Type !help to see a list of commands.", "Server"));
 	}
 
 	public static void tick(Keyboard key)
@@ -154,5 +158,10 @@ public class Chat
 	public static void typingMessage(String message)
 	{
 		inputField = message;
+	}
+
+	public static List<Command> getCommands()
+	{
+		return commands;
 	}
 }

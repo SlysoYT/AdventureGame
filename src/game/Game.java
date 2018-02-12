@@ -17,6 +17,7 @@ import java.awt.image.DataBufferInt;
 import javax.swing.JFrame;
 
 import game.audio.PlaySound;
+import game.chat.Chat;
 import game.entity.mob.player.Player;
 import game.graphics.HUD;
 import game.graphics.Screen;
@@ -49,6 +50,7 @@ public class Game extends Canvas implements Runnable
 	private static Keyboard key;
 	private static Player clientPlayer;
 	private static Level level;
+	private static Chat chat;
 	private Screen screen;
 	private Thread thread;
 
@@ -371,6 +373,7 @@ public class Game extends Canvas implements Runnable
 	private static void initLevel()
 	{
 		loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2));
+		chat = new Chat(level);
 		hud = new HUD(width, height, clientPlayer, level);
 	}
 

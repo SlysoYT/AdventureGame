@@ -35,6 +35,11 @@ public class Message
 		return "<" + this.sender + "> " + this.message;
 	}
 
+	public String getSender()
+	{
+		return sender;
+	}
+
 	public String getMessage()
 	{
 		return message;

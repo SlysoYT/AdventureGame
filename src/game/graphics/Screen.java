@@ -96,32 +96,35 @@ public class Screen
 		}
 	}
 
-	public void blur()
+	public void blur(int size)
 	{
-		for(int x = 1; x < width - 1; x++) //TODO
+		for(int x = 0; x < width; x++)
 		{
-			for(int y = 1; y < height - 1; y++) //TODO
+			for(int y = 0; y < height; y++)
 			{
-				//int r = (pixels[x + y * width] & 0xFF0000) >> 16;
-				//int g = (pixels[x + y * width] & 0x00FF00) >> 8;
-				//int b = (pixels[x + y * width] & 0x0000FF);
 				int rSum = 0;
 				int gSum = 0;
 				int bSum = 0;
+				int count = 0;
 
-				for(int i = -1; i <= 1; i++)
+				for(int i = -size; i <= size; i++)
 				{
-					for(int j = -1; j < 1; j++)
+					for(int j = -size; j <= size; j++)
 					{
-						rSum += (pixels[(x + i) + (y + j) * width] & 0xFF0000) >> 16;
-						gSum += (pixels[(x + i) + (y + j) * width] & 0x00FF00) >> 8;
-						bSum += (pixels[(x + i) + (y + j) * width] & 0x0000FF);
+						if((x + i) < 0 || (x + i) >= width || (y + j) < 0 || (y + j) >= height) continue;
+
+						int weight = 2 * size - (Math.abs(i) + Math.abs(j));
+						count += weight;
+
+						rSum += weight * ((pixels[(x + i) + (y + j) * width] & 0xFF0000) >> 16);
+						gSum += weight * ((pixels[(x + i) + (y + j) * width] & 0x00FF00) >> 8);
+						bSum += weight * ((pixels[(x + i) + (y + j) * width] & 0x0000FF));
 					}
 				}
 
-				int r = rSum / 9;
-				int g = gSum / 9;
-				int b = bSum / 9;
+				int r = rSum / count;
+				int g = gSum / count;
+				int b = bSum / count;
 
 				pixels[x + y * width] = (r << 16) | (g << 8) | (b << 0);
 			}

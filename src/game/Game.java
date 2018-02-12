@@ -133,24 +133,17 @@ public class Game extends Canvas implements Runnable
 				tick();
 				tpsCount++;
 				delta--;
-				if(Settings.lockFPS || !(gameState == GameState.IngameOnline || gameState == GameState.IngameOffline))
-				{
-					render();
-					fpsCount++;
-				}
 			}
 
-			if(!Settings.lockFPS && (gameState == GameState.IngameOnline || gameState == GameState.IngameOffline))
-			{
-				render();
-				fpsCount++;
-			}
+			render();
+			fpsCount++;
 
 			if(System.currentTimeMillis() - timer >= 1000)
 			{
 				timer += 1000;
 				currentFPS = fpsCount;
 				currentTPS = tpsCount;
+				System.out.println("FPS: " + currentFPS + " | " + "TPS: " + currentTPS);
 				tpsCount = 0;
 				fpsCount = 0;
 			}
@@ -272,7 +265,6 @@ public class Game extends Canvas implements Runnable
 
 		//Filters are to place here!
 		//screen.applyAlpha(0.5F);
-		//screen.blur(2);
 
 		for(int i = 0; i < pixels.length; i++)
 		{

@@ -9,6 +9,7 @@ import game.graphics.Sprite;
 import game.input.Keyboard;
 import game.level.GameLevel;
 import game.level.tile.Tile;
+import game.settings.Settings;
 import game.util.GameState;
 
 public class TitleScreen
@@ -26,6 +27,14 @@ public class TitleScreen
 
 		input.tick();
 		Game.getLevel().tick();
+
+		xOffset += xVelocity;
+		yOffset += yVelocity;
+
+		if(yOffset > Game.getLevel().getLevelHeight() * Tile.DEFAULT_TILE_SIZE - Game.height) yVelocity = -yVelocity;
+		else if(yOffset < 0) yVelocity = -yVelocity;
+		if(xOffset > Game.getLevel().getLevelWidth() * Tile.DEFAULT_TILE_SIZE - Game.width) xVelocity = -xVelocity;
+		else if(xOffset < 0) xVelocity = -xVelocity;
 
 		if(input.enterToggle || input.spaceToggle)
 		{
@@ -45,20 +54,14 @@ public class TitleScreen
 
 	public static void renderTitleScreen(Screen screen)
 	{
-		if(Game.getLevel() != null)
+		if(Game.getLevel() != null) Game.getLevel().render((int) xOffset, (int) yOffset, screen);
+
+		if(Settings.maximumGraphicsQuality)
 		{
-			Game.getLevel().render((int) xOffset, (int) yOffset, screen);
-
-			xOffset += xVelocity;
-			yOffset += yVelocity;
-
-			if(yOffset > Game.getLevel().getLevelHeight() * Tile.DEFAULT_TILE_SIZE - screen.height) yVelocity = -yVelocity;
-			else if(yOffset < 0) yVelocity = -yVelocity;
-			if(xOffset > Game.getLevel().getLevelWidth() * Tile.DEFAULT_TILE_SIZE - screen.width) xVelocity = -xVelocity;
-			else if(xOffset < 0) xVelocity = -xVelocity;
+			screen.blur();
+			screen.blur();
 		}
-
-		screen.blur(2);
+		else screen.blur();
 
 		String[] selections = { "Singleplayer", "Multiplayer", "Settings", "Quit" };
 

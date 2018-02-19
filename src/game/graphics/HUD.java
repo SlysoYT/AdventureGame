@@ -19,6 +19,7 @@ public class HUD
 {
 	private Player player;
 	private Level level;
+	private Keyboard key;
 	private Sprite bar;
 
 	private int width, height;
@@ -35,21 +36,17 @@ public class HUD
 	private Font PLAYER_NAME_FONT = new Font("Verdana", 0, 22);
 	private Font DEBUG_FONT = new Font("Verdana", 0, 14);
 
-	public HUD(int width, int height, Player player, Level level)
+	public HUD(int width, int height, Player player, Level level, Keyboard keyboard)
 	{
 		this.level = level;
 		this.player = player;
 		this.width = width;
 		this.height = height;
+		this.key = keyboard;
 	}
 
-	public void tick(int width, int height, Player player, Level level, Keyboard key)
+	public void tick()
 	{
-		this.level = level;
-		this.player = player;
-		this.width = width;
-		this.height = height;
-
 		Chat.tick(key);
 
 		if(player.isDead()) return;
@@ -123,9 +120,9 @@ public class HUD
 
 	public void render(Graphics g, boolean debugMode)
 	{
-		Chat.render(g, level.getClientPlayer().isChatting());
 		renderTimer(g);
 		renderPlayerNames(g);
+		Chat.render(g);
 		if(!player.isDead()) renderAlert(g);
 		else renderDeathScreen(g);
 		if(debugMode)

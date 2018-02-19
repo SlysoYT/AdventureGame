@@ -21,7 +21,7 @@ public class Chat
 	private static List<Command> commands = new ArrayList<Command>();
 	private static Font font = new Font("Verdana", Font.BOLD, 18);
 
-	private static String inputField = "";
+	private static String inputField;
 
 	public Chat(Level level)
 	{
@@ -87,11 +87,14 @@ public class Chat
 			messages.get(i).tick();
 	}
 
-	public static void render(Graphics g, boolean playerIsChatting)
+	public static void render(Graphics g)
 	{
-		if(!playerIsChatting) renderVisibleChatMessages(g);
-		else renderNewestChatMessages(g);
-		renderInputField(g);
+		if(inputField != null)
+		{
+			renderNewestChatMessages(g);
+			renderInputField(g);
+		}
+		else renderVisibleChatMessages(g);
 	}
 
 	private static void renderVisibleChatMessages(Graphics g)
@@ -149,8 +152,6 @@ public class Chat
 			int y = Game.height * Game.SCALE - 5;
 			g.fillRect(x + 1, y, font.getSize() - 1, 3);
 		}
-
-		inputField = null;
 	}
 
 	public static void typingMessage(String message)

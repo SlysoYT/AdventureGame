@@ -11,28 +11,24 @@ public abstract class Command
 	private String name;
 	private String usage;
 	private String description;
-	private byte numberOfArguments;
+	private byte minNumberOfArguments;
 
 	protected abstract void onEnable(List<String> args, Player sender);
 
-	protected Command(String name, String usage, String description, byte numberOfArguments)
+	protected Command(String name, String usage, String description, byte minNumberOfArguments)
 	{
 		this.name = name;
 		this.usage = usage;
 		this.description = description;
-		this.numberOfArguments = numberOfArguments;
+		this.minNumberOfArguments = minNumberOfArguments;
 	}
 
 	public void enableCommand(List<String> args, Player sender)
 	{
-		if(args.size() != numberOfArguments)
+		if(args.size() > minNumberOfArguments)
 		{
-			if(numberOfArguments == 0) Chat.addMessage(new Message("No arguments expected. Usage: !" + usage, "Server"));
-			else
-			{
-				if(args.size() < numberOfArguments) Chat.addMessage(new Message("More arguments expected. Usage: !" + usage, "Server"));
-				else Chat.addMessage(new Message("Less arguments expected. Usage: !" + usage, "Server"));
-			}
+			if(minNumberOfArguments == 0) Chat.addMessage(new Message("No arguments expected. Usage: !" + usage, "Server"));
+			else Chat.addMessage(new Message("Less arguments expected. Usage: !" + usage, "Server"));
 		}
 		else onEnable(args, sender);
 	}

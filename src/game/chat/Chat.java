@@ -21,14 +21,12 @@ public class Chat
 	private static List<Command> commands = new ArrayList<Command>();
 	private static Font font = new Font("Verdana", Font.BOLD, 18);
 
-	private Level level;
 	private static String inputField = "";
 
 	public Chat(Level level)
 	{
-		this.level = level;
-		commands.add(new CommandKill());
 		commands.add(new CommandHelp());
+		commands.add(new CommandKill(level));
 		commands.add(new CommandTeleport());
 	}
 
@@ -81,8 +79,8 @@ public class Chat
 
 	public static void tick(Keyboard key)
 	{
-		//If more than 200 messages, delete old ones
-		while(messages.size() > 200)
+		//If more than 100 messages, delete old ones
+		while(messages.size() > 100)
 			messages.remove(0);
 
 		for(int i = 0; i < messages.size(); i++)

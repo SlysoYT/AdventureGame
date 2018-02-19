@@ -57,9 +57,9 @@ public class HUD
 		if(titleTextTimer > 0) titleTextTimer--;
 	}
 
-	public void tickLevelEnd(boolean enterPressed)
+	public void tickLevelEnd()
 	{
-		if(enterPressed)
+		if(key.enterToggle || key.spaceToggle)
 		{
 			//Game.setGameState(GameState.Ingame);
 			//TODO

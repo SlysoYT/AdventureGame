@@ -109,6 +109,7 @@ public class Player extends Mob
 				typingMessage = false;
 			}
 		}
+		else Chat.typingMessage(null);
 
 		if(this.isDead()) return;
 
@@ -301,11 +302,6 @@ public class Player extends Mob
 	public int getRespawnCooldown()
 	{
 		return RESPAWN_COOLDOWN;
-	}
-
-	public boolean isChatting()
-	{
-		return typingMessage;
 	}
 
 	public String getIPAddress()

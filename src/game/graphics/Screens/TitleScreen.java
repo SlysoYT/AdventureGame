@@ -21,9 +21,9 @@ public class TitleScreen
 	private static float yVelocity = 0.5F;
 	private static Random rand = new Random();
 
-	public static void tickTitleScreen(Keyboard input)
+	public static void tick(Keyboard input)
 	{
-		if(Game.getLevel() == null) initTitleScreen();
+		if(Game.getLevel() == null) init();
 
 		input.tick();
 		Game.getLevel().tick();
@@ -52,7 +52,7 @@ public class TitleScreen
 		if(currentTitleScreenSelection < 0) currentTitleScreenSelection = 3;
 	}
 
-	public static void renderTitleScreen(Screen screen)
+	public static void render(Screen screen)
 	{
 		if(Game.getLevel() != null) Game.getLevel().render((int) xOffset, (int) yOffset, screen);
 
@@ -72,7 +72,7 @@ public class TitleScreen
 		}
 	}
 
-	private static void initTitleScreen()
+	private static void init()
 	{
 		Game.loadLevel(new GameLevel("/levels/TitleScreen.png", "TitleScreen", 2, 2));
 

@@ -50,7 +50,6 @@ public class Game extends Canvas implements Runnable
 	private static Keyboard key;
 	private static Player clientPlayer;
 	private static Level level;
-	private static Chat chat;
 	private Screen screen;
 	private Thread thread;
 
@@ -143,7 +142,7 @@ public class Game extends Canvas implements Runnable
 				timer += 1000;
 				currentFPS = fpsCount;
 				currentTPS = tpsCount;
-				System.out.println("FPS: " + currentFPS + " | " + "TPS: " + currentTPS);
+				if(debugMode) System.out.println("FPS: " + currentFPS + " | " + "TPS: " + currentTPS);
 				tpsCount = 0;
 				fpsCount = 0;
 			}
@@ -157,7 +156,7 @@ public class Game extends Canvas implements Runnable
 
 		if(gameState == GameState.TitleScreen)
 		{
-			TitleScreen.tickTitleScreen(key);
+			TitleScreen.tick(key);
 		}
 		else if(gameState == GameState.IngameOnline || gameState == GameState.IngameOffline)
 		{
@@ -179,7 +178,7 @@ public class Game extends Canvas implements Runnable
 
 			key.tick();
 			level.tick();
-			hud.tick(width, height, clientPlayer, level, key);
+			hud.tick();
 
 			if(key.escapeToggle)
 			{
@@ -189,9 +188,9 @@ public class Game extends Canvas implements Runnable
 		}
 		else if(gameState == GameState.LevelFinished)
 		{
-			hud.tick(width, height, clientPlayer, level, key);
+			hud.tick();
 			key.tick();
-			hud.tickLevelEnd(key.enterToggle || key.spaceToggle);
+			hud.tickLevelEnd();
 		}
 		else if(gameState == GameState.ServerListScreen)
 		{
@@ -235,7 +234,7 @@ public class Game extends Canvas implements Runnable
 
 		if(gameState == GameState.TitleScreen)
 		{
-			TitleScreen.renderTitleScreen(screen);
+			TitleScreen.render(screen);
 		}
 		else if(gameState == GameState.IngameOffline || gameState == GameState.IngameOnline)
 		{
@@ -365,8 +364,8 @@ public class Game extends Canvas implements Runnable
 	private static void initLevel()
 	{
 		loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2));
-		chat = new Chat(level);
-		hud = new HUD(width, height, clientPlayer, level);
+		hud = new HUD(width, height, clientPlayer, level, key);
+		new Chat(level);
 	}
 
 	private static void startMultiplayer(String ip)

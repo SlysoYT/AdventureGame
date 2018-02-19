@@ -5,7 +5,7 @@ public class Settings
 	//Video settings
 	public static boolean multiMonitorConfiguration = false;
 	public static boolean maximumGraphicsQuality = true;
-	public static boolean fullscreen = true;
+	public static boolean fullscreen = false;
 	public static byte bufferStrategy = 2;
 
 	//Server settings

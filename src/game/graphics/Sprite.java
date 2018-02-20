@@ -39,26 +39,11 @@ public class Sprite
 	public static final Sprite PROJECTILE_WIZARD = new Sprite(DEFAULT_TILE_SIZE, 57, 63, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite PROJECTILE_BOOMERANG = new Sprite(DEFAULT_TILE_SIZE, 58, 63, SpriteSheet.SPRITE_SHEET);
 
-	//Cooldown bar 1
-	public static final Sprite[] BAR_COOLDOWN_0 = { new Sprite(DEFAULT_TILE_SIZE, 63, 0, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 62, 0, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 61, 0, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 60, 0, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 59, 0, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 58, 0, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 57, 0, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 56, 0, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 55, 0, SpriteSheet.SPRITE_SHEET) };
-
-	//Cooldown bar 2
-	public static final Sprite[] BAR_COOLDOWN_1 = { new Sprite(DEFAULT_TILE_SIZE, 63, 2, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 62, 2, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 61, 2, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 60, 2, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 59, 2, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 58, 2, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 57, 2, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 56, 2, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 55, 2, SpriteSheet.SPRITE_SHEET) };
-
-	//Health bar
-	public static final Sprite[] BAR_HEALTH = { new Sprite(DEFAULT_TILE_SIZE, 63, 1, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 62, 1, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 61, 1, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 60, 1, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 59, 1, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 58, 1, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 57, 1, SpriteSheet.SPRITE_SHEET),
-			new Sprite(DEFAULT_TILE_SIZE, 56, 1, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 55, 1, SpriteSheet.SPRITE_SHEET) };
+	//Bars
+	public static final Sprite BAR_EMPTY = new Sprite(DEFAULT_TILE_SIZE, 63, 0, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite BAR_SECONDARY = new Sprite(DEFAULT_TILE_SIZE, 62, 0, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite BAR_PASSIVE = new Sprite(DEFAULT_TILE_SIZE, 61, 0, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite BAR_HEALTH = new Sprite(DEFAULT_TILE_SIZE, 60, 0, SpriteSheet.SPRITE_SHEET);
 
 	//Player
 	public static final Sprite[] PLAYER_DOWN = { new Sprite(DEFAULT_TILE_SIZE, 63, 63, SpriteSheet.SPRITE_SHEET),

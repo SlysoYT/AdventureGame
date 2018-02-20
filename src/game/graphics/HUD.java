@@ -20,14 +20,12 @@ public class HUD
 	private Player player;
 	private Level level;
 	private Keyboard key;
-	private Sprite bar;
 
 	private int width, height;
 	private final int SCALE = Game.SCALE;
 
-	private float cooldown0 = 0;
-	private float cooldown1 = 0;
-	private float cooldown2 = 0;
+	private float cooldownSecondary = 0;
+	private float cooldownPassive = 0;
 	private float health = 0;
 	private static String titleText = "";
 	private static int titleTextTimer;
@@ -50,9 +48,8 @@ public class HUD
 		Chat.tick(key);
 
 		if(player.isDead()) return;
-		cooldown0 = 1.0F - player.getPrimaryAbilityCooldownProgress();
-		cooldown1 = 1.0F - player.getSecondaryAbilityCooldownProgress();
-		cooldown2 = 1.0F - player.getPassiveAbilityCooldownProgress();
+		cooldownSecondary = 1.0F - player.getSecondaryAbilityCooldownProgress();
+		cooldownPassive = 1.0F - player.getPassiveAbilityCooldownProgress();
 		health = player.getCurrentHealth() / player.getMaxHealth();
 		if(titleTextTimer > 0) titleTextTimer--;
 	}
@@ -72,49 +69,18 @@ public class HUD
 		//TODO
 		//Player infos
 		if(player.isDead()) return;
-		//Health bar
-		for(int i = 0; i < 9; i++)
-		{
-			if(health <= ((i + 1) * (1.0F / 9)))
-			{
-				bar = Sprite.BAR_HEALTH[i];
-				break;
-			}
-		}
-		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 - (int) (1.25 * Tile.DEFAULT_TILE_SIZE), bar, false);
 
-		//Primary cooldown
-		for(int i = 0; i < 9; i++)
-		{
-			if(cooldown0 <= ((i + 1) * (1.0F / 9)))
-			{
-				bar = Sprite.BAR_COOLDOWN_0[i];
-				break;
-			}
-		}
-		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 3, bar, false);
+		//Health bar
+		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 - 20, Sprite.BAR_EMPTY, false);
+		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 - 20, (int) (16 * health), 16, Sprite.BAR_HEALTH, false);
 
 		//Secondary cooldown
-		for(int i = 0; i < 9; i++)
-		{
-			if(cooldown1 <= ((i + 1) * (1.0F / 9)))
-			{
-				bar = Sprite.BAR_COOLDOWN_1[i];
-				break;
-			}
-		}
-		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 6, bar, false);
+		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 3, Sprite.BAR_EMPTY, false);
+		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 3, (int) (16 * cooldownSecondary), 16, Sprite.BAR_SECONDARY, false);
 
 		//Passive cooldown
-		for(int i = 0; i < 9; i++)
-		{
-			if(cooldown2 <= ((i + 1) * (1.0F / 9)))
-			{
-				bar = Sprite.BAR_COOLDOWN_0[i];
-				break;
-			}
-		}
-		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 9, bar, false);
+		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 6, Sprite.BAR_EMPTY, false);
+		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 6, (int) (16 * cooldownPassive), 16, Sprite.BAR_PASSIVE, false);
 
 	}
 

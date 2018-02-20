@@ -8,10 +8,10 @@ import game.chat.Message;
 import game.entity.mob.Mob;
 import game.entity.mob.ability.Ability;
 import game.entity.mob.ability.AbilityRage;
+import game.entity.mob.ability.AbilityShooting;
 import game.entity.mob.ability.AbilityTeleporting;
-import game.entity.mob.ability.AbilityTrap;
+import game.entity.projectile.Projectiles;
 import game.entity.spawner.ParticleSpawner;
-import game.entity.trap.Traps;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.input.Keyboard;
@@ -51,7 +51,7 @@ public class Player extends Mob
 		this.input = input;
 
 		//primaryAbility = new AbilityShooting(this, Projectiles.ProjectileBoomerang, 100);
-		primaryAbility = new AbilityTrap(this, Traps.TrapBounce, 200);
+		primaryAbility = new AbilityShooting(this, Projectiles.ProjectileBoomerang, 70);
 		secondaryAbility = new AbilityTeleporting(this, 360, 200);
 		passiveAbility = new AbilityRage(this, 600, 240);
 	}
@@ -277,11 +277,6 @@ public class Player extends Mob
 	public Ability getPrimaryAbility()
 	{
 		return primaryAbility;
-	}
-
-	public float getPrimaryAbilityCooldownProgress()
-	{
-		return (float) primaryAbility.getCurrentCooldown() / primaryAbility.getCooldown();
 	}
 
 	public float getSecondaryAbilityCooldownProgress()

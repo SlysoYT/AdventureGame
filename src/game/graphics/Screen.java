@@ -52,6 +52,32 @@ public class Screen
 		}
 	}
 
+	public void renderSprite(int xPos, int yPos, int renderWidth, int renderHeight, Sprite sprite, boolean fixedToMapOffset)
+	{
+		if(fixedToMapOffset)
+		{
+			xPos -= xOffset;
+			yPos -= yOffset;
+		}
+		for(int y = 0; y < renderHeight; y++)
+		{
+			if(y >= sprite.getWidth()) return;
+			int yAbsolute = y + yPos;
+
+			for(int x = 0; x < renderWidth; x++)
+			{
+				if(x >= sprite.getHeight()) continue;
+				int xAbsolute = x + xPos;
+
+				if(xAbsolute < 0 || xAbsolute >= width || yAbsolute < 0 || yAbsolute >= height) continue;
+
+				int pixelColour = sprite.pixels[x + y * sprite.getWidth()];
+				if(pixelColour != 0xFFFF00FF) pixels[xAbsolute + yAbsolute * width] = pixelColour; //So the magic pink doesn't get rendered
+
+			}
+		}
+	}
+
 	public void renderTile(int xPos, int yPos, Tile tile)
 	{
 		xPos -= xOffset;

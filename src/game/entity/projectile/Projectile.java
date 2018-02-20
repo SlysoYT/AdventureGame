@@ -27,9 +27,8 @@ public abstract class Projectile extends Entity
 	protected double speed;
 	protected int range;
 	protected float damage;
-	protected int cooldown;
 
-	protected Projectile(int x, int y, double direction, double speed, int range, float damage, int cooldown, Mob source, Hitbox hitbox,
+	protected Projectile(int x, int y, double direction, double speed, int range, float damage, Mob source, Hitbox hitbox,
 			Sprite sprite, UUID uuid)
 	{
 		this.x = x;
@@ -40,7 +39,6 @@ public abstract class Projectile extends Entity
 		this.speed = speed;
 		this.range = range;
 		this.damage = damage;
-		this.cooldown = cooldown;
 		this.source = source;
 		this.hitbox = hitbox;
 		this.sprite = sprite;
@@ -150,11 +148,6 @@ public abstract class Projectile extends Entity
 	public int getSpriteSize()
 	{
 		return sprite.SIZE;
-	}
-
-	public int getCooldown()
-	{
-		return cooldown;
 	}
 
 	public Mob getSource()

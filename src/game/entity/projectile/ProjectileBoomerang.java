@@ -11,14 +11,19 @@ import game.util.Hitbox;
 
 public class ProjectileBoomerang extends Projectile
 {
+	private int liveTime = 0;
+
 	public ProjectileBoomerang(int x, int y, double direction, Mob source, UUID uuid)
 	{
-		super(x, y, direction, 1.8D, 250, 20F, 100, source, new Hitbox(-3, -3, 5, 5), Sprite.PROJECTILE_BOOMERANG, uuid);
+		super(x, y, direction, 1.8D, 250, 20F, source, new Hitbox(-3, -3, 5, 5), Sprite.PROJECTILE_BOOMERANG, uuid);
 	}
 
 	@Override
 	protected void tickProjectile()
 	{
+		liveTime++;
+		damage = 3 + liveTime / 5;
+
 		double deltaX = this.getX() - getSource().getX();
 		double deltaY = this.getY() - getSource().getY();
 
@@ -42,8 +47,9 @@ public class ProjectileBoomerang extends Projectile
 	{
 		mob.motion((float) (2 * speed * Math.cos(angle)), (float) (2 * speed * Math.sin(angle)));
 		mob.damage(damage);
+		System.out.println(damage);
 	}
-	
+
 	public void render(Screen screen)
 	{
 		screen.renderSprite(getX() - Tile.DEFAULT_TILE_SIZE / 2, getY() - Tile.DEFAULT_TILE_SIZE / 2, getSprite(), true);

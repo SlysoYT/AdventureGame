@@ -5,6 +5,7 @@ import game.entity.mob.player.Player;
 import game.entity.projectile.ProjectileBoomerang;
 import game.entity.projectile.ProjectileBullet;
 import game.entity.projectile.Projectiles;
+import game.graphics.Screen;
 import game.input.Mouse;
 import game.util.GameState;
 
@@ -21,8 +22,8 @@ public class AbilityShooting extends Ability
 	@Override
 	protected void onEnable()
 	{
-		double deltaX = Mouse.getX() - (Game.width * Game.SCALE) / 2;
-		double deltaY = Mouse.getY() - (Game.height * Game.SCALE) / 2;
+		int deltaX = Mouse.getX() / Game.SCALE - Game.getLevel().getClientPlayer().getX() + Screen.getXOffset();
+		int deltaY = Mouse.getY() / Game.SCALE - Game.getLevel().getClientPlayer().getY() + Screen.getYOffset();
 
 		double angle = Math.atan2(deltaY, deltaX); //Atan = tan^-1, difference to atan: doesn't crash when dividing by 0, = atan(deltaY / deltaX)
 

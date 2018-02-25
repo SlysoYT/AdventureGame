@@ -10,8 +10,8 @@ public class Screen
 
 	public static final byte TILE_SIZE_SHIFTING = 4; //3: 8x8 Tiles, 4: 16x16 Tiles, 5: 32x32 Tiles, 2^tileSize = tiles in pixels
 
-	private static int xOffset;
-	private static int yOffset;
+	private static float xOffset;
+	private static float yOffset;
 
 	public Screen(int width, int height, Keyboard input)
 	{
@@ -129,7 +129,7 @@ public class Screen
 		{
 			for(int y = 0; y < height; y++)
 			{
-				//4 corner pixel
+				//4 corner pixels
 				if(x == 0 && y == 0)
 				{
 					int rSum = ((pixels[(x + 0) + (y + 0) * width] & 0xFF0000) >> 16) + ((pixels[(x + 1) + (y + 0) * width] & 0xFF0000) >> 16)
@@ -283,7 +283,7 @@ public class Screen
 		}
 	}
 
-	public void setOffset(int xOffset, int yOffset)
+	public void setOffset(float xOffset, float yOffset)
 	{
 		Screen.xOffset = xOffset;
 		Screen.yOffset = yOffset;
@@ -291,10 +291,20 @@ public class Screen
 
 	public static int getXOffset()
 	{
-		return xOffset;
+		return (int) xOffset;
 	}
 
 	public static int getYOffset()
+	{
+		return (int) yOffset;
+	}
+
+	public static float getXOffsetFloat()
+	{
+		return xOffset;
+	}
+
+	public static float getYOffsetFloat()
 	{
 		return yOffset;
 	}

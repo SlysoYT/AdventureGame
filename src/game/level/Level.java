@@ -171,8 +171,8 @@ public class Level
 	{
 		int deltaX = getClientPlayer().getX() - Game.width / 2 - Screen.getXOffset();
 		int deltaY = getClientPlayer().getY() - Game.height / 2 - Screen.getYOffset();
-		int xScroll = Screen.getXOffset() + (int) (deltaX * 0.2F);
-		int yScroll = Screen.getYOffset() + (int) (deltaY * 0.2F);
+		int xScroll = Screen.getXOffset() + (int) (deltaX * 0.02F);
+		int yScroll = Screen.getYOffset() + (int) (deltaY * 0.02F);
 
 		screen.setOffset(xScroll, yScroll);
 

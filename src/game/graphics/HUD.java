@@ -70,17 +70,20 @@ public class HUD
 		//Player infos
 		if(player.isDead()) return;
 
+		int xPos = player.getX() - Screen.getXOffset() - Tile.DEFAULT_TILE_SIZE / 2;
+		int yPos = player.getY() - Screen.getYOffset();
+
 		//Health bar
-		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 - 20, Sprite.BAR_EMPTY, false);
-		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 - 20, (int) (16 * health), 16, Sprite.BAR_HEALTH, false);
+		screen.renderSprite(xPos, (int) (yPos - Tile.DEFAULT_TILE_SIZE * 1.25), Sprite.BAR_EMPTY, false);
+		screen.renderSprite(xPos, (int) (yPos - Tile.DEFAULT_TILE_SIZE * 1.25), (int) (16 * health), 16, Sprite.BAR_HEALTH, false);
 
 		//Secondary cooldown
-		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 3, Sprite.BAR_EMPTY, false);
-		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 3, (int) (16 * cooldownSecondary), 16, Sprite.BAR_SECONDARY, false);
+		screen.renderSprite(xPos, (int) (yPos + Tile.DEFAULT_TILE_SIZE * 0.5), Sprite.BAR_EMPTY, false);
+		screen.renderSprite(xPos, (int) (yPos + Tile.DEFAULT_TILE_SIZE * 0.5), (int) (16 * cooldownSecondary), 16, Sprite.BAR_SECONDARY, false);
 
 		//Passive cooldown
-		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 6, Sprite.BAR_EMPTY, false);
-		screen.renderSprite(width / 2 - Tile.DEFAULT_TILE_SIZE / 2, height / 2 + 6, (int) (16 * cooldownPassive), 16, Sprite.BAR_PASSIVE, false);
+		screen.renderSprite(xPos, (int) (yPos + Tile.DEFAULT_TILE_SIZE * 0.25), Sprite.BAR_EMPTY, false);
+		screen.renderSprite(xPos, (int) (yPos + Tile.DEFAULT_TILE_SIZE * 0.25), (int) (16 * cooldownPassive), 16, Sprite.BAR_PASSIVE, false);
 
 	}
 

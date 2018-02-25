@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -239,10 +240,8 @@ public class Game extends Canvas implements Runnable
 		else if(gameState == GameState.IngameOffline || gameState == GameState.IngameOnline)
 		{
 			if(level == null) return;
-			int xScroll = clientPlayer.getX() - screen.width / 2;
-			int yScroll = clientPlayer.getY() - screen.height / 2;
 
-			level.render(xScroll, yScroll, screen);
+			level.render(screen);
 			hud.render(screen);
 		}
 		else if(gameState == GameState.Options)
@@ -348,7 +347,8 @@ public class Game extends Canvas implements Runnable
 	{
 		if(Game.level != null) unloadLevel();
 		Game.level = newLevel;
-		Level.loadLevel(newLevel);
+		if(newLevel.isCustomLevel()) Level.loadLevel(newLevel);
+		else Level.generateLevel(newLevel);
 		if(newLevel.getLevelName().equals("TitleScreen")) return;
 		clientPlayer = new Player(Game.level.getSpawnLocation().getX(), Game.level.getSpawnLocation().getY(), key);
 		level.add(clientPlayer);
@@ -363,7 +363,9 @@ public class Game extends Canvas implements Runnable
 
 	private static void initLevel()
 	{
-		loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2));
+		//loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2));
+		Random rand = new Random();
+		loadLevel(new GameLevel(rand.nextLong(), "Generated-Level", 16, 16));
 		hud = new HUD(width, height, clientPlayer, level, key);
 		new Chat(level);
 	}

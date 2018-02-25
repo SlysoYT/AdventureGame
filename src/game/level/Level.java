@@ -66,6 +66,14 @@ public class Level
 		Timer.start();
 	}
 
+	public static void generateLevel(GameLevel level)
+	{
+		level.loadLevel(level.getSeed());
+		Level.levelName = level.getLevelName();
+		Timer.reset();
+		Timer.start();
+	}
+
 	public void unloadLevel()
 	{
 		width = 0;
@@ -153,6 +161,44 @@ public class Level
 
 	float x = 1;
 
+	/**
+	 * Rendering level with the client player in the center with smooth
+	 * scrolling
+	 * 
+	 * @param screen
+	 */
+	public void render(Screen screen)
+	{
+		int deltaX = getClientPlayer().getX() - Game.width / 2 - Screen.getXOffset();
+		int deltaY = getClientPlayer().getY() - Game.height / 2 - Screen.getYOffset();
+		int xScroll = Screen.getXOffset() + (int) (deltaX * 0.2F);
+		int yScroll = Screen.getYOffset() + (int) (deltaY * 0.2F);
+
+		screen.setOffset(xScroll, yScroll);
+
+		renderVisibleTiles(xScroll, yScroll, screen);
+
+		for(int i = 0; i < particles.size(); i++)
+		{
+			particles.get(i).render(screen);
+		}
+		for(int i = 0; i < players.size(); i++)
+		{
+			players.get(i).render(screen);
+		}
+		for(int i = 0; i < entities.size(); i++)
+		{
+			entities.get(i).render(screen);
+		}
+	}
+
+	/**
+	 * Rendering level at defined location
+	 * 
+	 * @param xScroll
+	 * @param yScroll
+	 * @param screen
+	 */
 	public void render(int xScroll, int yScroll, Screen screen)
 	{
 		screen.setOffset(xScroll, yScroll);
@@ -438,13 +484,16 @@ public class Level
 		return distance;
 	}
 
-	//If randomLevel(); used in Game.java, change if(tiles[x + y * width] == 0xFFFFFFFF) return Tile.grassTile;
-	//to ---> if(tilesInt[x + y * width] == 0) return Tile.grassTile;
 	public static Tile getTile(int x, int y)
 	{
 		//If out of bounds, return void tile
 		if(x < 0 || y < 0 || x >= width || y >= height) return Tile.TILE_VOID;
 		//Tiles: If color in level file at specific location is e.g. equal to grass, then return a grass tile
+		if(tiles[x + y * width] == Tile.COL_TILE_DIRT) return Tile.TILE_DIRT;
+		if(tiles[x + y * width] == Tile.COL_TILE_GRASS) return Tile.TILE_GRASS;
+		if(tiles[x + y * width] == Tile.COL_TILE_SAND) return Tile.TILE_SAND;
+		if(tiles[x + y * width] == Tile.COL_TILE_WATER) return Tile.TILE_WATER;
+
 		if(tiles[x + y * width] == Tile.COL_TILE_BOOSTER) return Tile.TILE_BOOSTER;
 		if(tiles[x + y * width] == Tile.COL_TILE_CHECKPOINT) return Tile.TILE_CHECKPOINT;
 		if(tiles[x + y * width] == Tile.COL_TILE_ICE) return Tile.TILE_ICE;
@@ -453,7 +502,7 @@ public class Level
 		if(tiles[x + y * width] == Tile.COL_TILE_QUARTZ) return Tile.TILE_QUARTZ;
 		if(tiles[x + y * width] == Tile.COL_TILE_QUARTZ_WALL) return Tile.TILE_QUARTZ_WALL;
 
-		//Unknown color in level file:
+		//Unknown color
 		return Tile.TILE_ERROR;
 	}
 

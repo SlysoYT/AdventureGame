@@ -9,10 +9,10 @@ public class Chaser extends Mob
 {
 	public Chaser(int x, int y, float speed)
 	{
-		initMob(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 10.0F, speed, 10.0F, 60);
+		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 10.0F, speed, 10.0F, 60);
 	}
 
-	public void tick()
+	public void tickMob()
 	{
 		/*
 		 * Player player = level.getClientPlayer(); float xChange = 0; float
@@ -23,7 +23,6 @@ public class Chaser extends Mob
 		 * if(player.getY() > y) yChange += getSpeed(); move(xChange, yChange,
 		 * hitbox); }
 		 */
-		tickMob();
 	}
 
 	public void render(Screen screen)

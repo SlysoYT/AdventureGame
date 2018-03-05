@@ -26,15 +26,13 @@ public class Slime extends Mob
 
 	public Slime(int x, int y, float speed)
 	{
-		initMob(x, y, new Hitbox(-7, -1, 13, 7), Sprite.slimeDown, 20.0F, speed, 10.0F, 30);
+		super(x, y, new Hitbox(-7, -1, 13, 7), Sprite.slimeDown, 20.0F, speed, 10.0F, 30);
 		xGoal = x;
 		yGoal = y;
 	}
 
-	public void tick()
+	public void tickMob()
 	{
-		tickMob();
-
 		xChange = 0;
 		yChange = 0;
 
@@ -56,7 +54,7 @@ public class Slime extends Mob
 				{
 					xPos = rand.nextInt(Tile.DEFAULT_TILE_SIZE * Game.getLevel().getLevelWidth());
 					yPos = rand.nextInt(Tile.DEFAULT_TILE_SIZE * Game.getLevel().getLevelHeight());
-					if(!Game.getLevel().hitboxCollidesWithSolid(xPos, yPos, new Slime(xPos, yPos, 0.5F).getHitbox())) break;
+					if(!Game.getLevel().hitboxCollidesWithSolid(xPos, yPos, hitbox)) break;
 				}
 				xGoal = xPos;
 				yGoal = yPos;
@@ -93,7 +91,7 @@ public class Slime extends Mob
 		this.motion(xChange, yChange);
 
 		//Attacking
-		Player collidedPlayer = level.playerCollidedWithMob(this);
+		Player collidedPlayer = level.anyPlayerCollidedWithHitbox(x, y, hitbox);
 		if(collidedPlayer != null)
 		{
 			this.attack(collidedPlayer);
@@ -103,7 +101,6 @@ public class Slime extends Mob
 	public void render(Screen screen)
 	{
 		sprite = Sprite.slimeDown;
-
 		screen.renderSprite(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, sprite, true);
 	}
 

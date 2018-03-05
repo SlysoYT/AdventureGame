@@ -10,13 +10,13 @@ public class ItemHealth extends Item
 
 	public ItemHealth(float amountOfHealthRestoring)
 	{
-		super(0, 0, true, new Hitbox(-8, -8, 16, 16), Sprite.ITEM_HEALTH);
+		super(0, 0, true, new Hitbox(1, 5, 14, 12), Sprite.ITEM_HEALTH);
 		this.amountOfHealthRestoring = amountOfHealthRestoring;
 	}
-	
+
 	public ItemHealth(int x, int y, float amountOfHealthRestoring)
 	{
-		super(x, y, true, new Hitbox(-8, -8, 16, 16), Sprite.ITEM_HEALTH);
+		super(x, y, true, new Hitbox(1, 5, 14, 12), Sprite.ITEM_HEALTH);
 		this.amountOfHealthRestoring = amountOfHealthRestoring;
 	}
 

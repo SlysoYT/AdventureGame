@@ -16,16 +16,31 @@ public class Sprite
 
 	//Sprites
 
-	//Blocks
+	//Special sprites
 	public static final Sprite SPRITE_VOID = new Sprite(DEFAULT_TILE_SIZE, 0xFF00FF);
-	public static final Sprite SPRITE_ERROR = new Sprite(DEFAULT_TILE_SIZE, 3, 0, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_ERROR = new Sprite(DEFAULT_TILE_SIZE, 0, 0, SpriteSheet.SPRITE_SHEET);
 
-	public static final Sprite SPRITE_BOOSTER = new Sprite(DEFAULT_TILE_SIZE, 1, 1, SpriteSheet.SPRITE_SHEET);
-	public static final Sprite SPRITE_CHECKPOINT = new Sprite(DEFAULT_TILE_SIZE, 5, 1, SpriteSheet.SPRITE_SHEET);
-	public static final Sprite SPRITE_ICE = new Sprite(DEFAULT_TILE_SIZE, 2, 1, SpriteSheet.SPRITE_SHEET);
-	public static final Sprite SPRITE_KILLER = new Sprite(DEFAULT_TILE_SIZE, 3, 1, SpriteSheet.SPRITE_SHEET);
-	public static final Sprite SPRITE_QUARTZ = new Sprite(DEFAULT_TILE_SIZE, 0, 1, SpriteSheet.SPRITE_SHEET);
-	public static final Sprite SPRITE_QUARTZ_WALL = new Sprite(DEFAULT_TILE_SIZE, 4, 1, SpriteSheet.SPRITE_SHEET);
+	//Natural sprites
+	public static final Sprite SPRITE_DIRT = new Sprite(DEFAULT_TILE_SIZE, 1, 1, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_FLOWER_0 = new Sprite(DEFAULT_TILE_SIZE, 0, 2, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_FLOWER_1 = new Sprite(DEFAULT_TILE_SIZE, 1, 2, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_FLOWER_2 = new Sprite(DEFAULT_TILE_SIZE, 2, 2, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_FLOWER_3 = new Sprite(DEFAULT_TILE_SIZE, 3, 2, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_ROCK = new Sprite(DEFAULT_TILE_SIZE, 4, 2, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_GRASS = new Sprite(DEFAULT_TILE_SIZE, 0, 1, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_SAND = new Sprite(DEFAULT_TILE_SIZE, 2, 1, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_WATER_0 = new Sprite(DEFAULT_TILE_SIZE, 3, 1, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_WATER_1 = new Sprite(DEFAULT_TILE_SIZE, 4, 1, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_WATER_2 = new Sprite(DEFAULT_TILE_SIZE, 5, 1, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_WATER_3 = new Sprite(DEFAULT_TILE_SIZE, 6, 1, SpriteSheet.SPRITE_SHEET);
+
+	//Arena sprites
+	public static final Sprite SPRITE_BOOSTER = new Sprite(DEFAULT_TILE_SIZE, 1, 4, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_CHECKPOINT = new Sprite(DEFAULT_TILE_SIZE, 5, 4, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_ICE = new Sprite(DEFAULT_TILE_SIZE, 2, 4, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_KILLER = new Sprite(DEFAULT_TILE_SIZE, 3, 4, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_QUARTZ = new Sprite(DEFAULT_TILE_SIZE, 0, 4, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_QUARTZ_WALL = new Sprite(DEFAULT_TILE_SIZE, 4, 4, SpriteSheet.SPRITE_SHEET);
 
 	//Particles
 	public static final Sprite[] PARTICLE_QUARTZ = { new Sprite(2, 0xF6F5E7), new Sprite(3, 0xF3F4E5), new Sprite(3, 0xE9E9E9),
@@ -36,8 +51,14 @@ public class Sprite
 			new Sprite(2, 0xFF0048) };
 
 	//Projectiles
-	public static final Sprite PROJECTILE_WIZARD = new Sprite(DEFAULT_TILE_SIZE, 57, 63, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite PROJECTILE_BULLET = new Sprite(DEFAULT_TILE_SIZE, 57, 63, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite PROJECTILE_BOOMERANG = new Sprite(DEFAULT_TILE_SIZE, 58, 63, SpriteSheet.SPRITE_SHEET);
+
+	//Items
+	public static final Sprite ITEM_HEALTH = new Sprite(DEFAULT_TILE_SIZE, 0, 6, SpriteSheet.SPRITE_SHEET);
+
+	//Inventory
+	public static final Sprite INVENTORY = new Sprite(864, 16, 160, 112, SpriteSheet.SPRITE_SHEET);
 
 	//Bars
 	public static final Sprite BAR_EMPTY = new Sprite(DEFAULT_TILE_SIZE, 63, 0, SpriteSheet.SPRITE_SHEET);
@@ -96,6 +117,15 @@ public class Sprite
 			new Sprite(246, 926, 22, 34, SpriteSheet.SPRITE_SHEET), new Sprite(269, 926, 22, 34, SpriteSheet.SPRITE_SHEET),
 			new Sprite(291, 926, 22, 34, SpriteSheet.SPRITE_SHEET), new Sprite(22, 34, 0xFFFF00FF) };
 
+	private static final String[] NUMBER_ORDER = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
+
+	private static final Sprite[] NUMBERS = { new Sprite(0, 915, 7, 13, SpriteSheet.SPRITE_SHEET),
+			new Sprite(8, 915, 7, 13, SpriteSheet.SPRITE_SHEET), new Sprite(16, 915, 7, 13, SpriteSheet.SPRITE_SHEET),
+			new Sprite(25, 915, 7, 13, SpriteSheet.SPRITE_SHEET), new Sprite(34, 915, 7, 13, SpriteSheet.SPRITE_SHEET),
+			new Sprite(42, 915, 7, 13, SpriteSheet.SPRITE_SHEET), new Sprite(51, 915, 7, 13, SpriteSheet.SPRITE_SHEET),
+			new Sprite(59, 915, 7, 13, SpriteSheet.SPRITE_SHEET), new Sprite(68, 915, 7, 13, SpriteSheet.SPRITE_SHEET),
+			new Sprite(77, 915, 7, 13, SpriteSheet.SPRITE_SHEET) };
+
 	/**
 	 * Writes text to the screen. Note: The position in the center of the text
 	 * 
@@ -118,6 +148,42 @@ public class Sprite
 				if(currentLetter.equals(LETTER_ORDER[j]))
 				{
 					renderText[i] = LETTERS[j];
+					renderTextWidth += renderText[i].width;
+				}
+			}
+		}
+
+		for(int i = 0; i < renderText.length; i++)
+		{
+			if(renderText[i] == null) continue;
+			renderText[i].setColourWithoutMagicPink(colour);
+			screen.renderSprite(xPos + i * renderText[i].width - renderTextWidth / 2, yPos - renderText[i].height / 2, renderText[i], false);
+		}
+	}
+
+	/**
+	 * Writes small numbers to the screen. Note: The position in the center of
+	 * the text
+	 * 
+	 * @param text
+	 * @param screen
+	 * @param xPos
+	 * @param yPos
+	 */
+	public static void writeValues(String numbers, Screen screen, int xPos, int yPos, int colour)
+	{
+		if(numbers == null) return;
+		Sprite[] renderText = new Sprite[numbers.length()];
+		int renderTextWidth = 0;
+
+		for(int i = 0; i < numbers.length(); i++)
+		{
+			String currentLetter = numbers.substring(i, i + 1);
+			for(int j = 0; j < NUMBER_ORDER.length; j++)
+			{
+				if(currentLetter.equals(NUMBER_ORDER[j]))
+				{
+					renderText[i] = NUMBERS[j];
 					renderTextWidth += renderText[i].width;
 				}
 			}

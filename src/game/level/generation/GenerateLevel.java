@@ -11,6 +11,7 @@ public class GenerateLevel
 	public static int[] generateLevel(long seed, int size)
 	{
 		GenerateLevel.size = size;
+		Random rand = new Random(seed);
 		float[] normValues = generateLevelNormValues(seed);
 		int[] tileValues = new int[size * size];
 
@@ -22,7 +23,16 @@ public class GenerateLevel
 			{
 				if(normValues[i] < 0.1F) tileValues[i] = Tile.COL_TILE_DIRT;
 				else if(normValues[i] < 0.3F) tileValues[i] = Tile.COL_TILE_WATER;
-				else tileValues[i] = Tile.COL_TILE_GRASS;
+				else
+				{
+					int random = rand.nextInt() % 70;
+					if(random == 0) tileValues[i] = Tile.COL_TILE_FLOWER_0;
+					else if(random == 1) tileValues[i] = Tile.COL_TILE_FLOWER_1;
+					else if(random == 2) tileValues[i] = Tile.COL_TILE_FLOWER_2;
+					else if(random == 3) tileValues[i] = Tile.COL_TILE_FLOWER_3;
+					else if(random == 4) tileValues[i] = Tile.COL_TILE_ROCK;
+					else tileValues[i] = Tile.COL_TILE_GRASS;
+				}
 			}
 			//Sand biome
 			else

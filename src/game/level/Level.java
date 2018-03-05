@@ -88,32 +88,14 @@ public class Level
 		players.clear();
 	}
 
-	protected void generateLevel()
-	{
-
-	}
-
 	public void tick()
 	{
 		if(Game.getGameState() == GameState.IngameOffline)
 		{
-			if(Game.getGameStateTicksPassed() % 400 == 180)
+			if(Game.getGameStateTicksPassed() % 400 == 200)
 			{
-				int xSpawn, ySpawn;
 				for(int i = 0; i < 2; i++)
-				{
-					while(true)
-					{
-						xSpawn = rand.nextInt(width * Tile.DEFAULT_TILE_SIZE);
-						ySpawn = rand.nextInt(height * Tile.DEFAULT_TILE_SIZE);
-
-						if(!new Slime(0, 0, 0.75F).collision(xSpawn, ySpawn))
-						{
-							this.add(new Slime(xSpawn, ySpawn, 0.75F));
-							break;
-						}
-					}
-				}
+					this.add(new Slime(rand.nextInt(width * Tile.DEFAULT_TILE_SIZE), rand.nextInt(height * Tile.DEFAULT_TILE_SIZE), 0.75F));
 			}
 		}
 
@@ -159,8 +141,6 @@ public class Level
 		}
 	}
 
-	float x = 1;
-
 	/**
 	 * Rendering level with the client player in the center with smooth
 	 * scrolling
@@ -177,19 +157,7 @@ public class Level
 		screen.setOffset(xScroll, yScroll);
 
 		renderVisibleTiles(xScroll, yScroll, screen);
-
-		for(int i = 0; i < particles.size(); i++)
-		{
-			particles.get(i).render(screen);
-		}
-		for(int i = 0; i < players.size(); i++)
-		{
-			players.get(i).render(screen);
-		}
-		for(int i = 0; i < entities.size(); i++)
-		{
-			entities.get(i).render(screen);
-		}
+		renderVisibleEntities(xScroll, yScroll, screen);
 	}
 
 	/**
@@ -204,59 +172,7 @@ public class Level
 		screen.setOffset(xScroll, yScroll);
 
 		renderVisibleTiles(xScroll, yScroll, screen);
-
-		for(int i = 0; i < particles.size(); i++)
-		{
-			particles.get(i).render(screen);
-		}
-		for(int i = 0; i < players.size(); i++)
-		{
-			players.get(i).render(screen);
-		}
-		for(int i = 0; i < entities.size(); i++)
-		{
-			entities.get(i).render(screen);
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void time()
-	{
-
-	}
-
-	public boolean hitboxCollidesWithSolid(int x, int y, Hitbox hitbox)
-	{
-		for(int corner = 0; corner < 4; corner++)
-		{
-			//Transforms pixel into tile precision and "asks" the appropriate tile, if it's solid
-			double xt = (x + corner % 2 * hitbox.getWidth() + hitbox.getXOffset()) >> TILE_SIZE_SHIFTING; //With values after corner % 2 or corner / 2, it's possible
-			double yt = (y + corner / 2 * hitbox.getHeight() + hitbox.getYOffset()) >> TILE_SIZE_SHIFTING; //to modify the position and size of the hitbox
-			if(getTile((int) (xt), (int) (yt)).solid()) return true;
-		}
-
-		return false;
-	}
-
-	public Player playerCollidedWithMob(Mob mob)
-	{
-		for(int i = 0; i < players.size(); i++)
-		{
-			Player p = players.get(i);
-			if(p.isDead()) continue;
-			Hitbox mHitbox = mob.getHitbox();
-
-			for(int corner = 0; corner < 4; corner++)
-			{
-				int playerX = p.getX() + p.getHitbox().getXOffset() + p.getHitbox().getWidth() * (corner % 2);
-				int playerY = p.getY() + p.getHitbox().getYOffset() + p.getHitbox().getHeight() * (corner / 2);
-
-				if(playerX >= mob.getX() + mHitbox.getXOffset() && playerX <= mob.getX() + mHitbox.getXOffset() + mHitbox.getWidth()
-						&& playerY >= mob.getY() + mHitbox.getYOffset() && playerY <= mob.getY() + mHitbox.getYOffset() + mHitbox.getHeight())
-					return p;
-			}
-		}
-		return null;
+		renderVisibleEntities(xScroll, yScroll, screen);
 	}
 
 	private void renderVisibleTiles(int xScroll, int yScroll, Screen screen)
@@ -273,6 +189,31 @@ public class Level
 			{
 				getTile(x, y).render(x, y, screen); //Renders appropriate tile at the appropriate position
 			}
+		}
+	}
+
+	private void renderVisibleEntities(int xScroll, int yScroll, Screen screen)
+	{
+		//Corner pins
+		int x0 = xScroll - Tile.DEFAULT_TILE_SIZE;
+		int x1 = xScroll + screen.width + Tile.DEFAULT_TILE_SIZE;
+		int y0 = yScroll - Tile.DEFAULT_TILE_SIZE;
+		int y1 = yScroll + screen.height + Tile.DEFAULT_TILE_SIZE;
+
+		for(int i = 0; i < particles.size(); i++)
+		{
+			if(particles.get(i).getX() > x0 && particles.get(i).getX() < x1 && particles.get(i).getY() > y0 && particles.get(i).getY() < y1)
+				particles.get(i).render(screen);
+		}
+		for(int i = 0; i < players.size(); i++)
+		{
+			if(players.get(i).getX() > x0 && players.get(i).getX() < x1 && players.get(i).getY() > y0 && players.get(i).getY() < y1)
+				players.get(i).render(screen);
+		}
+		for(int i = 0; i < entities.size(); i++)
+		{
+			if(entities.get(i).getX() > x0 && entities.get(i).getX() < x1 && entities.get(i).getY() > y0 && entities.get(i).getY() < y1)
+				entities.get(i).render(screen);
 		}
 	}
 
@@ -311,6 +252,58 @@ public class Level
 					Game.SCALE * (players.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
 					(hitbox.getHeight() + 1) * Game.SCALE);
 		}
+	}
+
+	@SuppressWarnings("unused")
+	private void time()
+	{
+
+	}
+
+	public boolean hitboxCollidesWithSolid(int x, int y, Hitbox hitbox)
+	{
+		for(int corner = 0; corner < 4; corner++)
+		{
+			//Transforms pixel into tile precision and "asks" the appropriate tile, if it's solid
+			int xt = (x + corner % 2 * hitbox.getWidth() + hitbox.getXOffset()) >> TILE_SIZE_SHIFTING; //With values after corner % 2 or corner / 2, it's possible
+			int yt = (y + corner / 2 * hitbox.getHeight() + hitbox.getYOffset()) >> TILE_SIZE_SHIFTING; //to modify the position and size of the hitbox
+
+			Tile currentTile = getTile((int) (xt), (int) (yt));
+			if(currentTile.solid()) return true;
+			if(currentTile.getHitbox() != null)
+			{
+				if(hitboxCollidesWithHitbox(x, y, hitbox, xt * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getXOffset(),
+						yt * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getYOffset(), currentTile.getHitbox()))
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	public Player anyPlayerCollidedWithHitbox(int x, int y, Hitbox hitbox)
+	{
+		for(int i = 0; i < players.size(); i++)
+		{
+			Player p = players.get(i);
+			if(p.isDead()) continue;
+			if(hitboxCollidesWithHitbox(x, y, hitbox, p.getX(), p.getY(), p.getHitbox())) return p;
+		}
+		return null;
+	}
+
+	private boolean hitboxCollidesWithHitbox(int h0xPos, int h0yPos, Hitbox h0, int h1xPos, int h1yPos, Hitbox h1)
+	{
+		for(int corner = 0; corner < 4; corner++)
+		{
+			int h0x = h0xPos + h0.getXOffset() + h0.getWidth() * (corner % 2);
+			int h0y = h0yPos + h0.getYOffset() + h0.getHeight() * (corner / 2);
+
+			if(h0x >= h1xPos + h1.getXOffset() && h0x <= h1xPos + h1.getXOffset() + h1.getWidth() && h0y >= h1yPos + h1.getYOffset()
+					&& h0y <= h1yPos + h1.getYOffset() + h1.getHeight())
+				return true;
+		}
+		return false;
 	}
 
 	public void add(Entity e)
@@ -491,6 +484,11 @@ public class Level
 		//Tiles: If color in level file at specific location is e.g. equal to grass, then return a grass tile
 		if(tiles[x + y * width] == Tile.COL_TILE_DIRT) return Tile.TILE_DIRT;
 		if(tiles[x + y * width] == Tile.COL_TILE_GRASS) return Tile.TILE_GRASS;
+		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_0) return Tile.TILE_FLOWER_0;
+		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_1) return Tile.TILE_FLOWER_1;
+		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_2) return Tile.TILE_FLOWER_2;
+		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_3) return Tile.TILE_FLOWER_3;
+		if(tiles[x + y * width] == Tile.COL_TILE_ROCK) return Tile.TILE_ROCK;
 		if(tiles[x + y * width] == Tile.COL_TILE_SAND) return Tile.TILE_SAND;
 		if(tiles[x + y * width] == Tile.COL_TILE_WATER) return Tile.TILE_WATER;
 
@@ -504,12 +502,6 @@ public class Level
 
 		//Unknown color
 		return Tile.TILE_ERROR;
-	}
-
-	public void finishedLevel()
-	{
-		currentLevelID++;
-		Game.setGameState(GameState.LevelFinished);
 	}
 
 	public int getLevelWidth()

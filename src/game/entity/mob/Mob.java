@@ -5,7 +5,9 @@ import java.util.List;
 
 import game.audio.PlaySound;
 import game.audio.Sounds;
+import game.entity.DamageValue;
 import game.entity.Entity;
+import game.entity.item.ItemHealth;
 import game.entity.mob.effect.Effect;
 import game.entity.mob.player.Player;
 import game.entity.projectile.Projectile;
@@ -15,7 +17,6 @@ import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.level.Level;
 import game.util.Hitbox;
-import game.util.Print;
 
 public abstract class Mob extends Entity
 {
@@ -36,15 +37,15 @@ public abstract class Mob extends Entity
 
 	private List<Effect> effects = new ArrayList<Effect>();
 
-	public abstract void tick();
+	protected abstract void tickMob();
 
 	public abstract void render(Screen screen);
 
 	/**
-	 * Use this function in the constructor of the mob. It initializes all mob
-	 * variables such as the starting location, the hitbox, etc.
+	 * Initialize all mob variables such as the starting location, the hitbox,
+	 * etc.
 	 */
-	public void initMob(int xSpawn, int ySpawn, Hitbox hitbox, Sprite sprite, float maxHealth, float speed, float attackDamage, int attackSpeed)
+	protected Mob(int xSpawn, int ySpawn, Hitbox hitbox, Sprite sprite, float maxHealth, float speed, float attackDamage, int attackSpeed)
 	{
 		this.x = xSpawn;
 		this.y = ySpawn;
@@ -154,12 +155,10 @@ public abstract class Mob extends Entity
 		if(Math.abs(yMotion) > Math.abs(this.yVelocity)) this.yVelocity = yMotion;
 	}
 
-	/**
-	 * Use this method in every class which extends mob in the tick method. This
-	 * will tick the mobs most essential functions. (e.g the attack cooldown)
-	 */
-	public void tickMob()
+	public final void tick()
 	{
+		tickMob();
+
 		if(this.isDead())
 		{
 			if((this instanceof Player))
@@ -170,7 +169,11 @@ public abstract class Mob extends Entity
 				xChangeFloat = 0;
 				yChangeFloat = 0;
 			}
-			else remove();
+			else
+			{
+				if(rand.nextInt(7) % 7 == 0) level.add(new ItemHealth(this.getX(), this.getY(), 10.0F));
+				remove();
+			}
 			return;
 		}
 
@@ -215,6 +218,7 @@ public abstract class Mob extends Entity
 		currentHealth -= Math.abs(damage);
 		PlaySound.playSound(Sounds.hurt);
 		spawnBlood();
+		level.add(new DamageValue(damage, x, y));
 	}
 
 	public void heal()
@@ -229,7 +233,7 @@ public abstract class Mob extends Entity
 
 	private void spawnBlood()
 	{
-		new ParticleSpawner(x, y, 0.85F, 0.75F, 100, 55, level, Sprite.PARTICLE_BLOOD);
+		new ParticleSpawner(x, y, 0.85F, 0.75F, 100, 20, level, Sprite.PARTICLE_BLOOD);
 	}
 
 	private void updateCurrentAttackCooldown()
@@ -260,21 +264,11 @@ public abstract class Mob extends Entity
 		if(currentAttackCooldown != 0) return;
 		currentAttackCooldown = attackSpeed;
 		target.damage(attackDamage);
-		Print.printInfo(
-				this.getClass().getSimpleName() + " attacks " + target.getClass().getSimpleName() + " and deals " + attackDamage + " damage.");
 	}
 
 	public boolean collision(int xChange, int yChange)
 	{
-		for(int corner = 0; corner < 4; corner++)
-		{
-			//Transforms pixel into tile precision and "asks" the appropriate tile, if it's solid
-			int xt = ((x + xChange) + corner % 2 * hitbox.getWidth() + hitbox.getXOffset()) >> Screen.TILE_SIZE_SHIFTING; //Values after corner % 2 or corner / 2,
-			int yt = ((y + yChange) + corner / 2 * hitbox.getHeight() + hitbox.getYOffset()) >> Screen.TILE_SIZE_SHIFTING; //modify the position and size of hitbox
-			if(Level.getTile(xt, yt).solid()) return true;
-		}
-
-		return false;
+		return level.hitboxCollidesWithSolid(x + xChange, y + yChange, hitbox);
 	}
 
 	public boolean isInLiquid()
@@ -345,6 +339,7 @@ public abstract class Mob extends Entity
 	public void setHealth(float health)
 	{
 		currentHealth = health;
+		if(currentHealth > maxHealth) currentHealth = maxHealth;
 	}
 
 	public void setMaxHealth(float health)

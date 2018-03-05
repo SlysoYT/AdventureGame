@@ -15,10 +15,10 @@ public class StarChaser extends Mob
 
 	public StarChaser(int x, int y, float speed)
 	{
-		initMob(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 10.0F, speed, 10.0F, 60);
+		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 10.0F, speed, 10.0F, 60);
 	}
 
-	public void tick()
+	public void tickMob()
 	{
 		float xChange = 0;
 		float yChange = 0;
@@ -42,8 +42,6 @@ public class StarChaser extends Mob
 
 			this.motion(xChange, yChange);
 		}
-
-		tickMob();
 	}
 
 	public void render(Screen screen)

@@ -22,9 +22,9 @@ import game.chat.Chat;
 import game.entity.mob.player.Player;
 import game.graphics.HUD;
 import game.graphics.Screen;
-import game.graphics.Screens.OnlineScreen;
-import game.graphics.Screens.ServerListScreen;
-import game.graphics.Screens.TitleScreen;
+import game.graphics.Screens.ScreenOnline;
+import game.graphics.Screens.ScreenServerList;
+import game.graphics.Screens.ScreenTitle;
 import game.input.Keyboard;
 import game.input.Mouse;
 import game.level.GameLevel;
@@ -47,12 +47,13 @@ public class Game extends Canvas implements Runnable
 	private static int currentFPS = 0, currentTPS = 0;
 
 	private JFrame frame;
-	private static HUD hud;
-	private static Keyboard key;
-	private static Player clientPlayer;
-	private static Level level;
-	private Screen screen;
 	private Thread thread;
+
+	private Screen screen;
+	private static Keyboard key;
+	private static Level level;
+	private static Player clientPlayer;
+	private static HUD hud;
 
 	private static Connection connection = null;
 	private static boolean multiplayer = false;
@@ -157,7 +158,7 @@ public class Game extends Canvas implements Runnable
 
 		if(gameState == GameState.TitleScreen)
 		{
-			TitleScreen.tick(key);
+			ScreenTitle.tick(key);
 		}
 		else if(gameState == GameState.IngameOnline || gameState == GameState.IngameOffline)
 		{
@@ -181,25 +182,19 @@ public class Game extends Canvas implements Runnable
 			level.tick();
 			hud.tick();
 
-			if(key.escapeToggle)
+			if(key.escape && !clientPlayer.isTypingMessage())
 			{
 				unloadLevel();
 				setGameState(GameState.TitleScreen);
 			}
 		}
-		else if(gameState == GameState.LevelFinished)
-		{
-			hud.tick();
-			key.tick();
-			hud.tickLevelEnd();
-		}
 		else if(gameState == GameState.ServerListScreen)
 		{
-			ServerListScreen.tick(key);
+			ScreenServerList.tick(key);
 		}
 		else if(gameState == GameState.OnlineScreen)
 		{
-			OnlineScreen.tick(key);
+			ScreenOnline.tick(key);
 		}
 		else if(gameState == GameState.StartServer)
 		{
@@ -235,7 +230,7 @@ public class Game extends Canvas implements Runnable
 
 		if(gameState == GameState.TitleScreen)
 		{
-			TitleScreen.render(screen);
+			ScreenTitle.render(screen);
 		}
 		else if(gameState == GameState.IngameOffline || gameState == GameState.IngameOnline)
 		{
@@ -250,11 +245,11 @@ public class Game extends Canvas implements Runnable
 		}
 		else if(gameState == GameState.ServerListScreen)
 		{
-			ServerListScreen.render(screen);
+			ScreenServerList.render(screen);
 		}
 		else if(gameState == GameState.OnlineScreen)
 		{
-			OnlineScreen.render(screen);
+			ScreenOnline.render(screen);
 		}
 		else if(gameState == GameState.StartServer)
 		{
@@ -275,10 +270,6 @@ public class Game extends Canvas implements Runnable
 		if(gameState == GameState.IngameOffline || gameState == GameState.IngameOnline)
 		{
 			hud.render(g, debugMode);
-		}
-		else if(gameState == GameState.LevelFinished)
-		{
-			hud.renderLevelEnd(g);
 		}
 
 		g.dispose(); //Removes the graphics (not the buffer)
@@ -364,8 +355,8 @@ public class Game extends Canvas implements Runnable
 	private static void initLevel()
 	{
 		//loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2));
-		Random rand = new Random();
-		loadLevel(new GameLevel(rand.nextLong(), "Generated-Level", 16, 16));
+		//Random rand = new Random();
+		loadLevel(new GameLevel(43545834598L, "Generated-Level", 0, 0));
 		hud = new HUD(width, height, clientPlayer, level, key);
 		new Chat(level);
 	}

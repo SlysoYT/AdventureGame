@@ -15,7 +15,7 @@ public class ProjectileBoomerang extends Projectile
 
 	public ProjectileBoomerang(int x, int y, double direction, Mob source, UUID uuid)
 	{
-		super(x, y, direction, 1.8D, 250, 20F, source, new Hitbox(-3, -3, 5, 5), Sprite.PROJECTILE_BOOMERANG, uuid);
+		super(x, y, direction, 1.8D, 250, 0.0F, source, new Hitbox(-3, -3, 5, 5), Sprite.PROJECTILE_BOOMERANG, uuid);
 	}
 
 	@Override
@@ -47,7 +47,6 @@ public class ProjectileBoomerang extends Projectile
 	{
 		mob.motion((float) (2 * speed * Math.cos(angle)), (float) (2 * speed * Math.sin(angle)));
 		mob.damage(damage);
-		System.out.println(damage);
 	}
 
 	public void render(Screen screen)

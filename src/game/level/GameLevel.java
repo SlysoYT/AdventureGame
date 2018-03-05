@@ -51,9 +51,9 @@ public class GameLevel extends Level
 
 	public void loadLevel(long seed)
 	{
-		height = width = 32;
+		height = width = 64;
 		tiles = new int[width * height];
-		tiles = GenerateLevel.generateLevel(seed, width);
+		tiles = GenerateLevel.generateLevel(seed, 64);
 	}
 
 	public String getPath()

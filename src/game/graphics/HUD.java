@@ -169,14 +169,6 @@ public class HUD
 		}
 	}
 
-	public void renderLevelEnd(Graphics g)
-	{
-		g.setFont(FONT);
-		g.setColor(Color.ORANGE);
-		String time = Timer.getPassedTime(true) + "";
-		g.drawString(time, width * SCALE / 2 - g.getFontMetrics().stringWidth(time) / 2, height * SCALE / 2 - FONT.getSize() / 2);
-	}
-
 	public static void setTitleText(String text, int displayTimeInTicks)
 	{
 		titleText = text;

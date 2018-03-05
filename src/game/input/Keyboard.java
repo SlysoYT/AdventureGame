@@ -9,7 +9,7 @@ public class Keyboard implements KeyListener
 	private boolean[] keysToggle = new boolean[600];
 	private int[] keysToggleTicks = new int[600];
 
-	public boolean up, down, left, right, enter, space, escape, shift, backspace;
+	public boolean up, down, left, right, enter, space, escape, shift, backspace, inventory;
 	public boolean enterToggle, spaceToggle, upToggle, downToggle, escapeToggle;
 
 	public void tick()
@@ -33,6 +33,7 @@ public class Keyboard implements KeyListener
 		escape = keys[KeyEvent.VK_ESCAPE];
 		shift = keys[KeyEvent.VK_SHIFT];
 		backspace = keys[KeyEvent.VK_BACK_SPACE];
+		inventory = keys[KeyEvent.VK_E];
 
 		upToggle = keysToggle[KeyEvent.VK_W] || keysToggle[KeyEvent.VK_UP];
 		downToggle = keysToggle[KeyEvent.VK_S] || keysToggle[KeyEvent.VK_DOWN];

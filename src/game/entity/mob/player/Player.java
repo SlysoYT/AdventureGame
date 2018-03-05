@@ -12,6 +12,7 @@ import game.entity.mob.ability.AbilityShooting;
 import game.entity.mob.ability.AbilityTeleporting;
 import game.entity.projectile.Projectiles;
 import game.entity.spawner.ParticleSpawner;
+import game.graphics.Inventory;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.input.Keyboard;
@@ -23,6 +24,8 @@ import game.util.Hitbox;
 public class Player extends Mob
 {
 	private Keyboard input;
+	private Inventory inventory;
+
 	private boolean isClient;
 	private String IPAddress;
 
@@ -44,41 +47,41 @@ public class Player extends Mob
 
 	public Player(int x, int y, Keyboard input)
 	{
-		isClient = true;
+		super(x, y, new Hitbox(-5, -1, 9, 8), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
 
-		hitbox = new Hitbox(-5, -8, 9, 15);
-		initMob(x, y, hitbox, Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
+		isClient = true;
 		this.input = input;
+		this.inventory = new Inventory(this);
 
 		//primaryAbility = new AbilityShooting(this, Projectiles.ProjectileBoomerang, 100);
 		primaryAbility = new AbilityShooting(this, Projectiles.ProjectileBoomerang, 70);
-		secondaryAbility = new AbilityTeleporting(this, 360, 200);
+		secondaryAbility = new AbilityTeleporting(this, 360, 100);
 		passiveAbility = new AbilityRage(this, 600, 240);
 	}
 
 	public Player(int x, int y, String IPAddress)
 	{
+		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
+
 		isClient = false;
 		this.IPAddress = IPAddress;
-
-		hitbox = new Hitbox(-5, -8, 9, 15);
-		initMob(x, y, hitbox, Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
 	}
 
 	public Player(int x, int y, UUID uuid)
 	{
+		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
+
 		isClient = false;
 		setUUID(uuid);
-
-		hitbox = new Hitbox(-5, -8, 9, 15);
-		initMob(x, y, hitbox, Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
 	}
 
-	public void tick()
+	public void tickMob()
 	{
-		tickMob();
-
-		if(respawning) respawn();
+		if(respawning)
+		{
+			respawn();
+			return;
+		}
 
 		if(isMoving())
 		{
@@ -91,6 +94,8 @@ public class Player extends Mob
 
 		if(!isClient) return;
 
+		inventory.tick(input);
+
 		if(input.enterToggle && !typingMessage)
 		{
 			typingMessage = true;
@@ -102,25 +107,14 @@ public class Player extends Mob
 			chatLine = TextInput.getTextInput();
 			Chat.typingMessage(chatLine);
 
-			if(input.enterToggle)
+			if(input.enterToggle || input.escapeToggle)
 			{
-				if(!chatLine.isEmpty()) Chat.addMessage(new Message(chatLine, this.getClass().getSimpleName().toString()));
+				if(!chatLine.isEmpty() && input.enterToggle) Chat.addMessage(new Message(chatLine, this.getClass().getSimpleName().toString()));
 				chatLine = "";
 				typingMessage = false;
 			}
 		}
 		else Chat.typingMessage(null);
-
-		if(this.isDead()) return;
-
-		if(this.isOnDeadly())
-		{
-			this.kill();
-		}
-		else if(this.isOnCheckpoint())
-		{
-			level.finishedLevel();
-		}
 
 		if(!typingMessage)
 		{
@@ -150,8 +144,9 @@ public class Player extends Mob
 		if(this.isDead()) return;
 
 		getWalkingSprite();
-
 		screen.renderSprite(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, sprite, true);
+
+		inventory.render(screen);
 	}
 
 	protected void getWalkingSprite()
@@ -277,6 +272,16 @@ public class Player extends Mob
 	public Ability getPrimaryAbility()
 	{
 		return primaryAbility;
+	}
+
+	public Inventory getInventory()
+	{
+		return inventory;
+	}
+
+	public boolean isTypingMessage()
+	{
+		return typingMessage;
 	}
 
 	public float getSecondaryAbilityCooldownProgress()

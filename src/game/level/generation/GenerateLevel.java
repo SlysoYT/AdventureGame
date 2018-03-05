@@ -30,7 +30,7 @@ public class GenerateLevel
 					else if(random == 1) tileValues[i] = Tile.COL_TILE_FLOWER_1;
 					else if(random == 2) tileValues[i] = Tile.COL_TILE_FLOWER_2;
 					else if(random == 3) tileValues[i] = Tile.COL_TILE_FLOWER_3;
-					else if(random == 4) tileValues[i] = Tile.COL_TILE_ROCK;
+					else if(random == 4) tileValues[i] = Tile.COL_TILE_ROCK_GRASS;
 					else tileValues[i] = Tile.COL_TILE_GRASS;
 				}
 			}
@@ -38,7 +38,12 @@ public class GenerateLevel
 			else
 			{
 				if(normValues[i] < 0.1F) tileValues[i] = Tile.COL_TILE_WATER;
-				else tileValues[i] = Tile.COL_TILE_SAND;
+				else
+				{
+					int random = rand.nextInt() % 70;
+					if(random == 0) tileValues[i] = Tile.COL_TILE_ROCK_SAND;
+					else tileValues[i] = Tile.COL_TILE_SAND;
+				}
 			}
 		}
 

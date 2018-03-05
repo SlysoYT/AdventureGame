@@ -11,26 +11,49 @@ public abstract class Command
 	private String name;
 	private String usage;
 	private String description;
-	private byte minNumberOfArguments;
+	private byte numberOfArguments = -1;
+	private byte minNumberOfArguments = -1;
+	private byte maxNumberOfArguments = -1;
 
 	protected abstract void onEnable(List<String> args, Player sender);
 
-	protected Command(String name, String usage, String description, byte minNumberOfArguments)
+	protected Command(String name, String usage, String description, byte numberOfArguments)
+	{
+		this.name = name;
+		this.usage = usage;
+		this.description = description;
+		this.numberOfArguments = numberOfArguments;
+	}
+
+	protected Command(String name, String usage, String description, byte minNumberOfArguments, byte maxNumberOfArguments)
 	{
 		this.name = name;
 		this.usage = usage;
 		this.description = description;
 		this.minNumberOfArguments = minNumberOfArguments;
+		this.maxNumberOfArguments = maxNumberOfArguments;
 	}
 
 	public void enableCommand(List<String> args, Player sender)
 	{
-		if(args.size() > minNumberOfArguments)
+		if(numberOfArguments > -1)
 		{
-			if(minNumberOfArguments == 0) Chat.addMessage(new Message("No arguments expected. Usage: !" + usage, "Server"));
-			else Chat.addMessage(new Message("Less arguments expected. Usage: !" + usage, "Server"));
+			if(args.size() != numberOfArguments)
+			{
+				if(numberOfArguments == 0) Chat.addMessage(new Message("No arguments expected. Usage: !" + usage, "Server"));
+				else if(args.size() > numberOfArguments) Chat.addMessage(new Message("Less arguments expected. Usage: !" + usage, "Server"));
+				else Chat.addMessage(new Message("More arguments expected. Usage: !" + usage, "Server"));
+			}
+			else onEnable(args, sender);
+
+			return;
 		}
-		else onEnable(args, sender);
+		else if(minNumberOfArguments > -1 && maxNumberOfArguments > minNumberOfArguments)
+		{
+			if(args.size() < minNumberOfArguments) Chat.addMessage(new Message("More arguments expected. Usage: !" + usage, "Server"));
+			else if(args.size() > maxNumberOfArguments)  Chat.addMessage(new Message("Less arguments expected. Usage: !" + usage, "Server"));
+			else onEnable(args, sender);
+		}
 	}
 
 	public String getName()

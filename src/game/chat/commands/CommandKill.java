@@ -14,7 +14,7 @@ public class CommandKill extends Command
 
 	public CommandKill(Level level)
 	{
-		super("kill", "kill or kill <target>", "Kill yourself or the specified target", (byte) 1);
+		super("kill", "kill or kill <target>", "Kill yourself or the specified target", (byte) 0, (byte) 1);
 		this.level = level;
 	}
 

@@ -8,6 +8,7 @@ import java.util.List;
 
 import game.Game;
 import game.chat.commands.Command;
+import game.chat.commands.CommandGive;
 import game.chat.commands.CommandHelp;
 import game.chat.commands.CommandKill;
 import game.chat.commands.CommandTeleport;
@@ -25,6 +26,7 @@ public class Chat
 
 	public Chat(Level level)
 	{
+		commands.add(new CommandGive(level));
 		commands.add(new CommandHelp());
 		commands.add(new CommandKill(level));
 		commands.add(new CommandTeleport());

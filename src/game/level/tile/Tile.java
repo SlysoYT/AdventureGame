@@ -19,7 +19,8 @@ public class Tile
 	public static final Tile TILE_FLOWER_1 = new GrassTile(Sprite.SPRITE_FLOWER_1);
 	public static final Tile TILE_FLOWER_2 = new GrassTile(Sprite.SPRITE_FLOWER_2);
 	public static final Tile TILE_FLOWER_3 = new GrassTile(Sprite.SPRITE_FLOWER_3);
-	public static final Tile TILE_ROCK = new RockTile(Sprite.SPRITE_ROCK);
+	public static final Tile TILE_ROCK_GRASS = new RockTile(Sprite.SPRITE_ROCK_GRASS);
+	public static final Tile TILE_ROCK_SAND = new RockTile(Sprite.SPRITE_ROCK_SAND);
 	public static final Tile TILE_SAND = new SandTile(Sprite.SPRITE_SAND);
 	public static final Tile TILE_WATER = new WaterTile(Sprite.SPRITE_WATER_0);
 
@@ -39,7 +40,8 @@ public class Tile
 	public static final int COL_TILE_FLOWER_1 = 0xFF479F69;
 	public static final int COL_TILE_FLOWER_2 = 0xFF479F79;
 	public static final int COL_TILE_FLOWER_3 = 0xFF479F89;
-	public static final int COL_TILE_ROCK = 0xFF9C9C9C;
+	public static final int COL_TILE_ROCK_GRASS = 0xFF9C9C9C;
+	public static final int COL_TILE_ROCK_SAND = 0xFF9D9D9D;
 	public static final int COL_TILE_SAND = 0xFFFFFAC9;
 	public static final int COL_TILE_WATER = 0xFF1385C6;
 
@@ -65,7 +67,7 @@ public class Tile
 	{
 		return null;
 	}
-	
+
 	public Hitbox getHitbox()
 	{
 		return null;

@@ -26,7 +26,8 @@ public class Sprite
 	public static final Sprite SPRITE_FLOWER_1 = new Sprite(DEFAULT_TILE_SIZE, 1, 2, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite SPRITE_FLOWER_2 = new Sprite(DEFAULT_TILE_SIZE, 2, 2, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite SPRITE_FLOWER_3 = new Sprite(DEFAULT_TILE_SIZE, 3, 2, SpriteSheet.SPRITE_SHEET);
-	public static final Sprite SPRITE_ROCK = new Sprite(DEFAULT_TILE_SIZE, 4, 2, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_ROCK_GRASS = new Sprite(DEFAULT_TILE_SIZE, 4, 2, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SPRITE_ROCK_SAND = new Sprite(DEFAULT_TILE_SIZE, 5, 2, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite SPRITE_GRASS = new Sprite(DEFAULT_TILE_SIZE, 0, 1, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite SPRITE_SAND = new Sprite(DEFAULT_TILE_SIZE, 2, 1, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite SPRITE_WATER_0 = new Sprite(DEFAULT_TILE_SIZE, 3, 1, SpriteSheet.SPRITE_SHEET);
@@ -56,6 +57,9 @@ public class Sprite
 
 	//Items
 	public static final Sprite ITEM_HEALTH = new Sprite(DEFAULT_TILE_SIZE, 0, 6, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite[] COIN = { new Sprite(DEFAULT_TILE_SIZE, 1, 9, SpriteSheet.SPRITE_SHEET),
+			new Sprite(DEFAULT_TILE_SIZE, 1, 8, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 1, 7, SpriteSheet.SPRITE_SHEET),
+			new Sprite(DEFAULT_TILE_SIZE, 1, 6, SpriteSheet.SPRITE_SHEET) };
 
 	//Inventory
 	public static final Sprite INVENTORY = new Sprite(864, 16, 160, 112, SpriteSheet.SPRITE_SHEET);

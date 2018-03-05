@@ -7,6 +7,7 @@ import game.audio.PlaySound;
 import game.audio.Sounds;
 import game.entity.DamageValue;
 import game.entity.Entity;
+import game.entity.item.ItemCoin;
 import game.entity.item.ItemHealth;
 import game.entity.mob.effect.Effect;
 import game.entity.mob.player.Player;
@@ -25,7 +26,6 @@ public abstract class Mob extends Entity
 	private float xVelocity = 0, yVelocity = 0;
 	private float movementSmoothness = 0.9F;
 	private boolean moving = false;
-	protected Hitbox hitbox;
 	protected Sprite sprite;
 
 	private float maxHealth;
@@ -171,7 +171,8 @@ public abstract class Mob extends Entity
 			}
 			else
 			{
-				if(rand.nextInt(7) % 7 == 0) level.add(new ItemHealth(this.getX(), this.getY(), 10.0F));
+				if(rand.nextInt(7) % 7 == 0) level.add(new ItemHealth(this.getX() + 4 - rand.nextInt(9), this.getY() + 4 - rand.nextInt(9), 10.0F));
+				if(rand.nextInt(3) % 3 == 0) level.add(new ItemCoin(this.getX() + 4 - rand.nextInt(9), this.getY() + 4 - rand.nextInt(9)));
 				remove();
 			}
 			return;

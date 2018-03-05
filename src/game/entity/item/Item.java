@@ -9,8 +9,8 @@ import game.util.Hitbox;
 public abstract class Item extends Entity
 {
 	protected boolean instantUse;
-	protected Hitbox hitbox;
 	protected Sprite sprite;
+	protected Sprite[] sprites;
 	private long start = System.nanoTime();
 
 	protected Item(int x, int y, boolean instantUse, Hitbox hitbox, Sprite sprite)
@@ -20,6 +20,16 @@ public abstract class Item extends Entity
 		this.instantUse = instantUse;
 		this.hitbox = hitbox;
 		this.sprite = sprite;
+	}
+
+	protected Item(int x, int y, boolean instantUse, Hitbox hitbox, Sprite[] sprites)
+	{
+		this.x = x;
+		this.y = y;
+		this.instantUse = instantUse;
+		this.hitbox = hitbox;
+		this.sprite = sprites[sprites.length - 1];
+		this.sprites = sprites;
 	}
 
 	protected abstract void onPickup(Player trigger);
@@ -50,7 +60,16 @@ public abstract class Item extends Entity
 	public final void render(Screen screen)
 	{
 		int yOffset = (int) Math.abs((2 - ((System.nanoTime() - start) % 500000000 / 100000000)));
-		screen.renderSprite(x + hitbox.getXOffset(), y + yOffset + hitbox.getYOffset(), sprite, true);
+
+		if(sprites == null)
+		{
+			screen.renderSprite(x, y + yOffset, sprite, true);
+		}
+		else
+		{
+			int index = (int) (Math.abs(3 - ((System.nanoTime() - start) % 700000000 / 100000000)));
+			screen.renderSprite(x, y + yOffset, sprites[index], true);
+		}
 	}
 
 	public Hitbox getHitbox()

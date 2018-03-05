@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import game.graphics.Screen;
 import game.level.Level;
+import game.util.Hitbox;
 
 public abstract class Entity
 {
@@ -12,6 +13,7 @@ public abstract class Entity
 	private UUID uuid = UUID.randomUUID();
 
 	protected int x, y;
+	protected Hitbox hitbox;
 	protected Level level;
 	protected final Random rand = new Random();
 
@@ -47,6 +49,11 @@ public abstract class Entity
 	public int getY()
 	{
 		return y;
+	}
+
+	public Hitbox getHitbox()
+	{
+		return hitbox;
 	}
 
 	public void setPosition(int x, int y)

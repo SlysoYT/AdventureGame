@@ -269,7 +269,7 @@ public abstract class Mob extends Entity
 
 	public boolean collision(int xChange, int yChange)
 	{
-		return level.hitboxCollidesWithSolid(x + xChange, y + yChange, hitbox);
+		return level.hitboxCollidesWithSolidTile(x + xChange, y + yChange, hitbox);
 	}
 
 	public boolean isInLiquid()

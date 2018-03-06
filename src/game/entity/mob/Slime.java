@@ -54,7 +54,7 @@ public class Slime extends Mob
 				{
 					xPos = rand.nextInt(Tile.DEFAULT_TILE_SIZE * Game.getLevel().getLevelWidth());
 					yPos = rand.nextInt(Tile.DEFAULT_TILE_SIZE * Game.getLevel().getLevelHeight());
-					if(!Game.getLevel().hitboxCollidesWithSolid(xPos, yPos, hitbox)) break;
+					if(!Game.getLevel().hitboxCollidesWithSolidTile(xPos, yPos, hitbox)) break;
 				}
 				xGoal = xPos;
 				yGoal = yPos;

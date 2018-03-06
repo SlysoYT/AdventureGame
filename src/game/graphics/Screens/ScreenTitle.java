@@ -83,7 +83,7 @@ public class ScreenTitle
 			{
 				xSpawn = rand.nextInt(Tile.DEFAULT_TILE_SIZE * Game.getLevel().getLevelWidth());
 				ySpawn = rand.nextInt(Tile.DEFAULT_TILE_SIZE * Game.getLevel().getLevelHeight());
-				if(!Game.getLevel().hitboxCollidesWithSolid(xSpawn, ySpawn, new Slime(xSpawn, ySpawn, 0.5F).getHitbox())) break;
+				if(!Game.getLevel().hitboxCollidesWithSolidTile(xSpawn, ySpawn, new Slime(xSpawn, ySpawn, 0.5F).getHitbox())) break;
 			}
 			Game.getLevel().add(new Slime(xSpawn, ySpawn, 1.0F));
 		}

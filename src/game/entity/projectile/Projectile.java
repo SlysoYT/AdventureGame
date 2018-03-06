@@ -53,7 +53,7 @@ public abstract class Projectile extends Entity
 	{
 		tickProjectile();
 
-		if(!level.hitboxCollidesWithSolid(getX() + getNewX(), getY() + getNewY(), getHitbox())) move();
+		if(!level.hitboxCollidesWithSolidTile(getX() + getNewX(), getY() + getNewY(), getHitbox())) move();
 		else
 		{
 			level.add(new ParticleSpawner((int) getX(), (int) getY(), 1.0F, 1.0F, 80, 20, level, Sprite.PARTICLE_QUARTZ));

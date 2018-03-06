@@ -20,6 +20,6 @@ public class RockTile extends Tile
 
 	public Hitbox getHitbox()
 	{
-		return new Hitbox(1, 3, 10, 7);
+		return new Hitbox(2, 3, 10, 6);
 	}
 }

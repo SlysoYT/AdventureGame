@@ -16,7 +16,6 @@ import game.entity.mob.Slime;
 import game.entity.mob.player.Player;
 import game.entity.particle.Particle;
 import game.entity.projectile.Projectile;
-import game.entity.trap.Trap;
 import game.graphics.Screen;
 import game.level.tile.Tile;
 import game.network.NetworkPackage;
@@ -220,36 +219,15 @@ public class Level
 	public void renderHitboxes(Graphics g)
 	{
 		g.setColor(Color.BLUE);
-		for(int i = 0; i < entities.size(); i++)
+
+		List<Entity> allEntities = getAllEntities();
+
+		for(int i = 0; i < allEntities.size(); i++)
 		{
-			if(entities.get(i) instanceof Mob)
-			{
-				Hitbox hitbox = ((Mob) entities.get(i)).getHitbox();
-				g.drawRect(Game.SCALE * (entities.get(i).getX() - Screen.getXOffset() + hitbox.getXOffset()),
-						Game.SCALE * (entities.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
-						(hitbox.getHeight() + 1) * Game.SCALE);
-			}
-			else if(entities.get(i) instanceof Projectile)
-			{
-				Hitbox hitbox = ((Projectile) entities.get(i)).getHitbox();
-				g.drawRect(Game.SCALE * (entities.get(i).getX() - Screen.getXOffset() + hitbox.getXOffset()),
-						Game.SCALE * (entities.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
-						(hitbox.getHeight() + 1) * Game.SCALE);
-			}
-			else if(entities.get(i) instanceof Trap)
-			{
-				Hitbox hitbox = ((Trap) entities.get(i)).getHitbox();
-				g.drawRect(Game.SCALE * (entities.get(i).getX() - Screen.getXOffset() + hitbox.getXOffset()),
-						Game.SCALE * (entities.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
-						(hitbox.getHeight() + 1) * Game.SCALE);
-			}
-		}
-		for(int i = 0; i < players.size(); i++)
-		{
-			if(players.get(i).isDead()) continue;
-			Hitbox hitbox = players.get(i).getHitbox();
-			g.drawRect(Game.SCALE * (players.get(i).getX() - Screen.getXOffset() + hitbox.getXOffset()),
-					Game.SCALE * (players.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
+			Hitbox hitbox = allEntities.get(i).getHitbox();
+			if(hitbox == null) continue;
+			g.drawRect(Game.SCALE * (allEntities.get(i).getX() - Screen.getXOffset() + hitbox.getXOffset()),
+					Game.SCALE * (allEntities.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
 					(hitbox.getHeight() + 1) * Game.SCALE);
 		}
 	}
@@ -260,21 +238,22 @@ public class Level
 
 	}
 
-	public boolean hitboxCollidesWithSolid(int x, int y, Hitbox hitbox)
+	public boolean hitboxCollidesWithSolidTile(int x, int y, Hitbox hitbox)
 	{
-		for(int corner = 0; corner < 4; corner++)
+		for(int currentX = x + hitbox.getXOffset() >> TILE_SIZE_SHIFTING; currentX <= x + hitbox.getWidth()
+				+ hitbox.getXOffset() >> TILE_SIZE_SHIFTING; currentX++)
 		{
-			//Transforms pixel into tile precision and "asks" the appropriate tile, if it's solid
-			int xt = (x + corner % 2 * hitbox.getWidth() + hitbox.getXOffset()) >> TILE_SIZE_SHIFTING; //With values after corner % 2 or corner / 2, it's possible
-			int yt = (y + corner / 2 * hitbox.getHeight() + hitbox.getYOffset()) >> TILE_SIZE_SHIFTING; //to modify the position and size of the hitbox
-
-			Tile currentTile = getTile((int) (xt), (int) (yt));
-			if(currentTile.solid()) return true;
-			if(currentTile.getHitbox() != null)
+			for(int currentY = y + hitbox.getYOffset() >> TILE_SIZE_SHIFTING; currentY <= y + hitbox.getHeight()
+					+ hitbox.getYOffset() >> TILE_SIZE_SHIFTING; currentY++)
 			{
-				if(hitboxCollidesWithHitbox(x, y, hitbox, xt * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getXOffset(),
-						yt * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getYOffset(), currentTile.getHitbox()))
-					return true;
+				Tile currentTile = getTile(currentX, currentY);
+				if(currentTile.solid()) return true;
+				if(currentTile.getHitbox() != null)
+				{
+					if(hitboxCollidesWithHitbox(x, y, hitbox, currentX * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getXOffset(),
+							currentY * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getYOffset(), currentTile.getHitbox()))
+						return true;
+				}
 			}
 		}
 
@@ -294,15 +273,16 @@ public class Level
 
 	private boolean hitboxCollidesWithHitbox(int h0xPos, int h0yPos, Hitbox h0, int h1xPos, int h1yPos, Hitbox h1)
 	{
-		for(int corner = 0; corner < 4; corner++)
+		for(int currentX = h0xPos + h0.getXOffset(); currentX <= h0xPos + h0.getWidth() + h0.getXOffset(); currentX++)
 		{
-			int h0x = h0xPos + h0.getXOffset() + h0.getWidth() * (corner % 2);
-			int h0y = h0yPos + h0.getYOffset() + h0.getHeight() * (corner / 2);
-
-			if(h0x >= h1xPos + h1.getXOffset() && h0x <= h1xPos + h1.getXOffset() + h1.getWidth() && h0y >= h1yPos + h1.getYOffset()
-					&& h0y <= h1yPos + h1.getYOffset() + h1.getHeight())
-				return true;
+			for(int currentY = h0yPos + h0.getYOffset(); currentY <= h0yPos + h0.getHeight() + h0.getYOffset(); currentY++)
+			{
+				if(currentX >= h1xPos + h1.getXOffset() && currentX <= h1xPos + h1.getXOffset() + h1.getWidth()
+						&& currentY >= h1yPos + h1.getYOffset() && currentY <= h1yPos + h1.getYOffset() + h1.getHeight())
+					return true;
+			}
 		}
+
 		return false;
 	}
 
@@ -488,7 +468,8 @@ public class Level
 		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_1) return Tile.TILE_FLOWER_1;
 		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_2) return Tile.TILE_FLOWER_2;
 		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_3) return Tile.TILE_FLOWER_3;
-		if(tiles[x + y * width] == Tile.COL_TILE_ROCK) return Tile.TILE_ROCK;
+		if(tiles[x + y * width] == Tile.COL_TILE_ROCK_GRASS) return Tile.TILE_ROCK_GRASS;
+		if(tiles[x + y * width] == Tile.COL_TILE_ROCK_SAND) return Tile.TILE_ROCK_SAND;
 		if(tiles[x + y * width] == Tile.COL_TILE_SAND) return Tile.TILE_SAND;
 		if(tiles[x + y * width] == Tile.COL_TILE_WATER) return Tile.TILE_WATER;
 

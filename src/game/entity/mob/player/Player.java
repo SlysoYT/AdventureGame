@@ -47,7 +47,7 @@ public class Player extends Mob
 
 	public Player(int x, int y, Keyboard input)
 	{
-		super(x, y, new Hitbox(-5, -1, 9, 8), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
+		super(x, y, new Hitbox(-5, -3, 9, 10), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
 
 		isClient = true;
 		this.input = input;

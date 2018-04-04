@@ -18,18 +18,18 @@ public class GameLevel extends Level
 
 	public GameLevel(String path, String levelName, int spawnX, int spawnY)
 	{
-		super(new TileCoordinate(spawnX, spawnY));
+		this.playerSpawn = new TileCoordinate(spawnX, spawnY);
 		this.path = path;
 		this.customLevel = true;
 		this.levelName = levelName;
 	}
 
-	public GameLevel(long seed, String levelName, int spawnX, int spawnY)
+	public GameLevel(long seed, String levelName, TileCoordinate playerSpawn)
 	{
-		super(new TileCoordinate(spawnX, spawnY));
+		this.playerSpawn = playerSpawn;
 		this.seed = seed;
 		this.customLevel = false;
-		this.levelName = levelName;
+		this.levelName = levelName + " (Seed: " + seed + ")";
 	}
 
 	public void loadLevel(String path)
@@ -51,9 +51,8 @@ public class GameLevel extends Level
 
 	public void loadLevel(long seed)
 	{
-		height = width = 64;
-		tiles = new int[width * height];
-		tiles = GenerateLevel.generateLevel(seed, 64);
+		height = width = 512;
+		tiles = GenerateLevel.generateLevel(seed);
 	}
 
 	public String getPath()

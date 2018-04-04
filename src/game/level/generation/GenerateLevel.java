@@ -6,11 +6,10 @@ import game.level.tile.Tile;
 
 public class GenerateLevel
 {
-	private static int size;
+	private static final int size = 512; //Chunk size
 
-	public static int[] generateLevel(long seed, int size)
+	public static int[] generateLevel(long seed)
 	{
-		GenerateLevel.size = size;
 		Random rand = new Random(seed);
 		float[] normValues = generateLevelNormValues(seed);
 		int[] tileValues = new int[size * size];
@@ -52,13 +51,12 @@ public class GenerateLevel
 
 	private static float[] generateLevelNormValues(long seed)
 	{
-		//TODO: This is supposed to be one junk only, -> procedural level generation
 		int stepSize = size;
 		Random rand = new Random(seed);
-		float[][] tiles = { new float[size * size], new float[size * size], new float[size * size] };
-		int[] weights = { 20, 7, 2 };
+		float[][] tiles = { new float[size * size], new float[size * size], new float[size * size], new float[size * size], new float[size * size] };
+		int[] weights = { 20, 5, 4, 3, 2 };
 
-		for(int i = 0; i < 3; i++)
+		for(int i = 0; i < 5; i++)
 		{
 			//Random values with distance as step size
 			for(int x = 0; x < size; x += stepSize + 1 * ((x % 2) - 1))

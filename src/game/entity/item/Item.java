@@ -8,25 +8,25 @@ import game.util.Hitbox;
 
 public abstract class Item extends Entity
 {
-	protected boolean instantUse;
+	private ItemType type;
 	protected Sprite sprite;
 	protected Sprite[] sprites;
 	private long start = System.nanoTime();
 
-	protected Item(int x, int y, boolean instantUse, Hitbox hitbox, Sprite sprite)
+	protected Item(int x, int y, ItemType type, Hitbox hitbox, Sprite sprite)
 	{
 		this.x = x;
 		this.y = y;
-		this.instantUse = instantUse;
+		this.type = type;
 		this.hitbox = hitbox;
 		this.sprite = sprite;
 	}
 
-	protected Item(int x, int y, boolean instantUse, Hitbox hitbox, Sprite[] sprites)
+	protected Item(int x, int y, ItemType type, Hitbox hitbox, Sprite[] sprites)
 	{
 		this.x = x;
 		this.y = y;
-		this.instantUse = instantUse;
+		this.type = type;
 		this.hitbox = hitbox;
 		this.sprite = sprites[sprites.length - 1];
 		this.sprites = sprites;
@@ -40,7 +40,7 @@ public abstract class Item extends Entity
 
 		if(target != null)
 		{
-			if(instantUse)
+			if(type == ItemType.InstantUse)
 			{
 				onPickup(target);
 				this.remove();
@@ -80,5 +80,10 @@ public abstract class Item extends Entity
 	public Sprite getSprite()
 	{
 		return sprite;
+	}
+
+	public ItemType getType()
+	{
+		return type;
 	}
 }

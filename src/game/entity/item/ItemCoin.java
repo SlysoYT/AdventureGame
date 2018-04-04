@@ -8,7 +8,7 @@ public class ItemCoin extends Item
 {
 	public ItemCoin(int x, int y)
 	{
-		super(x, y, false, new Hitbox(4, 4, 8, 10), Sprite.COIN);
+		super(x, y, ItemType.Coin, new Hitbox(4, 4, 8, 10), Sprite.COIN);
 	}
 
 	@Override

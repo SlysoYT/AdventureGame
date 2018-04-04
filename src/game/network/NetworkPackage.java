@@ -8,31 +8,27 @@ import game.entity.mob.player.OnlinePlayer;
 import game.entity.mob.player.Player;
 import game.entity.projectile.Projectile;
 import game.entity.projectile.ProjectileBullet;
+import game.level.GameLevel;
 import game.level.Level;
 import game.network.Serialization.SField;
 import game.network.Serialization.SObject;
 import game.network.Serialization.SString;
 import game.network.Serialization.SerializationReader;
 import game.util.GameState;
+import game.util.Print;
+import game.util.TileCoordinate;
 
 public class NetworkPackage
 {
 	public static final short VERSION = 201;
 
 	private boolean isClient;
-	private boolean clientIsOnline = false;
-	private static Level level;
 
 	private static Projectile projectile = null;
 
 	public NetworkPackage(boolean isClient)
 	{
 		this.isClient = isClient;
-	}
-
-	public void tick(Level level)
-	{
-		NetworkPackage.level = level;
 	}
 
 	public static void shoot(Projectile projectile)
@@ -42,20 +38,20 @@ public class NetworkPackage
 
 	public byte[] getSendData(String targetIPAddress)
 	{
+		Level level = Game.getLevel();
+
+		SObject object = new SObject("Debug");
+		SField version = SField.Short("version", VERSION);
+		object.addField(version);
+
 		if(isClient)
 		{
-			SObject object = new SObject("Debug");
-			SField version = SField.Short("version", VERSION);
-
-			object.addField(version);
-
-			if(!clientIsOnline)
+			if(level == null)
 			{
 				SString joinPlayer = SString.String("requestJoin", "player123"); //TODO: Custom name and request join only in the beginning
 				object.addString(joinPlayer);
 			}
-
-			if(level != null)
+			else
 			{
 				SField xVelocity = SField.Float("xVel", level.getClientPlayer().getXVelocity());
 				SField yVelocity = SField.Float("yVel", level.getClientPlayer().getYVelocity());
@@ -78,13 +74,13 @@ public class NetworkPackage
 		}
 		else
 		{
-			SObject object = new SObject("Debug");
-			SField version = SField.Short("version", VERSION);
-			object.addField(version);
-
-			if(!Server.isClientOnline(targetIPAddress))
+			if(Server.isClientBanned(targetIPAddress) || !Server.isClientOnline(targetIPAddress))
 			{
-				SString kickPlayer = SString.String("kickPlayer", "connection refused");
+				SString kickPlayer;
+
+				if(Server.isClientBanned(targetIPAddress)) kickPlayer = SString.String("kickPlayer", "you are banned from this server");
+				else kickPlayer = SString.String("kickPlayer", "connection refused");
+
 				object.addString(kickPlayer);
 
 				byte[] data = new byte[object.getSize()];
@@ -95,6 +91,8 @@ public class NetworkPackage
 
 			if(level != null)
 			{
+				object.addField(SField.Long("levelSeed", Game.getLevel().getGameLevel().getSeed()));
+
 				//Tick players
 				List<Player> players = level.getPlayers();
 				for(Player player : players)
@@ -113,38 +111,24 @@ public class NetworkPackage
 
 					if(player == level.getPlayer(targetIPAddress)) isYourClientPlayer = 1;
 
-					SString playerUUID = SString.String("plUUID", player.getUUID().toString());
-					SString name = SString.String("plName", playerName);
-					SField xPos = SField.Integer("plXPos", player.getX());
-					SField yPos = SField.Integer("plYPos", player.getY());
-					SField xVel = SField.Float("plXVel", player.getXVelocity());
-					SField yVel = SField.Float("plYVel", player.getYVelocity());
-					SField isYourPlayer = SField.Integer("plCl", isYourClientPlayer);
-
-					object.addString(playerUUID);
-					object.addString(name);
-					object.addField(xPos);
-					object.addField(yPos);
-					object.addField(xVel);
-					object.addField(yVel);
-					object.addField(isYourPlayer);
+					object.addString(SString.String("plUUID", player.getUUID().toString()));
+					object.addString(SString.String("plName", playerName));
+					object.addField(SField.Integer("plXPos", player.getX()));
+					object.addField(SField.Integer("plYPos", player.getY()));
+					object.addField(SField.Float("plXVel", player.getXVelocity()));
+					object.addField(SField.Float("plYVel", player.getYVelocity()));
+					object.addField(SField.Integer("plCl", isYourClientPlayer));
 				}
 
 				//Tick all projectiles
 				List<Projectile> projectiles = level.getProjectiles();
 				for(Projectile projectile : projectiles)
 				{
-					SString projectileUUID = SString.String("prUUID", projectile.getUUID().toString());
-					SField xPos = SField.Integer("prXPos", projectile.getX());
-					SField yPos = SField.Integer("prYPos", projectile.getY());
-					SField angle = SField.Float("prDir", (float) projectile.getDirection());
-
-					object.addString(projectileUUID);
-					object.addField(xPos);
-					object.addField(yPos);
-					object.addField(angle);
+					object.addString(SString.String("prUUID", projectile.getUUID().toString()));
+					object.addField(SField.Integer("prXPos", projectile.getX()));
+					object.addField(SField.Integer("prYPos", projectile.getY()));
+					object.addField(SField.Float("prDir", (float) projectile.getDirection()));
 				}
-
 			}
 
 			byte[] data = new byte[object.getSize()];
@@ -156,7 +140,7 @@ public class NetworkPackage
 
 	public void recieveDataAsClient(byte[] data)
 	{
-		if(level == null) return;
+		Level level = Game.getLevel();
 
 		SObject object = SObject.deserialize(data, 0);
 		if(!validPacket(object)) return;
@@ -164,11 +148,20 @@ public class NetworkPackage
 		if(object.findString("kickPlayer") != null)
 		{
 			Game.setGameState(GameState.TitleScreen);
-			System.out.println("You got kicked from the server! Reason: " + object.findString("kickPlayer").getString());
+			Print.printInfo("You got kicked from the server! Reason: " + object.findString("kickPlayer").getString());
 			return;
 		}
 
-		clientIsOnline = true;
+		if(level == null)
+		{
+			if(object.findField("levelSeed") != null)
+			{
+				System.out.println(SerializationReader.readLong(object.findField("levelSeed").getData(),0));
+				Game.loadLevel(new GameLevel(SerializationReader.readLong(object.findField("levelSeed").getData(), 0), "Generated-Level",
+						new TileCoordinate(256, 256)));
+			}
+			return;
+		}
 
 		//Players
 		List<SString> playerUUIDs = object.findStrings("plUUID");
@@ -237,7 +230,10 @@ public class NetworkPackage
 
 	public void recieveDataAsHost(byte[] data, String IPAddressSender)
 	{
+		Level level = Game.getLevel();
+
 		if(level == null) return;
+		if(Server.isClientBanned(IPAddressSender)) return;
 
 		SObject object = SObject.deserialize(data, 0);
 		if(!validPacket(object)) return;
@@ -247,11 +243,10 @@ public class NetworkPackage
 			if(object.findString("requestJoin") != null)
 			{
 				Server.addClient(IPAddressSender);
-				if(!Server.isClientOnline(IPAddressSender)) return;
 
 				level.add(new OnlinePlayer(level.getSpawnLocation().getX(), level.getSpawnLocation().getY(), IPAddressSender,
 						object.findString("requestJoin").getString()));
-				System.out.println(object.findString("requestJoin").getString() + " joined the game!");
+				Print.printImportantInfo(object.findString("requestJoin").getString() + " joined the game!");
 			}
 
 			return;
@@ -267,7 +262,7 @@ public class NetworkPackage
 			//TODO: Anti cheat and stuff
 
 			if(xVelocity <= senderPlayer.getSpeed() && yVelocity <= senderPlayer.getSpeed()) senderPlayer.motion(xVelocity, yVelocity);
-			else System.out.println("Anti cheat detected illegal movement: " + xVelocity + " " + yVelocity);
+			else Print.printInfo("Anti cheat detected illegal movement: " + xVelocity + " " + yVelocity);
 
 			if(object.findField("prDir") != null)
 			{
@@ -288,21 +283,19 @@ public class NetworkPackage
 	{
 		if(object == null)
 		{
-			System.out.println("Failed to deserialize!");
+			Print.printError("Failed to deserialize!");
 			return false;
 		}
 
 		if(object.getName().equals("Debug") && object.findField("version") != null)
 		{
-			if(SerializationReader.readShort(object.findField("version").getData(), 0) != VERSION)
-			{
-				System.out.println("Invalid packet!");
-				return false;
-			}
-			return true;
+			if(SerializationReader.readShort(object.findField("version").getData(), 0) == VERSION) return true;
+
+			Print.printError("Client version not matching with server version!");
+			return false;
 		}
 
-		System.out.println("Invalid packet!");
+		Print.printError("Invalid packet!");
 		return false;
 	}
 }

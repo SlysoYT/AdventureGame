@@ -27,6 +27,13 @@ public class SerializationReader
 		return (data[pointer++] & 0xff) << 24 | (data[pointer++] & 0xff) << 16 | (data[pointer++] & 0xff) << 8 | (data[pointer] & 0xff);
 	}
 
+	public static long readLong(byte[] data, int pointer)
+	{
+		return (long) ((data[pointer++] & 0xff) << 48 | (data[pointer++] & 0xff) << 40 | (data[pointer++] & 0xff) << 32
+				| (data[pointer] & 0xff | data[pointer++] & 0xff) << 24 | (data[pointer++] & 0xff) << 16 | (data[pointer++] & 0xff) << 8
+				| (data[pointer] & 0xff));
+	}
+
 	public static float readFloat(byte[] data, int pointer)
 	{
 		return Float.intBitsToFloat(readInt(data, pointer));
@@ -34,7 +41,6 @@ public class SerializationReader
 
 	public static String readString(byte[] data, int pointer, int length)
 	{
-		//System.out.println(pointer + length + " " + data.length);
 		return new String(data, pointer, length);
 	}
 }

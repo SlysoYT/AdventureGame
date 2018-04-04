@@ -10,9 +10,7 @@ public class Server
 
 	public static void addClient(String IPAddress)
 	{
-		for(int i = 0; i < bannedClients.size(); i++)
-			if(bannedClients.get(i).getIPAddress().equals(IPAddress)) return;
-
+		if(isClientBanned(IPAddress)) return;
 		clients.add(new Client(IPAddress));
 	}
 
@@ -39,6 +37,14 @@ public class Server
 		{
 			if(clients.get(i).getIPAddress().equals(IPAddress)) return true;
 		}
+		return false;
+	}
+
+	public static boolean isClientBanned(String IPAddress)
+	{
+		for(int i = 0; i < bannedClients.size(); i++)
+			if(bannedClients.get(i).getIPAddress().equals(IPAddress)) return true;
+
 		return false;
 	}
 }

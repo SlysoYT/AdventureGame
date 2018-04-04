@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import game.audio.PlaySound;
 import game.chat.Chat;
 import game.entity.mob.player.Player;
+import game.graphics.GUI;
 import game.graphics.HUD;
 import game.graphics.Screen;
 import game.graphics.Screens.ScreenOnline;
@@ -33,6 +34,7 @@ import game.network.Connection;
 import game.settings.Settings;
 import game.util.GameState;
 import game.util.Print;
+import game.util.TileCoordinate;
 
 public class Game extends Canvas implements Runnable
 {
@@ -49,11 +51,12 @@ public class Game extends Canvas implements Runnable
 	private JFrame frame;
 	private Thread thread;
 
-	private Screen screen;
+	private static Screen screen;
 	private static Keyboard key;
 	private static Level level;
 	private static Player clientPlayer;
 	private static HUD hud;
+	private static GUI activeGui;
 
 	private static Connection connection = null;
 	private static boolean multiplayer = false;
@@ -93,14 +96,14 @@ public class Game extends Canvas implements Runnable
 		running = true;
 		thread = new Thread(this, "Game");
 		thread.start();
-		System.out.println("Launched game");
+		Print.printInfo("Launched game");
 	}
 
 	public synchronized void stop()
 	{
 		if(connection != null) connection.close();
 		running = false;
-		System.out.println("Stopped game");
+		Print.printInfo("Stopped game");
 		System.exit(0);
 
 		try
@@ -144,7 +147,7 @@ public class Game extends Canvas implements Runnable
 				timer += 1000;
 				currentFPS = fpsCount;
 				currentTPS = tpsCount;
-				if(debugMode) System.out.println("FPS: " + currentFPS + " | " + "TPS: " + currentTPS);
+				if(debugMode) Print.printInfo(currentFPS + " FPS" + " | " + currentTPS + " TPS");
 				tpsCount = 0;
 				fpsCount = 0;
 			}
@@ -162,28 +165,38 @@ public class Game extends Canvas implements Runnable
 		}
 		else if(gameState == GameState.IngameOnline || gameState == GameState.IngameOffline)
 		{
-			if(level == null) initLevel();
+			if(level == null && !(gameState == GameState.IngameOnline && !isHostingGame)) initLevel();
 
 			if(gameState == GameState.IngameOnline)
 			{
-				if(!multiplayer)
+				if(multiplayer)
 				{
-					connection.tick(null);
-					multiplayer = connection.connectionEstablished;
-				}
-				else
-				{
-					if(!connection.connectionEstablished) multiplayer = false; //Connection interrupted
-					else connection.tick(level);
+					if(isHostingGame)
+					{
+						if(connection == null) startMultiplayer(null);
+					}
+					else
+					{
+						connection.tick();
+						if(!connection.connectionEstablished) multiplayer = false; //Connection interrupted
+					}
 				}
 			}
 
 			key.tick();
+			Mouse.tick();
 			level.tick();
 			hud.tick();
+			if(activeGui != null) activeGui.tick();
 
 			if(key.escape && !clientPlayer.isTypingMessage())
 			{
+				if(gameState == GameState.IngameOnline)
+				{
+					connection.close();
+					connection = null;
+				}
+
 				unloadLevel();
 				setGameState(GameState.TitleScreen);
 			}
@@ -198,15 +211,16 @@ public class Game extends Canvas implements Runnable
 		}
 		else if(gameState == GameState.StartServer)
 		{
-			isHostingGame = true;
-			startMultiplayer(null);
 			setGameState(GameState.IngameOnline);
+			isHostingGame = true;
+			multiplayer = true;
 		}
 		else if(gameState == GameState.ConnectToServer)
 		{
 			isHostingGame = false;
 			startMultiplayer(hostIp);
-			setGameState(GameState.IngameOnline);
+			if(multiplayer) setGameState(GameState.IngameOnline);
+			else setGameState(GameState.TitleScreen);
 		}
 		else
 		{
@@ -238,6 +252,7 @@ public class Game extends Canvas implements Runnable
 
 			level.render(screen);
 			hud.render(screen);
+			screen.renderGUI(activeGui);
 		}
 		else if(gameState == GameState.Options)
 		{
@@ -338,8 +353,8 @@ public class Game extends Canvas implements Runnable
 	{
 		if(Game.level != null) unloadLevel();
 		Game.level = newLevel;
-		if(newLevel.isCustomLevel()) Level.loadLevel(newLevel);
-		else Level.generateLevel(newLevel);
+		if(newLevel.isCustomLevel()) level.loadLevel(newLevel);
+		else level.generateLevel(newLevel);
 		if(newLevel.getLevelName().equals("TitleScreen")) return;
 		clientPlayer = new Player(Game.level.getSpawnLocation().getX(), Game.level.getSpawnLocation().getY(), key);
 		level.add(clientPlayer);
@@ -347,16 +362,16 @@ public class Game extends Canvas implements Runnable
 
 	public static void unloadLevel()
 	{
-		Game.level.unloadLevel();
-		Game.level = null;
+		level.unloadLevel();
+		level = null;
 		multiplayer = false;
 	}
 
 	private static void initLevel()
 	{
 		//loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2));
-		//Random rand = new Random();
-		loadLevel(new GameLevel(43545834598L, "Generated-Level", 0, 0));
+		Random rand = new Random();
+		loadLevel(new GameLevel(rand.nextLong(), "Generated-Level", new TileCoordinate(256, 256)));
 		hud = new HUD(width, height, clientPlayer, level, key);
 		new Chat(level);
 	}
@@ -364,7 +379,8 @@ public class Game extends Canvas implements Runnable
 	private static void startMultiplayer(String ip)
 	{
 		connection = new Connection(ip, isHostingGame);
-		multiplayer = connection.connectionEstablished;
+		connection.connect();
+		multiplayer = isHostingGame || connection.connectionEstablished;
 	}
 
 	public static void terminate()
@@ -375,6 +391,11 @@ public class Game extends Canvas implements Runnable
 	public static Level getLevel()
 	{
 		return Game.level;
+	}
+
+	public static Screen getScreen()
+	{
+		return Game.screen;
 	}
 
 	public static byte getTPS()
@@ -403,9 +424,19 @@ public class Game extends Canvas implements Runnable
 		Game.gameState = gameState;
 	}
 
+	public static void setActiveGUI(GUI gui)
+	{
+		Game.activeGui = gui;
+	}
+
 	public static GameState getGameState()
 	{
 		return Game.gameState;
+	}
+
+	public static GUI getActiveGUI()
+	{
+		return Game.activeGui;
 	}
 
 	public static int getGameStateTicksPassed()

@@ -104,6 +104,16 @@ public class SField
 		writeBytes(field.data, 0, value);
 		return field;
 	}
+	
+	public static SField Long(String name, long value)
+	{
+		SField field = new SField();
+		field.setName(name);
+		field.type = (byte) Type.LONG.ordinal();
+		field.data = new byte[Type.getSize(Type.LONG)];
+		writeBytes(field.data, 0, value);
+		return field;
+	}
 
 	public static SField desirialize(byte[] data, int pointer)
 	{

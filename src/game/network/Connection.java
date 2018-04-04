@@ -12,13 +12,15 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import game.Game;
-import game.level.Level;
 import game.settings.Settings;
 import game.util.GameState;
 import game.util.Print;
 
-public class Connection
+public class Connection implements Runnable
 {
+	private Thread thread;
+	private boolean running = false;
+
 	private DatagramSocket hostSocket = null;
 	private DatagramSocket clientSocket = null;
 	private NetworkPackage networkPackage = null;
@@ -34,13 +36,20 @@ public class Connection
 	{
 		this.ip = ip;
 		isClient = !asHost;
+		if(!isClient) thread = new Thread(this, "Connection");
 	}
 
-	private void connect()
+	public void connect()
 	{
 		if(!isClient) connectAsHost();
 		else connectAsClient();
+
+		if(ip == null) return;
+
 		networkPackage = new NetworkPackage(isClient);
+
+		if(isClient) tick();
+		else startThread();
 	}
 
 	private void connectAsHost()
@@ -48,16 +57,18 @@ public class Connection
 		try
 		{
 			hostSocket = new DatagramSocket(port);
+			hostSocket.setSoTimeout(1000);
 			isClient = false;
 			if(ip == null) ip = getPublicIP();
 			if(ip == null)
 			{
-				System.out.println("You are not connected to the internet!");
+				Print.printError("You are not connected to the internet!");
+				close();
 				Game.setGameState(GameState.TitleScreen);
 				return;
 			}
 
-			Print.printInfo("Started server, IP: " + ip + " or " + InetAddress.getLocalHost());
+			Print.printImportantInfo("Started server, IP: " + ip + " or " + InetAddress.getLocalHost());
 		}
 		catch(IOException e)
 		{
@@ -70,6 +81,7 @@ public class Connection
 		try
 		{
 			clientSocket = new DatagramSocket(null);
+			clientSocket.setSoTimeout(2000);
 		}
 		catch(SocketException e)
 		{
@@ -77,27 +89,19 @@ public class Connection
 		}
 	}
 
-	public void tick(Level level)
+	public void tick()
 	{
-		if(level == null) connect();
-
 		if(isClient)
 		{
 			try
 			{
 				receiveData = new byte[1024];
 
-				networkPackage.tick(level);
-
 				InetAddress IPAddress = InetAddress.getByName(ip);
-				//TODO: Try with binding or something
-				//InetSocketAddress address = new InetSocketAddress("192.168.103.255", 3000);
-				//clientSocket.bind(addr);
 
 				//Send data
 				byte[] data = networkPackage.getSendData(IPAddress.getHostName());
 				DatagramPacket sendPacket = new DatagramPacket(data, data.length, IPAddress, port);
-				clientSocket.setSoTimeout(10000);
 				clientSocket.send(sendPacket);
 
 				//Recieve data
@@ -110,12 +114,12 @@ public class Connection
 			{
 				if(e instanceof UnknownHostException)
 				{
-					System.out.println("Unknown host!");
+					Print.printError("Unknown host!");
 					Game.setGameState(GameState.TitleScreen);
 				}
 				else if(e instanceof SocketTimeoutException)
 				{
-					System.out.println("Connection failed!");
+					Print.printError("Connection failed! Server not found!");
 					Game.setGameState(GameState.TitleScreen);
 				}
 				connectionEstablished = false;
@@ -129,10 +133,7 @@ public class Connection
 				if(!Settings.serverIsPublic) return;
 				receiveData = new byte[1024];
 
-				networkPackage.tick(level);
-
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-				hostSocket.setSoTimeout(3000);
 				try
 				{
 					hostSocket.receive(receivePacket); //Waits for client to connect
@@ -142,7 +143,6 @@ public class Connection
 				{
 					connectionEstablished = false;
 					e.printStackTrace();
-					close();
 					return;
 				}
 
@@ -176,7 +176,7 @@ public class Connection
 		}
 		catch(IOException e)
 		{
-			Print.printError(e.getMessage());
+			Print.printError("Couldn't connect, " + e.getMessage());
 			return null;
 		}
 	}
@@ -185,12 +185,42 @@ public class Connection
 	{
 		if(isClient) clientSocket.close();
 		else hostSocket.close();
+		stopThread();
 
-		System.out.println("Connection closed");
+		Print.printInfo("Connection closed");
 	}
 
 	public boolean isClient()
 	{
 		return isClient;
+	}
+
+	private synchronized void startThread()
+	{
+		running = true;
+		thread = new Thread(this, "Connection");
+		thread.start();
+	}
+
+	private synchronized void stopThread()
+	{
+		running = false;
+
+		try
+		{
+			thread.join();
+		}
+		catch(InterruptedException e)
+		{
+			Print.printError(e.getMessage());
+		}
+	}
+
+	public void run()
+	{
+		while(running)
+		{
+			tick(); //Runs at same TPS as the game
+		}
 	}
 }

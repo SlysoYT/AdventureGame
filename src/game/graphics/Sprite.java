@@ -54,15 +54,18 @@ public class Sprite
 	//Projectiles
 	public static final Sprite PROJECTILE_BULLET = new Sprite(DEFAULT_TILE_SIZE, 57, 63, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite PROJECTILE_BOOMERANG = new Sprite(DEFAULT_TILE_SIZE, 58, 63, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite PROJECTILE_GUARDIAN = new Sprite(DEFAULT_TILE_SIZE, 56, 63, SpriteSheet.SPRITE_SHEET);
 
 	//Items
 	public static final Sprite ITEM_HEALTH = new Sprite(DEFAULT_TILE_SIZE, 0, 6, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite[] COIN = { new Sprite(DEFAULT_TILE_SIZE, 1, 9, SpriteSheet.SPRITE_SHEET),
 			new Sprite(DEFAULT_TILE_SIZE, 1, 8, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 1, 7, SpriteSheet.SPRITE_SHEET),
 			new Sprite(DEFAULT_TILE_SIZE, 1, 6, SpriteSheet.SPRITE_SHEET) };
+	public static final Sprite ITEM_ARMOUR_LEATHER = new Sprite(DEFAULT_TILE_SIZE, 2, 6, SpriteSheet.SPRITE_SHEET);
 
-	//Inventory
-	public static final Sprite INVENTORY = new Sprite(864, 16, 160, 112, SpriteSheet.SPRITE_SHEET);
+	//GUIs
+	public static final Sprite INVENTORY = new Sprite(864, 16, 160, 109, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite INVENTORY_SHOP = new Sprite(864, 127, 160, 109, SpriteSheet.SPRITE_SHEET);
 
 	//Bars
 	public static final Sprite BAR_EMPTY = new Sprite(DEFAULT_TILE_SIZE, 63, 0, SpriteSheet.SPRITE_SHEET);
@@ -80,8 +83,14 @@ public class Sprite
 	public static final Sprite[] PLAYER_RIGHT = { new Sprite(DEFAULT_TILE_SIZE, 60, 63, SpriteSheet.SPRITE_SHEET),
 			new Sprite(DEFAULT_TILE_SIZE, 60, 62, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 60, 61, SpriteSheet.SPRITE_SHEET) };
 
+	//Salesman
+	public static final Sprite SALESMAN = new Sprite(DEFAULT_TILE_SIZE, 63, 60, SpriteSheet.SPRITE_SHEET);
+
+	//Guardian
+	public static final Sprite GUARDIAN = new Sprite(DEFAULT_TILE_SIZE, 59, 62, SpriteSheet.SPRITE_SHEET);
+
 	//Slime
-	public static final Sprite slimeDown = new Sprite(DEFAULT_TILE_SIZE, 59, 63, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite SLIME_DOWN = new Sprite(DEFAULT_TILE_SIZE, 59, 63, SpriteSheet.SPRITE_SHEET);
 
 	private static final String[] LETTER_ORDER = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
 			"U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",

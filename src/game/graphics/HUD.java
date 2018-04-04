@@ -13,7 +13,6 @@ import game.input.Keyboard;
 import game.input.Mouse;
 import game.level.Level;
 import game.level.tile.Tile;
-import game.util.Timer;
 
 public class HUD
 {
@@ -54,15 +53,6 @@ public class HUD
 		if(titleTextTimer > 0) titleTextTimer--;
 	}
 
-	public void tickLevelEnd()
-	{
-		if(key.enterToggle || key.spaceToggle)
-		{
-			//Game.setGameState(GameState.Ingame);
-			//TODO
-		}
-	}
-
 	public void render(Screen screen)
 	{
 		//Other infos
@@ -89,7 +79,6 @@ public class HUD
 
 	public void render(Graphics g, boolean debugMode)
 	{
-		renderTimer(g);
 		renderPlayerNames(g);
 		Chat.render(g);
 		if(!player.isDead()) renderAlert(g);
@@ -99,15 +88,6 @@ public class HUD
 			renderDebugScreen(g);
 			level.renderHitboxes(g);
 		}
-	}
-
-	private void renderTimer(Graphics g)
-	{
-		g.setFont(FONT);
-		g.setColor(Color.ORANGE);
-		float time = Timer.getPassedTime(false);
-		String timeStr = String.format("%.1f", time);
-		g.drawString(timeStr, width * SCALE - g.getFontMetrics().stringWidth(timeStr), FONT.getSize());
 	}
 
 	private void renderPlayerNames(Graphics g)
@@ -121,11 +101,10 @@ public class HUD
 		{
 			if(player instanceof OnlinePlayer)
 			{
-				String playerName = ((OnlinePlayer) player).getPlayerName();
-				int xPos = player.getX() * Game.SCALE - level.getClientPlayer().getX() * Game.SCALE + Game.width * Game.SCALE / 2
-						- g.getFontMetrics().stringWidth(playerName) / 2;
-				int yPos = player.getY() * Game.SCALE - level.getClientPlayer().getY() * Game.SCALE + Game.height * Game.SCALE / 2
-						- player.getHitbox().getHeight() / 2 - PLAYER_NAME_FONT.getSize();
+				String playerName = ((OnlinePlayer) player).getPlayerName(); //TODO: Pos of text
+				int xPos = player.getX() * Game.SCALE - Screen.getXOffset() * Game.SCALE - g.getFontMetrics().stringWidth(playerName) / 2;
+				int yPos = player.getY() * Game.SCALE - Screen.getYOffset() * Game.SCALE - player.getHitbox().getHeight() / 2
+						- PLAYER_NAME_FONT.getSize();
 				g.drawString(playerName, xPos, yPos);
 			}
 		}
@@ -149,7 +128,7 @@ public class HUD
 		g.setColor(Color.WHITE);
 		g.drawString("X: " + player.getX() + " | Y: " + player.getY(), 5, (DEBUG_FONT.getSize() + 3) * 2);
 		g.drawString("Velocity: " + player.getXVelocity() + ", " + player.getYVelocity(), 5, (DEBUG_FONT.getSize() + 3) * 3);
-		g.drawString("Dir: " + player.getDir(), 5, (DEBUG_FONT.getSize() + 3) * 4);
+		g.drawString("Dir: " + player.getDirectionFacing(), 5, (DEBUG_FONT.getSize() + 3) * 4);
 		g.drawString("Mouse: " + Mouse.getX() + ", " + Mouse.getY() + ", " + Mouse.getButton(), 5, (DEBUG_FONT.getSize() + 3) * 5);
 		g.drawString("Level: " + Game.getLevel().getLevelName(), 5, (DEBUG_FONT.getSize() + 3) * 6);
 

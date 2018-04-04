@@ -12,6 +12,7 @@ import java.util.UUID;
 import game.Game;
 import game.entity.Entity;
 import game.entity.mob.Mob;
+import game.entity.mob.Salesman;
 import game.entity.mob.Slime;
 import game.entity.mob.player.Player;
 import game.entity.particle.Particle;
@@ -23,16 +24,18 @@ import game.util.GameState;
 import game.util.Hitbox;
 import game.util.Node;
 import game.util.TileCoordinate;
-import game.util.Timer;
 import game.util.Vector2i;
 
 public class Level
 {
-	protected static int width, height;
-	protected static int[] tiles; //Contains pixel colors from level file that is currently loaded
-	private final static int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
-	private TileCoordinate playerSpawn = null;
-	private static String levelName = "";
+	protected int width, height;
+	protected int[] tiles; //Contains pixel colors from level file that is currently loaded
+	protected TileCoordinate playerSpawn = null;
+
+	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
+	private String levelName = "";
+
+	private GameLevel gameLevel;
 
 	private Random rand = new Random();
 
@@ -50,27 +53,19 @@ public class Level
 		}
 	};
 
-	public static byte currentLevelID = 0;
-
-	public Level(TileCoordinate playerSpawn)
+	public void loadLevel(GameLevel level)
 	{
-		this.playerSpawn = playerSpawn;
+		gameLevel = level;
+		gameLevel.loadLevel(level.getPath());
+		levelName = level.getLevelName();
 	}
 
-	public static void loadLevel(GameLevel level)
+	public void generateLevel(GameLevel level)
 	{
-		level.loadLevel(level.getPath());
-		Level.levelName = level.getLevelName();
-		Timer.reset();
-		Timer.start();
-	}
-
-	public static void generateLevel(GameLevel level)
-	{
-		level.loadLevel(level.getSeed());
-		Level.levelName = level.getLevelName();
-		Timer.reset();
-		Timer.start();
+		gameLevel = level;
+		gameLevel.loadLevel(level.getSeed());
+		levelName = level.getLevelName();
+		add(new Salesman(200, 200));
 	}
 
 	public void unloadLevel()
@@ -367,6 +362,24 @@ public class Level
 		return null;
 	}
 
+	public Player getNearestPlayer(Entity entity)
+	{
+		int x0 = entity.getX();
+		int y0 = entity.getY();
+
+		Player nearestPlayer = players.get(0);
+
+		for(Player player : players)
+		{
+			if(Math.sqrt(Math.pow(x0 - player.getX(), 2) + Math.pow(y0 - player.getY(), 2)) > Math
+					.sqrt(Math.pow(x0 - nearestPlayer.getX(), 2) + Math.pow(y0 - nearestPlayer.getY(), 2)))
+				nearestPlayer = player;
+		}
+		System.out.println(Math.sqrt(Math.pow(x0 - nearestPlayer.getX(), 2) + Math.pow(y0 - nearestPlayer.getY(), 2)));
+
+		return nearestPlayer;
+	}
+
 	public List<Projectile> getProjectiles()
 	{
 		List<Projectile> projectiles = new ArrayList<Projectile>();
@@ -457,7 +470,7 @@ public class Level
 		return distance;
 	}
 
-	public static Tile getTile(int x, int y)
+	public Tile getTile(int x, int y)
 	{
 		//If out of bounds, return void tile
 		if(x < 0 || y < 0 || x >= width || y >= height) return Tile.TILE_VOID;
@@ -505,8 +518,8 @@ public class Level
 		return playerSpawn;
 	}
 
-	public void setTile(int tileColor, int x, int y)
+	public GameLevel getGameLevel()
 	{
-		tiles[(x >> TILE_SIZE_SHIFTING) + (y >> TILE_SIZE_SHIFTING) * width] = tileColor;
+		return gameLevel;
 	}
 }

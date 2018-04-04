@@ -3,6 +3,7 @@ package game.entity.mob;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Game;
 import game.audio.PlaySound;
 import game.audio.Sounds;
 import game.entity.DamageValue;
@@ -16,12 +17,11 @@ import game.entity.spawner.ParticleSpawner;
 import game.entity.trap.Trap;
 import game.graphics.Screen;
 import game.graphics.Sprite;
-import game.level.Level;
 import game.util.Hitbox;
 
 public abstract class Mob extends Entity
 {
-	protected int dir = 0;
+	private int dir = 0;
 	private float xChangeFloat = 0, yChangeFloat = 0;
 	private float xVelocity = 0, yVelocity = 0;
 	private float movementSmoothness = 0.9F;
@@ -274,41 +274,49 @@ public abstract class Mob extends Entity
 
 	public boolean isInLiquid()
 	{
-		return Level.getTile((x - hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
-				.liquid()
-				|| Level.getTile((x + hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
+		return Game.getLevel()
+				.getTile((x - hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING).liquid()
+				|| Game.getLevel()
+						.getTile((x + hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
 						.liquid();
 	}
 
 	public boolean isOnBooster()
 	{
-		return Level.getTile((x - hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
+		return Game.getLevel()
+				.getTile((x - hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
 				.booster()
-				|| Level.getTile((x + hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
+				|| Game.getLevel()
+						.getTile((x + hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
 						.booster();
 	}
 
 	public boolean isOnIce()
 	{
-		return Level.getTile((x - hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
+		return Game.getLevel()
+				.getTile((x - hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
 				.sliding()
-				|| Level.getTile((x + hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
+				|| Game.getLevel()
+						.getTile((x + hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
 						.sliding();
 	}
 
 	public boolean isOnDeadly()
 	{
-		return Level.getTile((x - hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
-				.deadly()
-				|| Level.getTile((x + hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
+		return Game.getLevel()
+				.getTile((x - hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING).deadly()
+				|| Game.getLevel()
+						.getTile((x + hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
 						.deadly();
 	}
 
 	public boolean isOnCheckpoint()
 	{
-		return Level.getTile((x - hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
+		return Game.getLevel()
+				.getTile((x - hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
 				.checkpoint()
-				&& Level.getTile((x + hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
+				&& Game.getLevel()
+						.getTile((x + hitbox.getWidth() / 2) >> Screen.TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Screen.TILE_SIZE_SHIFTING)
 						.checkpoint();
 	}
 
@@ -391,7 +399,7 @@ public abstract class Mob extends Entity
 		return yVelocity;
 	}
 
-	public int getDir()
+	public int getDirectionFacing()
 	{
 		return dir;
 	}

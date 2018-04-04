@@ -3,7 +3,6 @@ package game.entity.particle;
 import game.entity.Entity;
 import game.graphics.Screen;
 import game.graphics.Sprite;
-import game.level.Level;
 import game.level.tile.Tile;
 
 public class Particle extends Entity
@@ -73,7 +72,7 @@ public class Particle extends Entity
 			int intY = (int) (Math.ceil(yt));
 			if(corner % 2 == 0) intX = (int) Math.floor(xt); //Left side
 			if(corner / 2 == 0) intY = (int) Math.floor(yt); //Upper side
-			if(Level.getTile(intX, intY).solid()) solid = true;
+			if(level.getTile(intX, intY).solid()) solid = true;
 		}
 
 		return solid;

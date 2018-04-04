@@ -10,11 +10,13 @@ import game.entity.mob.ability.Ability;
 import game.entity.mob.ability.AbilityRage;
 import game.entity.mob.ability.AbilityShooting;
 import game.entity.mob.ability.AbilityTeleporting;
+import game.entity.mob.effect.EffectMovementSpeed;
 import game.entity.projectile.Projectiles;
 import game.entity.spawner.ParticleSpawner;
-import game.graphics.Inventory;
 import game.graphics.Screen;
 import game.graphics.Sprite;
+import game.graphics.GUIs.GUIInventory;
+import game.graphics.GUIs.GUIInventoryType;
 import game.input.Keyboard;
 import game.input.Mouse;
 import game.input.TextInput;
@@ -24,7 +26,7 @@ import game.util.Hitbox;
 public class Player extends Mob
 {
 	private Keyboard input;
-	private Inventory inventory;
+	private GUIInventory inventory;
 
 	private boolean isClient;
 	private String IPAddress;
@@ -51,9 +53,8 @@ public class Player extends Mob
 
 		isClient = true;
 		this.input = input;
-		this.inventory = new Inventory(this);
+		this.inventory = new GUIInventory();
 
-		//primaryAbility = new AbilityShooting(this, Projectiles.ProjectileBoomerang, 100);
 		primaryAbility = new AbilityShooting(this, Projectiles.ProjectileBoomerang, 70);
 		secondaryAbility = new AbilityTeleporting(this, 360, 100);
 		passiveAbility = new AbilityRage(this, 600, 240);
@@ -94,8 +95,45 @@ public class Player extends Mob
 
 		if(!isClient) return;
 
-		inventory.tick(input);
+		primaryAbility.tick();
+		secondaryAbility.tick();
+		passiveAbility.tick();
 
+		if(inventory.armourEquipped()) this.applyEffect(new EffectMovementSpeed(1, 5, this));
+
+		if(input.inventoryToggle && !typingMessage)
+		{
+			if(Game.getActiveGUI() instanceof GUIInventory) Game.setActiveGUI(null);
+			else
+			{
+				inventory.setType(GUIInventoryType.PlayerInv);
+				Game.setActiveGUI(inventory);
+			}
+		}
+		if(Game.getActiveGUI() != null) return;
+
+		if(Mouse.getButton() == 1) primaryAbility.enable();
+		if(Mouse.getButton() == 3) secondaryAbility.enable();
+		if(Mouse.getButton() == 2) passiveAbility.enable();
+
+		handleChat();
+
+		if(typingMessage) return;
+
+		if(!(input.left && input.right))
+		{
+			if(input.left && !(isOnIce())) this.motion(-getSpeed(), 0F);
+			if(input.right && !(isOnIce())) this.motion(getSpeed(), 0F);
+		}
+		if(!(input.up && input.down))
+		{
+			if(input.up && !(isOnIce())) this.motion(0F, -getSpeed());
+			if(input.down && !(isOnIce())) this.motion(0F, getSpeed());
+		}
+	}
+
+	private void handleChat()
+	{
 		if(input.enterToggle && !typingMessage)
 		{
 			typingMessage = true;
@@ -115,28 +153,6 @@ public class Player extends Mob
 			}
 		}
 		else Chat.typingMessage(null);
-
-		if(!typingMessage)
-		{
-			if(!(input.left && input.right))
-			{
-				if(input.left && !(isOnIce())) this.motion(-getSpeed(), 0F);
-				if(input.right && !(isOnIce())) this.motion(getSpeed(), 0F);
-			}
-			if(!(input.up && input.down))
-			{
-				if(input.up && !(isOnIce())) this.motion(0F, -getSpeed());
-				if(input.down && !(isOnIce())) this.motion(0F, getSpeed());
-			}
-		}
-
-		primaryAbility.tick();
-		secondaryAbility.tick();
-		passiveAbility.tick();
-
-		if(Mouse.getButton() == 1) primaryAbility.enable();
-		if(Mouse.getButton() == 3) secondaryAbility.enable();
-		if(Mouse.getButton() == 2) passiveAbility.enable();
 	}
 
 	public void render(Screen screen)
@@ -145,13 +161,11 @@ public class Player extends Mob
 
 		getWalkingSprite();
 		screen.renderSprite(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, sprite, true);
-
-		inventory.render(screen);
 	}
 
 	protected void getWalkingSprite()
 	{
-		if(dir == 0)
+		if(getDirectionFacing() == 0)
 		{
 			sprite = Sprite.PLAYER_UP[0];
 			if(isMoving())
@@ -175,7 +189,7 @@ public class Player extends Mob
 			}
 		}
 
-		if(dir == 1)
+		if(getDirectionFacing() == 1)
 		{
 			sprite = Sprite.PLAYER_RIGHT[0];
 			if(isMoving())
@@ -199,7 +213,7 @@ public class Player extends Mob
 			}
 		}
 
-		if(dir == 2)
+		if(getDirectionFacing() == 2)
 		{
 			sprite = Sprite.PLAYER_DOWN[0];
 			if(isMoving())
@@ -223,7 +237,7 @@ public class Player extends Mob
 			}
 		}
 
-		if(dir == 3)
+		if(getDirectionFacing() == 3)
 		{
 			sprite = Sprite.PLAYER_LEFT[0];
 			if(isMoving())
@@ -274,7 +288,7 @@ public class Player extends Mob
 		return primaryAbility;
 	}
 
-	public Inventory getInventory()
+	public GUIInventory getInventory()
 	{
 		return inventory;
 	}

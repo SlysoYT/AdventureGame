@@ -26,7 +26,7 @@ public class Slime extends Mob
 
 	public Slime(int x, int y, float speed)
 	{
-		super(x, y, new Hitbox(-7, -1, 13, 7), Sprite.slimeDown, 20.0F, speed, 10.0F, 30);
+		super(x, y, new Hitbox(-7, -1, 13, 7), Sprite.SLIME_DOWN, 20.0F, speed, 10.0F, 30);
 		xGoal = x;
 		yGoal = y;
 	}
@@ -100,7 +100,7 @@ public class Slime extends Mob
 
 	public void render(Screen screen)
 	{
-		sprite = Sprite.slimeDown;
+		sprite = Sprite.SLIME_DOWN;
 		screen.renderSprite(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, sprite, true);
 	}
 

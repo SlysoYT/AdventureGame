@@ -2,9 +2,6 @@ package game.entity.mob.player;
 
 import java.util.UUID;
 
-import game.graphics.Screen;
-import game.level.tile.Tile;
-
 public class OnlinePlayer extends Player
 {
 	private String playerName;
@@ -19,15 +16,6 @@ public class OnlinePlayer extends Player
 	{
 		super(xPos, yPos, uuid);
 		this.playerName = playerName;
-	}
-
-	public void render(Screen screen)
-	{
-		if(this.isDead()) return;
-
-		getWalkingSprite();
-
-		screen.renderSprite(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, sprite, true);
 	}
 
 	public String getPlayerName()

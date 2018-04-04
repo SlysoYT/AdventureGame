@@ -16,11 +16,11 @@ import game.util.Hitbox;
 public abstract class Projectile extends Entity
 {
 	private final int xOrigin, yOrigin;
-	private double x, y;
 	private double newX, newY;
 	private Hitbox hitbox;
 	private Mob source;
 
+	protected double x, y;
 	protected double angle;
 	protected Sprite sprite;
 	protected double distance;

@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import game.Game;
 import game.entity.Entity;
+import game.entity.mob.Guardian;
 import game.entity.mob.Mob;
 import game.entity.mob.Salesman;
 import game.entity.mob.Slime;
@@ -65,7 +66,8 @@ public class Level
 		gameLevel = level;
 		gameLevel.loadLevel(level.getSeed());
 		levelName = level.getLevelName();
-		add(new Salesman(200, 200));
+		add(new Salesman(260 * Tile.DEFAULT_TILE_SIZE, 260 * Tile.DEFAULT_TILE_SIZE));
+		add(new Guardian(250 * Tile.DEFAULT_TILE_SIZE, 250 * Tile.DEFAULT_TILE_SIZE));
 	}
 
 	public void unloadLevel()
@@ -367,15 +369,17 @@ public class Level
 		int x0 = entity.getX();
 		int y0 = entity.getY();
 
-		Player nearestPlayer = players.get(0);
+		Player nearestPlayer = null;
 
 		for(Player player : players)
 		{
+			if(player.isDead()) continue;
+			if(nearestPlayer == null) nearestPlayer = player;
+
 			if(Math.sqrt(Math.pow(x0 - player.getX(), 2) + Math.pow(y0 - player.getY(), 2)) > Math
 					.sqrt(Math.pow(x0 - nearestPlayer.getX(), 2) + Math.pow(y0 - nearestPlayer.getY(), 2)))
 				nearestPlayer = player;
 		}
-		System.out.println(Math.sqrt(Math.pow(x0 - nearestPlayer.getX(), 2) + Math.pow(y0 - nearestPlayer.getY(), 2)));
 
 		return nearestPlayer;
 	}

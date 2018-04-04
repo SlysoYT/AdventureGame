@@ -28,8 +28,7 @@ public abstract class Projectile extends Entity
 	protected int range;
 	protected float damage;
 
-	protected Projectile(int x, int y, double direction, double speed, int range, float damage, Mob source, Hitbox hitbox,
-			Sprite sprite, UUID uuid)
+	protected Projectile(int x, int y, double direction, double speed, int range, float damage, Mob source, Hitbox hitbox, Sprite sprite, UUID uuid)
 	{
 		this.x = x;
 		this.y = y;
@@ -80,6 +79,7 @@ public abstract class Projectile extends Entity
 						&& projectileY >= mob.getY() + mob.getHitbox().getYOffset()
 						&& projectileY <= mob.getY() + mob.getHitbox().getYOffset() + mob.getHitbox().getHeight())
 				{
+					if(mob.isDead()) break;
 					onMobHit(mob);
 					this.remove();
 					return;
@@ -118,6 +118,11 @@ public abstract class Projectile extends Entity
 	public int getNewY()
 	{
 		return (int) newY;
+	}
+
+	public int getRange()
+	{
+		return range;
 	}
 
 	public Sprite getSprite()

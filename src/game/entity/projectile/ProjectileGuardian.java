@@ -12,7 +12,7 @@ public class ProjectileGuardian extends Projectile
 {
 	public ProjectileGuardian(int x, int y, double direction, Mob source, UUID uuid)
 	{
-		super(x, y, direction, 0.75D, 100, 7.0F, source, new Hitbox(-2, -2, 3, 3), Sprite.PROJECTILE_GUARDIAN, uuid);
+		super(x, y, direction, 2.25D, 170, 7.0F, source, new Hitbox(-2, -2, 3, 3), Sprite.PROJECTILE_GUARDIAN, uuid);
 	}
 
 	@Override

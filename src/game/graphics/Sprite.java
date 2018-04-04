@@ -87,7 +87,8 @@ public class Sprite
 	public static final Sprite SALESMAN = new Sprite(DEFAULT_TILE_SIZE, 63, 60, SpriteSheet.SPRITE_SHEET);
 
 	//Guardian
-	public static final Sprite GUARDIAN = new Sprite(DEFAULT_TILE_SIZE, 59, 62, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite GUARDIAN_RECOVERED = new Sprite(DEFAULT_TILE_SIZE, 59, 62, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite GUARDIAN_EMPTY = new Sprite(DEFAULT_TILE_SIZE, 59, 61, SpriteSheet.SPRITE_SHEET);
 
 	//Slime
 	public static final Sprite SLIME_DOWN = new Sprite(DEFAULT_TILE_SIZE, 59, 63, SpriteSheet.SPRITE_SHEET);

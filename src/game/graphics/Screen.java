@@ -98,7 +98,12 @@ public class Screen
 		}
 	}
 
-	public void applyAlpha(float alpha)
+	public void renderGUI(GUI gui)
+	{
+		if(gui != null) gui.render(this);
+	}
+
+	public void applyGamma(float alpha)
 	{
 		if(alpha < 0 || alpha == 1) return;
 		for(int x = 0; x < width; x++)

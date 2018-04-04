@@ -34,7 +34,7 @@ public class Chat
 
 	public static void addMessage(Message message)
 	{
-		//TODO: Send to server or if server recieve messages and send to all clients
+		//TODO: Send to server or if server, recieve messages and send to all clients
 		messages.add(message);
 		if(message.getSender().equals("Server")) return;
 		if(Game.getGameState() == GameState.IngameOffline) handleCommands(message);

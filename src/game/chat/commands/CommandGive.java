@@ -4,6 +4,8 @@ import java.util.List;
 
 import game.chat.Chat;
 import game.chat.Message;
+import game.entity.item.ItemArmourLeather;
+import game.entity.item.ItemCoin;
 import game.entity.item.ItemHealth;
 import game.entity.mob.player.Player;
 import game.level.Level;
@@ -27,8 +29,24 @@ public class CommandGive extends Command
 		if(item.equals("health"))
 		{
 			for(int i = 0; i < amount; i++)
-				level.getClientPlayer().getInventory().addItem(new ItemHealth(10));
+				if(!level.getClientPlayer().getInventory().addItem(new ItemHealth(0, 0, 10))) break;
 		}
-		else Chat.addMessage(new Message("Unknown item", "Server"));
+		else if(item.equals("coin") || item.equals("coins") || item.equals("money"))
+		{
+			for(int i = 0; i < amount; i++)
+				if(!level.getClientPlayer().getInventory().addItem(new ItemCoin(0, 0))) break;
+		}
+		else if(item.equals("armour"))
+		{
+			for(int i = 0; i < amount; i++)
+				if(!level.getClientPlayer().getInventory().addItem(new ItemArmourLeather(0, 0))) break;
+		}
+		else
+		{
+			Chat.addMessage(new Message("Unknown item", "Server"));
+			return;
+		}
+
+		Chat.addMessage(new Message("Given item " + item, "Server"));
 	}
 }

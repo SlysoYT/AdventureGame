@@ -4,6 +4,7 @@ import game.Game;
 import game.entity.mob.player.Player;
 import game.entity.projectile.ProjectileBoomerang;
 import game.entity.projectile.ProjectileBullet;
+import game.entity.projectile.ProjectileGuardian;
 import game.entity.projectile.Projectiles;
 import game.graphics.Screen;
 import game.input.Mouse;
@@ -29,8 +30,10 @@ public class AbilityShooting extends Ability
 
 		if(Game.getGameState() == GameState.IngameOffline)
 		{
-			if(projectile.ordinal() == 0) player.shoot(new ProjectileBoomerang(player.getX(), player.getY(), angle, player, null));
-			else if(projectile.ordinal() == 1) player.shoot(new ProjectileBullet(player.getX(), player.getY(), angle, player, null));
+			if(projectile == Projectiles.ProjectileBoomerang)
+				player.shoot(new ProjectileBoomerang(player.getX(), player.getY(), angle, player, null));
+			else if(projectile == Projectiles.ProjectileBullet) player.shoot(new ProjectileBullet(player.getX(), player.getY(), angle, player, null));
+			else if(projectile == Projectiles.ProjectileGuardian) player.shoot(new ProjectileGuardian(player.getX(), player.getY(), angle, player, null));
 		}
 		else
 		{

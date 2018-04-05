@@ -12,7 +12,7 @@ public class ProjectileBullet extends Projectile
 {
 	public ProjectileBullet(int x, int y, double direction, Mob source, UUID uuid)
 	{
-		super(x, y, direction, 2.5D, 100, 7.0F, source, new Hitbox(-2, -2, 3, 3), Sprite.PROJECTILE_BULLET, uuid);
+		super(x, y, direction, 2.5D, 100, 7.0F, source, new Hitbox(-2, -2, 3, 3), Sprite.PROJECTILE_BULLET, Projectiles.ProjectileBullet, uuid);
 	}
 
 	@Override

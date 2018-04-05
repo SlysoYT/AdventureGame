@@ -12,7 +12,7 @@ public class AbilityTrap extends Ability
 
 	public AbilityTrap(Player player, Traps trap, int cooldown)
 	{
-		super(player, cooldown);
+		super(player, cooldown, AbilityType.Secondary);
 		this.trap = trap;
 	}
 

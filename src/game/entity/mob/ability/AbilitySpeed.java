@@ -11,7 +11,7 @@ public class AbilitySpeed extends Ability
 
 	public AbilitySpeed(Player player, int cooldown, int duration, int amplifier)
 	{
-		super(player, cooldown);
+		super(player, cooldown, AbilityType.Secondary);
 		this.amplifier = amplifier;
 		this.duration = duration;
 	}

@@ -12,9 +12,9 @@ public abstract class AbilityDuration extends Ability
 
 	protected abstract void tickAbility();
 
-	public AbilityDuration(Player player, int cooldown, int duration)
+	public AbilityDuration(Player player, int cooldown, int duration, AbilityType type)
 	{
-		super(player, cooldown);
+		super(player, cooldown, type);
 
 		if(duration > 0) this.duration = duration;
 		else this.duration = 1;

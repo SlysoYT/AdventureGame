@@ -7,8 +7,11 @@ import game.Game;
 import game.entity.mob.player.OnlinePlayer;
 import game.entity.mob.player.Player;
 import game.entity.projectile.Projectile;
+import game.entity.projectile.ProjectileBoomerang;
 import game.entity.projectile.ProjectileBullet;
+import game.entity.projectile.ProjectileGuardian;
 import game.level.Level;
+import game.network.ingame.AbilityOnline;
 import game.network.serialization.SField;
 import game.network.serialization.SObject;
 import game.network.serialization.SString;
@@ -22,16 +25,9 @@ public class NetworkPackage
 
 	private boolean isClient;
 
-	private static Projectile projectile = null;
-
 	public NetworkPackage(boolean isClient)
 	{
 		this.isClient = isClient;
-	}
-
-	public static void shoot(Projectile projectile)
-	{
-		NetworkPackage.projectile = projectile;
 	}
 
 	public byte[] getSendData(String targetIPAddress)
@@ -57,12 +53,7 @@ public class NetworkPackage
 				object.addField(xVelocity);
 				object.addField(yVelocity);
 
-				if(projectile != null)
-				{
-					SField projectileDir = SField.Float("prDir", (float) projectile.getDirection());
-					object.addField(projectileDir);
-					projectile = null;
-				}
+				object = AbilityOnline.tick(object);
 			}
 
 			byte[] data = new byte[object.getSize()];
@@ -77,7 +68,7 @@ public class NetworkPackage
 				SString kickPlayer;
 
 				if(Server.isClientBanned(targetIPAddress)) kickPlayer = SString.String("kickPlayer", "you are banned from this server");
-				else kickPlayer = SString.String("kickPlayer", "connection refused");
+				else kickPlayer = SString.String("kickPlayer", "you got kicked from this server");
 
 				object.addString(kickPlayer);
 
@@ -107,7 +98,7 @@ public class NetworkPackage
 						playerName = "hostPlayer"; //TODO
 					}
 
-					if(player == level.getPlayer(targetIPAddress)) isYourClientPlayer = 1;
+					if(player == level.getPlayerByIP(targetIPAddress)) isYourClientPlayer = 1;
 
 					object.addString(SString.String("plUUID", player.getUUID().toString()));
 					object.addString(SString.String("plName", playerName));
@@ -126,6 +117,8 @@ public class NetworkPackage
 					object.addField(SField.Integer("prXPos", projectile.getX()));
 					object.addField(SField.Integer("prYPos", projectile.getY()));
 					object.addField(SField.Float("prDir", (float) projectile.getDirection()));
+					object.addField(SField.Integer("prType", projectile.getProjectileType().ordinal()));
+					object.addString(SString.String("prSrcUUID", projectile.getSource().getUUID().toString()));
 				}
 			}
 
@@ -197,6 +190,8 @@ public class NetworkPackage
 		List<SField> xPositionProjectiles = object.findFields("prXPos");
 		List<SField> yPositionProjectiles = object.findFields("prYPos");
 		List<SField> angleProjectiles = object.findFields("prDir");
+		List<SField> projectileTypes = object.findFields("prType");
+		List<SString> projectileSources = object.findStrings("prSrcUUID");
 
 		for(int i = 0; i < projectileUUIDs.size(); i++)
 		{
@@ -210,7 +205,13 @@ public class NetworkPackage
 			//Add projectile to level
 			if(projectile == null)
 			{
-				level.add(new ProjectileBullet(xPos, yPos, angle, null, uuid));
+				int type = SerializationReader.readInt(projectileTypes.get(i).getData(), 0);
+				Player source = level.getPlayer(UUID.fromString(projectileSources.get(i).getString())); //TODO: Entity with according UUID on client not found
+
+				if(type == 0) level.add(new ProjectileBoomerang(xPos, yPos, angle, source, uuid));
+				else if(type == 1) level.add(new ProjectileBullet(xPos, yPos, angle, source, uuid));
+				else level.add(new ProjectileGuardian(xPos, yPos, angle, source, uuid));
+
 			}
 			//Tick projectile
 			else
@@ -245,7 +246,7 @@ public class NetworkPackage
 			return;
 		}
 
-		Player senderPlayer = level.getPlayer(IPAddressSender);
+		Player senderPlayer = level.getPlayerByIP(IPAddressSender);
 
 		if(object.findField("xVel") != null && object.findField("yVel") != null)
 		{
@@ -258,18 +259,7 @@ public class NetworkPackage
 				senderPlayer.motion(xVelocity, yVelocity);
 			else Print.printInfo("Anti cheat detected illegal movement: " + xVelocity + " " + yVelocity);
 
-			if(object.findField("prDir") != null)
-			{
-				float angle = SerializationReader.readFloat(object.findField("prDir").getData(), 0);
-				level.add(new ProjectileBullet(senderPlayer.getX(), senderPlayer.getY(), angle, senderPlayer, null));
-			}
-		}
-
-		if(projectile != null)
-		{
-			level.add(new ProjectileBullet(level.getClientPlayer().getX(), level.getClientPlayer().getY(), projectile.getDirection(),
-					level.getClientPlayer(), null));
-			projectile = null;
+			AbilityOnline.recieveAsHost(IPAddressSender, object);
 		}
 	}
 

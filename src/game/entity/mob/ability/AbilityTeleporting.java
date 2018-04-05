@@ -13,7 +13,7 @@ public class AbilityTeleporting extends Ability
 
 	public AbilityTeleporting(Player player, int cooldown, int teleportationRange)
 	{
-		super(player, cooldown);
+		super(player, cooldown, AbilityType.Secondary);
 		this.range = teleportationRange;
 	}
 

@@ -19,6 +19,7 @@ public abstract class Projectile extends Entity
 	private double newX, newY;
 	private Hitbox hitbox;
 	private Mob source;
+	private Projectiles type;
 
 	protected double x, y;
 	protected double angle;
@@ -28,7 +29,8 @@ public abstract class Projectile extends Entity
 	protected int range;
 	protected float damage;
 
-	protected Projectile(int x, int y, double direction, double speed, int range, float damage, Mob source, Hitbox hitbox, Sprite sprite, UUID uuid)
+	protected Projectile(int x, int y, double direction, double speed, int range, float damage, Mob source, Hitbox hitbox, Sprite sprite,
+			Projectiles type, UUID uuid)
 	{
 		this.x = x;
 		this.y = y;
@@ -41,6 +43,7 @@ public abstract class Projectile extends Entity
 		this.source = source;
 		this.hitbox = hitbox;
 		this.sprite = sprite;
+		this.type = type;
 		setUUID(uuid);
 	}
 
@@ -153,6 +156,11 @@ public abstract class Projectile extends Entity
 	public int getSpriteSize()
 	{
 		return sprite.SIZE;
+	}
+
+	public Projectiles getProjectileType()
+	{
+		return type;
 	}
 
 	public Mob getSource()

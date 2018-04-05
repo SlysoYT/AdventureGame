@@ -10,7 +10,7 @@ public class AbilityRage extends AbilityDuration
 
 	public AbilityRage(Player player, int cooldown, int duration)
 	{
-		super(player, cooldown, duration);
+		super(player, cooldown, duration, AbilityType.Ultimate);
 		abilityShooting = new AbilityShooting(player, Projectiles.ProjectileBullet, 10);
 
 	}

@@ -1,6 +1,6 @@
 package game.network.serialization;
 
-import static game.network.serialization.SerializationWriter.*;
+import static game.network.serialization.SerializationWriter.writeBytes;
 
 public class SField
 {
@@ -49,8 +49,8 @@ public class SField
 	{
 		SField field = new SField();
 		field.setName(name);
-		field.type = (byte) Type.BYTE.ordinal();
-		field.data = new byte[Type.getSize(Type.BYTE)];
+		field.type = (byte) DataType.BYTE.ordinal();
+		field.data = new byte[DataType.getSize(DataType.BYTE)];
 		writeBytes(field.data, 0, value);
 		return field;
 	}
@@ -59,8 +59,8 @@ public class SField
 	{
 		SField field = new SField();
 		field.setName(name);
-		field.type = (byte) Type.BOOLEAN.ordinal();
-		field.data = new byte[Type.getSize(Type.BOOLEAN)];
+		field.type = (byte) DataType.BOOLEAN.ordinal();
+		field.data = new byte[DataType.getSize(DataType.BOOLEAN)];
 		writeBytes(field.data, 0, value);
 		return field;
 	}
@@ -69,8 +69,8 @@ public class SField
 	{
 		SField field = new SField();
 		field.setName(name);
-		field.type = (byte) Type.CHAR.ordinal();
-		field.data = new byte[Type.getSize(Type.CHAR)];
+		field.type = (byte) DataType.CHAR.ordinal();
+		field.data = new byte[DataType.getSize(DataType.CHAR)];
 		writeBytes(field.data, 0, value);
 		return field;
 	}
@@ -79,8 +79,8 @@ public class SField
 	{
 		SField field = new SField();
 		field.setName(name);
-		field.type = (byte) Type.SHORT.ordinal();
-		field.data = new byte[Type.getSize(Type.SHORT)];
+		field.type = (byte) DataType.SHORT.ordinal();
+		field.data = new byte[DataType.getSize(DataType.SHORT)];
 		writeBytes(field.data, 0, value);
 		return field;
 	}
@@ -89,8 +89,8 @@ public class SField
 	{
 		SField field = new SField();
 		field.setName(name);
-		field.type = (byte) Type.INTEGER.ordinal();
-		field.data = new byte[Type.getSize(Type.INTEGER)];
+		field.type = (byte) DataType.INTEGER.ordinal();
+		field.data = new byte[DataType.getSize(DataType.INTEGER)];
 		writeBytes(field.data, 0, value);
 		return field;
 	}
@@ -99,18 +99,18 @@ public class SField
 	{
 		SField field = new SField();
 		field.setName(name);
-		field.type = (byte) Type.FLOAT.ordinal();
-		field.data = new byte[Type.getSize(Type.FLOAT)];
+		field.type = (byte) DataType.FLOAT.ordinal();
+		field.data = new byte[DataType.getSize(DataType.FLOAT)];
 		writeBytes(field.data, 0, value);
 		return field;
 	}
-	
+
 	public static SField Long(String name, long value)
 	{
 		SField field = new SField();
 		field.setName(name);
-		field.type = (byte) Type.LONG.ordinal();
-		field.data = new byte[Type.getSize(Type.LONG)];
+		field.type = (byte) DataType.LONG.ordinal();
+		field.data = new byte[DataType.getSize(DataType.LONG)];
 		writeBytes(field.data, 0, value);
 		return field;
 	}
@@ -131,7 +131,7 @@ public class SField
 		field.type = SerializationReader.readByte(data, pointer);
 		pointer++;
 
-		field.data = new byte[Type.getSize(field.type)];
+		field.data = new byte[DataType.getSize(field.type)];
 
 		for(int i = 0; i < field.data.length; i++)
 		{

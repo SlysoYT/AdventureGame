@@ -1,10 +1,10 @@
 package game.network.serialization;
 
-public enum Type
+public enum DataType
 {
 	UNKNOWN, BYTE, CHAR, SHORT, INTEGER, FLOAT, BOOLEAN, LONG;
 
-	public static int getSize(Type type)
+	public static int getSize(DataType type)
 	{
 		switch(type)
 		{
@@ -30,29 +30,8 @@ public enum Type
 		return 0;
 	}
 
-	public static int getSize(int type)
+	public static int getSize(int ordinal)
 	{
-		switch(type)
-		{
-		case 1:
-			return 1;
-		case 6:
-			return 1;
-		case 2:
-			return 2;
-		case 3:
-			return 2;
-		case 4:
-			return 4;
-		case 5:
-			return 4;
-		case 7:
-			return 8;
-		case 0:
-			break;
-		default:
-			break;
-		}
-		return 0;
+		return getSize(DataType.values()[ordinal]);
 	}
 }

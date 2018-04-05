@@ -33,12 +33,12 @@ public class SArray
 		pointer = SerializationWriter.writeBytes(destination, pointer, type);
 		pointer = SerializationWriter.writeBytes(destination, pointer, count);
 
-		if(type == Type.BYTE.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, data);
-		else if(type == Type.BOOLEAN.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, booleanData);
-		else if(type == Type.CHAR.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, charData);
-		else if(type == Type.SHORT.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, shortData);
-		else if(type == Type.INTEGER.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, intData);
-		else if(type == Type.FLOAT.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, floatData);
+		if(type == DataType.BYTE.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, data);
+		else if(type == DataType.BOOLEAN.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, booleanData);
+		else if(type == DataType.CHAR.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, charData);
+		else if(type == DataType.SHORT.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, shortData);
+		else if(type == DataType.INTEGER.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, intData);
+		else if(type == DataType.FLOAT.ordinal()) pointer = SerializationWriter.writeBytes(destination, pointer, floatData);
 		return pointer;
 	}
 
@@ -49,12 +49,12 @@ public class SArray
 
 	public int getDataSize()
 	{
-		if(type == Type.BYTE.ordinal()) return data.length * Type.getSize(Type.BYTE);
-		else if(type == Type.BOOLEAN.ordinal()) return booleanData.length * Type.getSize(Type.BOOLEAN);
-		else if(type == Type.CHAR.ordinal()) return charData.length * Type.getSize(Type.CHAR);
-		else if(type == Type.SHORT.ordinal()) return shortData.length * Type.getSize(Type.SHORT);
-		else if(type == Type.INTEGER.ordinal()) return intData.length * Type.getSize(Type.INTEGER);
-		else if(type == Type.FLOAT.ordinal()) return floatData.length * Type.getSize(Type.FLOAT);
+		if(type == DataType.BYTE.ordinal()) return data.length * DataType.getSize(DataType.BYTE);
+		else if(type == DataType.BOOLEAN.ordinal()) return booleanData.length * DataType.getSize(DataType.BOOLEAN);
+		else if(type == DataType.CHAR.ordinal()) return charData.length * DataType.getSize(DataType.CHAR);
+		else if(type == DataType.SHORT.ordinal()) return shortData.length * DataType.getSize(DataType.SHORT);
+		else if(type == DataType.INTEGER.ordinal()) return intData.length * DataType.getSize(DataType.INTEGER);
+		else if(type == DataType.FLOAT.ordinal()) return floatData.length * DataType.getSize(DataType.FLOAT);
 		else return 0;
 	}
 
@@ -62,7 +62,7 @@ public class SArray
 	{
 		SArray array = new SArray();
 		array.setName(name);
-		array.type = (byte) Type.BYTE.ordinal();
+		array.type = (byte) DataType.BYTE.ordinal();
 		array.count = data.length;
 		array.data = data;
 		return array;
@@ -72,7 +72,7 @@ public class SArray
 	{
 		SArray array = new SArray();
 		array.setName(name);
-		array.type = (byte) Type.BOOLEAN.ordinal();
+		array.type = (byte) DataType.BOOLEAN.ordinal();
 		array.count = data.length;
 		array.booleanData = data;
 		return array;
@@ -82,7 +82,7 @@ public class SArray
 	{
 		SArray array = new SArray();
 		array.setName(name);
-		array.type = (byte) Type.CHAR.ordinal();
+		array.type = (byte) DataType.CHAR.ordinal();
 		array.count = data.length;
 		array.charData = data;
 		return array;
@@ -92,7 +92,7 @@ public class SArray
 	{
 		SArray array = new SArray();
 		array.setName(name);
-		array.type = (byte) Type.SHORT.ordinal();
+		array.type = (byte) DataType.SHORT.ordinal();
 		array.count = data.length;
 		array.shortData = data;
 		return array;
@@ -102,7 +102,7 @@ public class SArray
 	{
 		SArray array = new SArray();
 		array.setName(name);
-		array.type = (byte) Type.INTEGER.ordinal();
+		array.type = (byte) DataType.INTEGER.ordinal();
 		array.count = data.length;
 		array.intData = data;
 		return array;
@@ -112,7 +112,7 @@ public class SArray
 	{
 		SArray array = new SArray();
 		array.setName(name);
-		array.type = (byte) Type.FLOAT.ordinal();
+		array.type = (byte) DataType.FLOAT.ordinal();
 		array.count = data.length;
 		array.floatData = data;
 		return array;
@@ -137,7 +137,7 @@ public class SArray
 		array.count = SerializationReader.readInt(data, pointer);
 		pointer += 4;
 
-		if(array.type == Type.BYTE.ordinal())
+		if(array.type == DataType.BYTE.ordinal())
 		{
 			//TODO
 		}

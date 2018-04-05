@@ -165,7 +165,7 @@ public class Game extends Canvas implements Runnable
 		}
 		else if(gameState == GameState.IngameOnline || gameState == GameState.IngameOffline)
 		{
-			if(level == null && !(gameState == GameState.IngameOnline && !isHostingGame)) initLevel();
+			if(level == null && !(gameState == GameState.IngameOnline && !isHostingGame)) loadLevel(null, -1);
 
 			if(gameState == GameState.IngameOnline)
 			{
@@ -349,7 +349,27 @@ public class Game extends Canvas implements Runnable
 		});
 	}
 
-	public static void loadLevel(GameLevel newLevel)
+	public static void loadLevel(GameLevel gameLevel, long seed)
+	{
+		if(gameLevel != null) initLevel(gameLevel);
+		else
+		{
+			if(seed == -1)
+			{
+				Random rand = new Random();
+				initLevel(new GameLevel(rand.nextLong(), "Generated-Level", new TileCoordinate(256, 256)));
+			}
+			else
+			{
+				initLevel(new GameLevel(seed, "Generated-Level", new TileCoordinate(256, 256)));
+			}
+		}
+
+		hud = new HUD(width, height, clientPlayer, level, key);
+		new Chat(level);
+	}
+
+	private static void initLevel(GameLevel newLevel)
 	{
 		if(Game.level != null) unloadLevel();
 		Game.level = newLevel;
@@ -365,15 +385,6 @@ public class Game extends Canvas implements Runnable
 		level.unloadLevel();
 		level = null;
 		multiplayer = false;
-	}
-
-	private static void initLevel()
-	{
-		//loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2));
-		Random rand = new Random();
-		loadLevel(new GameLevel(rand.nextLong(), "Generated-Level", new TileCoordinate(256, 256)));
-		hud = new HUD(width, height, clientPlayer, level, key);
-		new Chat(level);
 	}
 
 	private static void startMultiplayer(String ip)

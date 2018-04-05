@@ -20,8 +20,8 @@ public class GenerateLevel
 			//Grass biome
 			if(normValues[i] < 0.5F)
 			{
-				if(normValues[i] < 0.1F) tileValues[i] = Tile.COL_TILE_DIRT;
-				else if(normValues[i] < 0.3F) tileValues[i] = Tile.COL_TILE_WATER;
+				if(normValues[i] < 0.27F) tileValues[i] = Tile.COL_TILE_DIRT;
+				else if(normValues[i] < 0.32F) tileValues[i] = Tile.COL_TILE_WATER;
 				else
 				{
 					int random = rand.nextInt() % 70;

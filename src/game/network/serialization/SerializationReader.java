@@ -1,4 +1,4 @@
-package game.network.Serialization;
+package game.network.serialization;
 
 public class SerializationReader
 {
@@ -14,24 +14,28 @@ public class SerializationReader
 
 	public static char readChar(byte[] data, int pointer)
 	{
-		return (char) ((data[pointer++] & 0xff) << 8 | (data[pointer] & 0xff));
+		return (char) ((data[pointer++] & 0xFF) << 8 | (data[pointer] & 0xFF));
 	}
 
 	public static short readShort(byte[] data, int pointer)
 	{
-		return (short) ((data[pointer++] & 0xff) << 8 | (data[pointer] & 0xff));
+		return (short) ((data[pointer++] & 0xFF) << 8 | (data[pointer] & 0xFF));
 	}
 
 	public static int readInt(byte[] data, int pointer)
 	{
-		return (data[pointer++] & 0xff) << 24 | (data[pointer++] & 0xff) << 16 | (data[pointer++] & 0xff) << 8 | (data[pointer] & 0xff);
+		return (data[pointer++] & 0xFF) << 24 | (data[pointer++] & 0xFF) << 16 | (data[pointer++] & 0xFF) << 8 | (data[pointer] & 0xFF);
 	}
 
 	public static long readLong(byte[] data, int pointer)
 	{
-		return (long) ((data[pointer++] & 0xff) << 48 | (data[pointer++] & 0xff) << 40 | (data[pointer++] & 0xff) << 32
-				| (data[pointer] & 0xff | data[pointer++] & 0xff) << 24 | (data[pointer++] & 0xff) << 16 | (data[pointer++] & 0xff) << 8
-				| (data[pointer] & 0xff));
+		long val = 0;
+		for(int i = 0; i < 8; i++)
+		{
+			val <<= 8;
+			val |= (data[i] & 0xFF);
+		}
+		return val;
 	}
 
 	public static float readFloat(byte[] data, int pointer)

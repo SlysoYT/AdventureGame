@@ -8,15 +8,13 @@ import game.entity.mob.player.OnlinePlayer;
 import game.entity.mob.player.Player;
 import game.entity.projectile.Projectile;
 import game.entity.projectile.ProjectileBullet;
-import game.level.GameLevel;
 import game.level.Level;
-import game.network.Serialization.SField;
-import game.network.Serialization.SObject;
-import game.network.Serialization.SString;
-import game.network.Serialization.SerializationReader;
+import game.network.serialization.SField;
+import game.network.serialization.SObject;
+import game.network.serialization.SString;
+import game.network.serialization.SerializationReader;
 import game.util.GameState;
 import game.util.Print;
-import game.util.TileCoordinate;
 
 public class NetworkPackage
 {
@@ -154,12 +152,7 @@ public class NetworkPackage
 
 		if(level == null)
 		{
-			if(object.findField("levelSeed") != null)
-			{
-				System.out.println(SerializationReader.readLong(object.findField("levelSeed").getData(),0));
-				Game.loadLevel(new GameLevel(SerializationReader.readLong(object.findField("levelSeed").getData(), 0), "Generated-Level",
-						new TileCoordinate(256, 256)));
-			}
+			if(object.findField("levelSeed") != null) Game.loadLevel(null, SerializationReader.readLong(object.findField("levelSeed").getData(), 0));
 			return;
 		}
 
@@ -261,7 +254,8 @@ public class NetworkPackage
 
 			//TODO: Anti cheat and stuff
 
-			if(xVelocity <= senderPlayer.getSpeed() && yVelocity <= senderPlayer.getSpeed()) senderPlayer.motion(xVelocity, yVelocity);
+			if(Math.abs(xVelocity) <= senderPlayer.getSpeed() && Math.abs(yVelocity) <= senderPlayer.getSpeed())
+				senderPlayer.motion(xVelocity, yVelocity);
 			else Print.printInfo("Anti cheat detected illegal movement: " + xVelocity + " " + yVelocity);
 
 			if(object.findField("prDir") != null)

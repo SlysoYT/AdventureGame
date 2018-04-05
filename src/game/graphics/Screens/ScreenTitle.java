@@ -74,7 +74,7 @@ public class ScreenTitle
 
 	private static void init()
 	{
-		Game.loadLevel(new GameLevel("/levels/TitleScreen.png", "TitleScreen", 2, 2));
+		Game.loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2), -1);
 
 		for(int i = 0; i < 10; i++)
 		{

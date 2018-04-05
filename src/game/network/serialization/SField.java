@@ -1,6 +1,6 @@
-package game.network.Serialization;
+package game.network.serialization;
 
-import static game.network.Serialization.SerializationWriter.*;
+import static game.network.serialization.SerializationWriter.*;
 
 public class SField
 {

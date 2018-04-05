@@ -1,4 +1,4 @@
-package game.network.Serialization;
+package game.network.serialization;
 
 public class SerializationWriter
 {

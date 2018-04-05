@@ -1,6 +1,6 @@
-package game.network.Serialization;
+package game.network.serialization;
 
-import static game.network.Serialization.SerializationWriter.writeBytes;
+import static game.network.serialization.SerializationWriter.writeBytes;
 
 import java.util.ArrayList;
 import java.util.List;

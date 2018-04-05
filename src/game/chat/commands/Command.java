@@ -8,7 +8,7 @@ import game.entity.mob.player.Player;
 
 public abstract class Command
 {
-	private String name;
+	private String command;
 	private String usage;
 	private String description;
 	private byte numberOfArguments = -1;
@@ -17,17 +17,17 @@ public abstract class Command
 
 	protected abstract void onEnable(List<String> args, Player sender);
 
-	protected Command(String name, String usage, String description, byte numberOfArguments)
+	protected Command(String command, String usage, String description, byte numberOfArguments)
 	{
-		this.name = name;
+		this.command = command;
 		this.usage = usage;
 		this.description = description;
 		this.numberOfArguments = numberOfArguments;
 	}
 
-	protected Command(String name, String usage, String description, byte minNumberOfArguments, byte maxNumberOfArguments)
+	protected Command(String command, String usage, String description, byte minNumberOfArguments, byte maxNumberOfArguments)
 	{
-		this.name = name;
+		this.command = command;
 		this.usage = usage;
 		this.description = description;
 		this.minNumberOfArguments = minNumberOfArguments;
@@ -56,9 +56,9 @@ public abstract class Command
 		}
 	}
 
-	public String getName()
+	public String getCommand()
 	{
-		return name;
+		return command;
 	}
 
 	public String getUsage()

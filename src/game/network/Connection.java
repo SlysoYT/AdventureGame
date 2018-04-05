@@ -185,8 +185,7 @@ public class Connection implements Runnable
 	{
 		if(isClient) clientSocket.close();
 		else hostSocket.close();
-		stopThread();
-
+		if(!isClient) stopThread();
 		Print.printInfo("Connection closed");
 	}
 

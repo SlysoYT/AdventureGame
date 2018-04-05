@@ -3,6 +3,8 @@ package game.network;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Game;
+
 public class Server
 {
 	private static List<Client> clients = new ArrayList<Client>();
@@ -14,12 +16,13 @@ public class Server
 		clients.add(new Client(IPAddress));
 	}
 
-	public static void removeClient(String IPAddress)
+	public static void kickClient(String IPAddress)
 	{
 		for(int i = 0; i < clients.size(); i++)
 		{
 			if(clients.get(i).getIPAddress().equals(IPAddress))
 			{
+				Game.getLevel().getPlayerByIP(IPAddress).remove();
 				clients.remove(i);
 				return;
 			}
@@ -28,6 +31,7 @@ public class Server
 
 	public static void banClient(String IPAddress)
 	{
+		if(Game.getLevel().getPlayerByIP(IPAddress) != null) Game.getLevel().getPlayerByIP(IPAddress).remove();
 		bannedClients.add(new Client(IPAddress));
 	}
 

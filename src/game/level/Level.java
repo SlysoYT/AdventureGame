@@ -15,12 +15,12 @@ import game.entity.mob.Guardian;
 import game.entity.mob.Mob;
 import game.entity.mob.Salesman;
 import game.entity.mob.Slime;
+import game.entity.mob.player.OnlinePlayer;
 import game.entity.mob.player.Player;
 import game.entity.particle.Particle;
 import game.entity.projectile.Projectile;
 import game.graphics.Screen;
 import game.level.tile.Tile;
-import game.network.NetworkPackage;
 import game.util.GameState;
 import game.util.Hitbox;
 import game.util.Node;
@@ -290,8 +290,6 @@ public class Level
 		else if(e instanceof Projectile)
 		{
 			entities.add((Projectile) e);
-			if(((Projectile) e).getSource() == getClientPlayer() && Game.getGameState() == GameState.IngameOnline)
-				NetworkPackage.shoot(((Projectile) e));
 		}
 		else if(e instanceof Player) players.add((Player) e);
 		else entities.add(e);
@@ -333,7 +331,7 @@ public class Level
 		return players;
 	}
 
-	public Player getPlayer(String IPAddress)
+	public Player getPlayerByIP(String IPAddress)
 	{
 		if(IPAddress == null) return null;
 
@@ -341,6 +339,17 @@ public class Level
 		{
 			if(players.get(i).getIPAddress() == null) continue;
 			if(players.get(i).getIPAddress().equals(IPAddress)) return players.get(i);
+		}
+
+		return null;
+	}
+
+	public Player getPlayerByName(String playerName)
+	{
+		for(Player player : players)
+		{
+			if(!(player instanceof OnlinePlayer)) continue;
+			if(((OnlinePlayer) player).getPlayerName().equals(playerName)) return player;
 		}
 
 		return null;

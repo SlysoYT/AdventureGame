@@ -8,8 +8,10 @@ import java.util.List;
 
 import game.Game;
 import game.chat.commands.Command;
+import game.chat.commands.CommandBan;
 import game.chat.commands.CommandGive;
 import game.chat.commands.CommandHelp;
+import game.chat.commands.CommandKick;
 import game.chat.commands.CommandKill;
 import game.chat.commands.CommandTeleport;
 import game.input.Keyboard;
@@ -30,6 +32,8 @@ public class Chat
 		commands.add(new CommandHelp());
 		commands.add(new CommandKill(level));
 		commands.add(new CommandTeleport());
+		commands.add(new CommandKick());
+		commands.add(new CommandBan());
 	}
 
 	public static void addMessage(Message message)
@@ -37,7 +41,7 @@ public class Chat
 		//TODO: Send to server or if server, recieve messages and send to all clients
 		messages.add(message);
 		if(message.getSender().equals("Server")) return;
-		if(Game.getGameState() == GameState.IngameOffline) handleCommands(message);
+		if(Game.getGameState() == GameState.IngameOffline || Game.getGameState() == GameState.IngameOnline) handleCommands(message);
 	}
 
 	private static void handleCommands(Message message)
@@ -69,7 +73,7 @@ public class Chat
 
 		for(Command cmd : commands)
 		{
-			if(cmd.getName().equals(command))
+			if(cmd.getCommand().equals(command))
 			{
 				cmd.enableCommand(args, Game.getLevel().getClientPlayer());
 				return;

@@ -27,6 +27,7 @@ public class Connection implements Runnable
 
 	private String ip;
 	private int port = 22592;
+	private final int packetSize = 4096;
 	private boolean isClient;
 	public boolean connectionEstablished = false;
 
@@ -95,7 +96,7 @@ public class Connection implements Runnable
 		{
 			try
 			{
-				receiveData = new byte[1024];
+				receiveData = new byte[packetSize];
 
 				InetAddress IPAddress = InetAddress.getByName(ip);
 
@@ -131,7 +132,7 @@ public class Connection implements Runnable
 			try
 			{
 				if(!Settings.serverIsPublic) return;
-				receiveData = new byte[1024];
+				receiveData = new byte[packetSize];
 
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				try

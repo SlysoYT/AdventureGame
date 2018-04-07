@@ -2,6 +2,7 @@ package game.entity.mob;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import game.Game;
 import game.audio.PlaySound;
@@ -45,7 +46,7 @@ public abstract class Mob extends Entity
 	 * Initialize all mob variables such as the starting location, the hitbox,
 	 * etc.
 	 */
-	protected Mob(int xSpawn, int ySpawn, Hitbox hitbox, Sprite sprite, float maxHealth, float speed, float attackDamage, int attackSpeed)
+	protected Mob(int xSpawn, int ySpawn, Hitbox hitbox, Sprite sprite, float maxHealth, float speed, float attackDamage, int attackSpeed, UUID uuid)
 	{
 		this.x = xSpawn;
 		this.y = ySpawn;
@@ -55,6 +56,7 @@ public abstract class Mob extends Entity
 		this.setSpeed(speed);
 		this.setAttackDamage(attackDamage);
 		this.setAttackSpeed(attackSpeed);
+		setUUID(uuid);
 	}
 
 	private void move(int xChange, int yChange)

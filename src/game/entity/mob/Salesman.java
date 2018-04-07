@@ -1,5 +1,7 @@
 package game.entity.mob;
 
+import java.util.UUID;
+
 import game.Game;
 import game.entity.item.ItemArmourLeather;
 import game.graphics.Screen;
@@ -10,9 +12,9 @@ import game.util.Hitbox;
 
 public class Salesman extends Mob
 {
-	public Salesman(int x, int y)
+	public Salesman(int x, int y, UUID uuid)
 	{
-		super(x, y, new Hitbox(2, 1, 11, 14), Sprite.SALESMAN, 20.0F, 0, 0, 0);
+		super(x, y, new Hitbox(2, 1, 11, 14), Sprite.SALESMAN, 20.0F, 0, 0, 0, uuid);
 	}
 
 	@Override

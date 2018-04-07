@@ -49,7 +49,7 @@ public class Player extends Mob
 
 	public Player(int x, int y, Keyboard input)
 	{
-		super(x, y, new Hitbox(-5, -3, 9, 10), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
+		super(x, y, new Hitbox(-5, -3, 9, 10), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10, null);
 
 		isClient = true;
 		this.input = input;
@@ -62,7 +62,7 @@ public class Player extends Mob
 
 	public Player(int x, int y, String IPAddress)
 	{
-		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
+		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10, null);
 
 		isClient = false;
 		this.IPAddress = IPAddress;
@@ -70,10 +70,8 @@ public class Player extends Mob
 
 	public Player(int x, int y, UUID uuid)
 	{
-		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10);
-
+		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 50.0F, 1.0F, 1.2F, 10, uuid);
 		isClient = false;
-		setUUID(uuid);
 	}
 
 	public void tickMob()

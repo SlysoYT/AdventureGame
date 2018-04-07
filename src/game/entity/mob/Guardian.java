@@ -1,5 +1,7 @@
 package game.entity.mob;
 
+import java.util.UUID;
+
 import game.entity.mob.player.Player;
 import game.entity.projectile.ProjectileGuardian;
 import game.graphics.Screen;
@@ -12,9 +14,9 @@ public class Guardian extends Mob
 	private final int COOLDOWN = 50;
 	private int currentCooldown = COOLDOWN;
 
-	public Guardian(int x, int y)
+	public Guardian(int x, int y, UUID uuid)
 	{
-		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 10.0F, 0.0F, 10.0F, 60);
+		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 10.0F, 0.0F, 10.0F, 60, uuid);
 	}
 
 	public void tickMob()

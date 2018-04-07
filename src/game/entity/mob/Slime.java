@@ -1,5 +1,7 @@
 package game.entity.mob;
 
+import java.util.UUID;
+
 import game.Game;
 import game.entity.mob.player.Player;
 import game.entity.spawner.ParticleSpawner;
@@ -24,9 +26,9 @@ public class Slime extends Mob
 
 	private int xOffsetRandom = rand.nextInt(40) - 20;
 
-	public Slime(int x, int y, float speed)
+	public Slime(int x, int y, UUID uuid)
 	{
-		super(x, y, new Hitbox(-7, -1, 13, 7), Sprite.SLIME_DOWN, 20.0F, speed, 10.0F, 30);
+		super(x, y, new Hitbox(-7, -1, 13, 7), Sprite.SLIME_DOWN, 20.0F, 0.75F, 10.0F, 30, uuid);
 		xGoal = x;
 		yGoal = y;
 	}

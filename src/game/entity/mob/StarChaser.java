@@ -1,6 +1,7 @@
 package game.entity.mob;
 
 import java.util.List;
+import java.util.UUID;
 
 import game.graphics.Screen;
 import game.graphics.Sprite;
@@ -13,9 +14,9 @@ public class StarChaser extends Mob
 {
 	private List<Node> path = null;
 
-	public StarChaser(int x, int y, float speed)
+	public StarChaser(int x, int y, UUID uuid)
 	{
-		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 10.0F, speed, 10.0F, 60);
+		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 10.0F, 1.0F, 10.0F, 60, uuid);
 	}
 
 	public void tickMob()

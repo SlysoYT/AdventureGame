@@ -416,6 +416,18 @@ public class Level
 		return null;
 	}
 
+	public Entity getEntity(UUID uuid)
+	{
+		List<Entity> allEntities = getAllEntities();
+
+		for(Entity entity : allEntities)
+		{
+			if(entity.getUUID().compareTo(uuid) == 0) return entity;
+		}
+
+		return null;
+	}
+
 	public List<Node> findPath(Vector2i start, Vector2i end)
 	{
 		List<Node> openList = new ArrayList<Node>();

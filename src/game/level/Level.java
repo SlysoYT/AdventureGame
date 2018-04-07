@@ -66,8 +66,6 @@ public class Level
 		gameLevel = level;
 		gameLevel.loadLevel(level.getSeed());
 		levelName = level.getLevelName();
-		add(new Salesman(260 * Tile.DEFAULT_TILE_SIZE, 260 * Tile.DEFAULT_TILE_SIZE));
-		add(new Guardian(250 * Tile.DEFAULT_TILE_SIZE, 250 * Tile.DEFAULT_TILE_SIZE));
 	}
 
 	public void unloadLevel()
@@ -86,12 +84,18 @@ public class Level
 
 	public void tick()
 	{
-		if(Game.getGameState() == GameState.IngameOffline)
+		if(Game.getGameState() == GameState.IngameOffline || (Game.getGameState() == GameState.IngameOnline && Game.isHostingGame))
 		{
+			if(Game.getGameStateTicksPassed() == 0)
+			{
+				add(new Salesman(260 * Tile.DEFAULT_TILE_SIZE, 260 * Tile.DEFAULT_TILE_SIZE, null));
+				add(new Guardian(250 * Tile.DEFAULT_TILE_SIZE, 250 * Tile.DEFAULT_TILE_SIZE, null));
+			}
+
 			if(Game.getGameStateTicksPassed() % 400 == 200)
 			{
 				for(int i = 0; i < 2; i++)
-					this.add(new Slime(rand.nextInt(width * Tile.DEFAULT_TILE_SIZE), rand.nextInt(height * Tile.DEFAULT_TILE_SIZE), 0.75F));
+					this.add(new Slime(rand.nextInt(width * Tile.DEFAULT_TILE_SIZE), rand.nextInt(height * Tile.DEFAULT_TILE_SIZE), null));
 			}
 		}
 
@@ -385,7 +389,7 @@ public class Level
 			if(player.isDead()) continue;
 			if(nearestPlayer == null) nearestPlayer = player;
 
-			if(Math.sqrt(Math.pow(x0 - player.getX(), 2) + Math.pow(y0 - player.getY(), 2)) > Math
+			if(Math.sqrt(Math.pow(x0 - player.getX(), 2) + Math.pow(y0 - player.getY(), 2)) < Math
 					.sqrt(Math.pow(x0 - nearestPlayer.getX(), 2) + Math.pow(y0 - nearestPlayer.getY(), 2)))
 				nearestPlayer = player;
 		}

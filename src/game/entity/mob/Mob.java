@@ -18,6 +18,7 @@ import game.entity.spawner.ParticleSpawner;
 import game.entity.trap.Trap;
 import game.graphics.Screen;
 import game.graphics.Sprite;
+import game.util.GameState;
 import game.util.Hitbox;
 
 public abstract class Mob extends Entity
@@ -159,7 +160,7 @@ public abstract class Mob extends Entity
 
 	public final void tick()
 	{
-		tickMob();
+		if(this instanceof Player || Game.isHostingGame || Game.getGameState() == GameState.IngameOffline) tickMob();
 
 		if(this.isDead())
 		{

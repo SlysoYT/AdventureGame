@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import game.Game;
+import game.network.ingame.GetSendDataAsClient;
 import game.settings.Settings;
 import game.util.GameState;
 import game.util.Print;
@@ -184,6 +185,9 @@ public class Connection implements Runnable
 
 	public void close()
 	{
+		if(isClient) GetSendDataAsClient.disconnect();
+		tick();
+
 		if(isClient) clientSocket.close();
 		else hostSocket.close();
 		if(!isClient) stopThread();

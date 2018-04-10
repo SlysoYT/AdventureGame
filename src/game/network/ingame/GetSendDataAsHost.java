@@ -52,7 +52,7 @@ public class GetSendDataAsHost
 				if(!(entity instanceof Mob) && !(entity instanceof Projectile) && !(entity instanceof Trap)) continue;
 
 				object.addString(SString.String("UUIDEn", entity.getUUID().toString()));
-				object.addString(SString.String("typeEn", entity.getClass().getName()));
+				object.addString(SString.String("typeEn", entity.getClass().getSimpleName()));
 				object.addField(SField.Integer("xPosEn", entity.getX()));
 				object.addField(SField.Integer("yPosEn", entity.getY()));
 
@@ -73,41 +73,9 @@ public class GetSendDataAsHost
 				if(entity instanceof Projectile)
 				{
 					object.addField(SField.Float("prDir", (float) ((Projectile) entity).getDirection()));
-					object.addField(SField.Integer("prType", ((Projectile) entity).getProjectileType().ordinal()));
 					object.addString(SString.String("prSrcUUID", ((Projectile) entity).getSource().getUUID().toString()));
 				}
 			}
-
-			//Tick players
-			/*
-			 * List<Player> players = Game.getLevel().getPlayers(); for(Player
-			 * player : players) { String playerName;
-			 * 
-			 * if(player != Game.getLevel().getClientPlayer()) { playerName =
-			 * ((OnlinePlayer) player).getPlayerName(); } else { playerName =
-			 * "hostPlayer"; //TODO }
-			 * 
-			 * object.addString(SString.String("plUUID",
-			 * player.getUUID().toString()));
-			 * object.addString(SString.String("plName", playerName));
-			 * object.addField(SField.Integer("plXPos", player.getX()));
-			 * object.addField(SField.Integer("plYPos", player.getY()));
-			 * object.addField(SField.Float("plXVel", player.getXVelocity()));
-			 * object.addField(SField.Float("plYVel", player.getYVelocity())); }
-			 * 
-			 * //Tick all projectiles List<Projectile> projectiles =
-			 * Game.getLevel().getProjectiles(); for(Projectile projectile :
-			 * projectiles) { object.addString(SString.String("prUUID",
-			 * projectile.getUUID().toString()));
-			 * object.addField(SField.Integer("prXPos", projectile.getX()));
-			 * object.addField(SField.Integer("prYPos", projectile.getY()));
-			 * object.addField(SField.Float("prDir", (float)
-			 * projectile.getDirection()));
-			 * object.addField(SField.Integer("prType",
-			 * projectile.getProjectileType().ordinal()));
-			 * object.addString(SString.String("prSrcUUID",
-			 * projectile.getSource().getUUID().toString())); }
-			 */
 		}
 
 		byte[] data = new byte[object.getSize()];

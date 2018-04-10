@@ -5,6 +5,15 @@ import java.util.UUID;
 
 import game.Game;
 import game.entity.Entity;
+import game.entity.mob.Guardian;
+import game.entity.mob.Mob;
+import game.entity.mob.Salesman;
+import game.entity.mob.Slime;
+import game.entity.mob.player.OnlinePlayer;
+import game.entity.mob.player.Player;
+import game.entity.projectile.ProjectileBoomerang;
+import game.entity.projectile.ProjectileBullet;
+import game.entity.projectile.ProjectileGuardian;
 import game.level.Level;
 import game.network.NetworkPackage;
 import game.network.serialization.SField;
@@ -34,97 +43,67 @@ public class RecieveDataAsClient
 		{
 			if(object.findField("levelSeed") != null) Game.loadLevel(null, SerializationReader.readLong(object.findField("levelSeed").getData(), 0));
 			if(object.findString("yourUUID") != null)
-			{
 				Game.getLevel().getClientPlayer().setUUID(UUID.fromString(object.findString("yourUUID").getString()));
-			}
 			return;
 		}
 
 		List<SString> UUIDEntities = object.findStrings("UUIDEn");
-		List<SField> typeOfEntity = object.findFields("typeEn");
-		List<SField> xPosEntity = object.findFields("xPosEn");
-		List<SField> yPosEntity = object.findFields("yPosEn");
-		List<SField> xVelocityMob = object.findFields("xVelMb");
-		List<SField> yVelocityMob = object.findFields("yVelMb");
-		List<SString> namePlayer = object.findStrings("namePl");
-		
+		List<SString> typeOfEntities = object.findStrings("typeEn");
+		List<SField> xPosEntities = object.findFields("xPosEn");
+		List<SField> yPosEntities = object.findFields("yPosEn");
+		List<SField> xVelocityMobs = object.findFields("xVelMb");
+		List<SField> yVelocityMobs = object.findFields("yVelMb");
+		List<SString> namePlayers = object.findStrings("namePl");
+
 		for(int i = 0; i < UUIDEntities.size(); i++)
 		{
-			Entity entity = level.getEntity(UUID.fromString(UUIDEntities.get(i).getString()));
-			
+			UUID uuid = UUID.fromString(UUIDEntities.get(i).getString());
+			String typeOfEntity = typeOfEntities.get(i).getString();
+
+			int xPosEntity = SerializationReader.readInt(xPosEntities.get(i).getData(), 0);
+			int yPosEntity = SerializationReader.readInt(yPosEntities.get(i).getData(), 0);
+
+			Entity entity = level.getEntity(uuid);
+
 			if(entity == null)
 			{
-				System.out.println(typeOfEntity.size());
-				System.out.println(xPosEntity.size());
-				System.out.println(yPosEntity.size());
-				System.out.println(xVelocityMob.size());
-				System.out.println(yVelocityMob.size());
-				System.out.println(namePlayer.size());
-			}
-		}
-		
-		/*//Players
-		List<SString> playerUUIDs = object.findStrings("plUUID");
-		List<SString> playerNames = object.findStrings("plName");
-		List<SField> xPositionPlayers = object.findFields("plXPos");
-		List<SField> yPositionPlayers = object.findFields("plYPos");
-		List<SField> xVelocityPlayers = object.findFields("plXVel");
-		List<SField> yVelocityPlayers = object.findFields("plYVel");
+				if(typeOfEntity.equals(OnlinePlayer.class.getSimpleName()))
+					level.add(new OnlinePlayer(xPosEntity, yPosEntity, uuid, namePlayers.get(i).getString()));
+				else if(typeOfEntity.equals(Player.class.getSimpleName()))
+					level.add(new OnlinePlayer(xPosEntity, yPosEntity, uuid, namePlayers.get(i).getString()));
+				else if(typeOfEntity.equals(Salesman.class.getSimpleName())) level.add(new Salesman(xPosEntity, yPosEntity, uuid));
+				else if(typeOfEntity.equals(Guardian.class.getSimpleName())) level.add(new Guardian(xPosEntity, yPosEntity, uuid));
+				else if(typeOfEntity.equals(Slime.class.getSimpleName())) level.add(new Slime(xPosEntity, yPosEntity, uuid));
 
-		for(int i = 0; i < playerUUIDs.size(); i++)
-		{
-			UUID uuid = UUID.fromString(playerUUIDs.get(i).getString());
-			Player player = level.getPlayer(uuid);
+				//Projectiles
+				if(typeOfEntity.equals(ProjectileBoomerang.class.getSimpleName()) || typeOfEntity.equals(ProjectileGuardian.class.getSimpleName())
+						|| typeOfEntity.equals(ProjectileBullet.class.getSimpleName()))
+				{
+					double dir = SerializationReader.readFloat(object.findField("prDir").getData(), 0);
+					Mob source = (Mob) level.getEntity(UUID.fromString(object.findString("prSrcUUID").getString()));
 
-			int xPos = SerializationReader.readInt(xPositionPlayers.get(i).getData(), 0);
-			int yPos = SerializationReader.readInt(yPositionPlayers.get(i).getData(), 0);
-			float xVelocity = SerializationReader.readFloat(xVelocityPlayers.get(i).getData(), 0);
-			float yVelocity = SerializationReader.readFloat(yVelocityPlayers.get(i).getData(), 0);
-
-			//Add player to level
-			if(player == null)
-			{
-				level.add(new OnlinePlayer(xPos, yPos, uuid, playerNames.get(i).getString()));
+					if(typeOfEntity.equals(ProjectileBoomerang.class.getSimpleName()))
+					{
+						level.add(new ProjectileBoomerang(xPosEntity, yPosEntity, dir, source, uuid));
+					}
+					else if(typeOfEntity.equals(ProjectileBullet.class.getSimpleName()))
+					{
+						level.add(new ProjectileBullet(xPosEntity, yPosEntity, dir, source, uuid));
+					}
+					else if(typeOfEntity.equals(ProjectileGuardian.class.getSimpleName()))
+					{
+						level.add(new ProjectileGuardian(xPosEntity, yPosEntity, dir, source, uuid));
+					}
+				}
 				return;
 			}
-			//Tick player
-			player.setPosition(xPos, yPos);
-			player.motion(xVelocity, yVelocity);
+
+			entity.setPosition(xPosEntity, yPosEntity);
+			if(entity instanceof Mob)
+			{
+				((Mob) entity).motion(SerializationReader.readFloat(xVelocityMobs.get(i).getData(), 0),
+						SerializationReader.readFloat(yVelocityMobs.get(i).getData(), 0));
+			}
 		}
-
-		//Projectiles
-		List<SString> projectileUUIDs = object.findStrings("prUUID");
-		List<SField> xPositionProjectiles = object.findFields("prXPos");
-		List<SField> yPositionProjectiles = object.findFields("prYPos");
-		List<SField> angleProjectiles = object.findFields("prDir");
-		List<SField> projectileTypes = object.findFields("prType");
-		List<SString> projectileSources = object.findStrings("prSrcUUID");
-
-		for(int i = 0; i < projectileUUIDs.size(); i++)
-		{
-			UUID uuid = UUID.fromString(projectileUUIDs.get(i).getString());
-			Projectile projectile = level.getProjectile(uuid);
-
-			int xPos = SerializationReader.readInt(xPositionProjectiles.get(i).getData(), 0);
-			int yPos = SerializationReader.readInt(yPositionProjectiles.get(i).getData(), 0);
-			float angle = SerializationReader.readFloat(angleProjectiles.get(i).getData(), 0);
-
-			//Add projectile to level
-			if(projectile == null)
-			{
-				int type = SerializationReader.readInt(projectileTypes.get(i).getData(), 0);
-				Player source = level.getPlayer(UUID.fromString(projectileSources.get(i).getString()));
-
-				if(type == 0) level.add(new ProjectileBoomerang(xPos, yPos, angle, source, uuid));
-				else if(type == 1) level.add(new ProjectileBullet(xPos, yPos, angle, source, uuid));
-				else level.add(new ProjectileGuardian(xPos, yPos, angle, source, uuid));
-
-			}
-			//Tick projectile
-			else
-			{
-				projectile.setPosition(xPos, yPos);
-			}
-		}*/
 	}
 }

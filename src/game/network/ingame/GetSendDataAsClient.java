@@ -7,27 +7,41 @@ import game.network.serialization.SString;
 
 public class GetSendDataAsClient
 {
+	private static boolean disconnect = false;
+
 	public static byte[] getData(SObject object)
 	{
-		if(Game.getLevel() == null)
+		if(disconnect)
 		{
-			SString joinPlayer = SString.String("requestJoin", "player123"); //TODO: Custom name
-			object.addString(joinPlayer);
-			object.addField(SField.Boolean("loadedLevel", false));
+			object.addField(SField.Boolean("disconnect", true));
 		}
 		else
 		{
-			object.addField(SField.Boolean("loadedLevel", true));
+			if(Game.getLevel() == null)
+			{
+				SString joinPlayer = SString.String("requestJoin", "player123"); //TODO: Custom name
+				object.addString(joinPlayer);
+				object.addField(SField.Boolean("loadedLevel", false));
+			}
+			else
+			{
+				object.addField(SField.Boolean("loadedLevel", true));
 
-			object.addField(SField.Float("xVel", Game.getLevel().getClientPlayer().getXVelocity()));
-			object.addField(SField.Float("yVel", Game.getLevel().getClientPlayer().getYVelocity()));
+				object.addField(SField.Float("xVel", Game.getLevel().getClientPlayer().getXVelocity()));
+				object.addField(SField.Float("yVel", Game.getLevel().getClientPlayer().getYVelocity()));
 
-			object = AbilityOnline.tick(object);
+				object = AbilityOnline.tick(object);
+			}
 		}
 
 		byte[] data = new byte[object.getSize()];
 		object.getBytes(data, 0);
 
 		return data;
+	}
+
+	public static void disconnect()
+	{
+		disconnect = true;
 	}
 }

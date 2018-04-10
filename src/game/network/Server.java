@@ -33,6 +33,12 @@ public class Server
 		}
 	}
 
+	public static void removeClient(String IPAddress)
+	{
+		Client client = getClient(IPAddress);
+		if(client != null) clients.remove(client);
+	}
+
 	public static void banClient(String IPAddress)
 	{
 		if(isClientOnline(IPAddress)) Game.getLevel().getPlayerByIP(IPAddress).remove();

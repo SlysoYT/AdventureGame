@@ -30,10 +30,20 @@ public class RecieveDataAsHost
 
 				level.add(new OnlinePlayer(level.getSpawnLocation().getX(), level.getSpawnLocation().getY(), IPAddressSender,
 						object.findString("requestJoin").getString()));
-				Print.printImportantInfo(object.findString("requestJoin").getString() + " joined the game!");
+				Print.printImportantInfo(((OnlinePlayer) level.getPlayerByIP(IPAddressSender)).getPlayerName() + " joined the game!");
 			}
 
 			return;
+		}
+
+		if(object.findField("disconnect") != null)
+		{
+			if(SerializationReader.readBoolean(object.findField("disconnect").getData(), 0))
+			{
+				Server.removeClient(IPAddressSender);
+				level.getPlayerByIP(IPAddressSender).remove();
+				Print.printImportantInfo(((OnlinePlayer) level.getPlayerByIP(IPAddressSender)).getPlayerName() + " disconnected from the game!");
+			}
 		}
 
 		if(object.findField("loadedLevel") != null)

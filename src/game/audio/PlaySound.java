@@ -2,8 +2,11 @@ package game.audio;
 
 import java.io.IOException;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -17,9 +20,12 @@ public class PlaySound
 	{
 		try
 		{
-			PlaySound.clip = AudioSystem.getClip();
-			PlaySound.clip.open(AudioSystem.getAudioInputStream(PlaySound.class.getResource(sound.getPath())));
-			PlaySound.clip.start();
+			AudioInputStream inputStream = AudioSystem.getAudioInputStream(PlaySound.class.getResource(sound.getPath()));
+			AudioFormat format = inputStream.getFormat();
+			DataLine.Info info = new DataLine.Info(Clip.class, format);
+			clip = (Clip) AudioSystem.getLine(info);
+			clip.open(inputStream);
+			clip.start();
 		}
 		catch(UnsupportedAudioFileException | LineUnavailableException | IOException e)
 		{
@@ -29,10 +35,14 @@ public class PlaySound
 
 	public static void initAudioSystem()
 	{
+		//Just open a sound, without playing it
 		try
 		{
-			PlaySound.clip = AudioSystem.getClip();
-			PlaySound.clip.open(AudioSystem.getAudioInputStream(PlaySound.class.getResource(Sounds.hit.getPath())));
+			AudioInputStream inputStream = AudioSystem.getAudioInputStream(PlaySound.class.getResource(Sounds.hit.getPath()));
+			AudioFormat format = inputStream.getFormat();
+			DataLine.Info info = new DataLine.Info(Clip.class, format);
+			clip = (Clip) AudioSystem.getLine(info);
+			clip.open(inputStream);
 		}
 		catch(LineUnavailableException | IOException | UnsupportedAudioFileException e)
 		{

@@ -328,7 +328,7 @@ public class Game extends Canvas implements Runnable
 	private static void makeWindow(Game game)
 	{
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image cursor = toolkit.getImage(Game.class.getResource("/textures/cursors/cursor.png"));
+		Image cursor = toolkit.getImage(Game.class.getResource("/textures/cursors/cursor.png")).getScaledInstance(32, 32, 0);
 
 		game.frame.setResizable(false);
 		game.frame.setTitle("2D Adventure" + " (" + VERSION + ")");
@@ -349,12 +349,25 @@ public class Game extends Canvas implements Runnable
 		});
 	}
 
+	/**
+	 * Load a level. Example: <br>
+	 * <code>
+	 * loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2), -1); <br>
+	 * loadLevel(null, -1); <br>
+	 * loadLevel(null, -31415962L); <br>
+	 * </code>
+	 * 
+	 * @param gameLevel
+	 *            Must be null to generate level
+	 * @param seed
+	 *            Must be -1 to generate random level
+	 */
 	public static void loadLevel(GameLevel gameLevel, long seed)
 	{
 		if(gameLevel != null) initLevel(gameLevel);
 		else
 		{
-			if(seed == -1)
+			if(seed == -1L)
 			{
 				Random rand = new Random();
 				initLevel(new GameLevel(rand.nextLong(), "Generated-Level", new TileCoordinate(256, 256)));

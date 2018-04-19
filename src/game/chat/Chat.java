@@ -9,13 +9,14 @@ import java.util.List;
 import game.Game;
 import game.chat.commands.Command;
 import game.chat.commands.CommandBan;
+import game.chat.commands.CommandClear;
 import game.chat.commands.CommandGive;
 import game.chat.commands.CommandHelp;
 import game.chat.commands.CommandKick;
 import game.chat.commands.CommandKill;
+import game.chat.commands.CommandSummon;
 import game.chat.commands.CommandTeleport;
 import game.input.Keyboard;
-import game.level.Level;
 import game.util.GameState;
 
 public class Chat
@@ -26,14 +27,17 @@ public class Chat
 
 	private static String inputField;
 
-	public Chat(Level level)
+	public static void init()
 	{
-		commands.add(new CommandGive(level));
+		commands.clear();
+		commands.add(new CommandGive());
 		commands.add(new CommandHelp());
-		commands.add(new CommandKill(level));
+		commands.add(new CommandKill());
 		commands.add(new CommandTeleport());
 		commands.add(new CommandKick());
 		commands.add(new CommandBan());
+		commands.add(new CommandSummon());
+		commands.add(new CommandClear());
 	}
 
 	public static void addMessage(Message message)
@@ -75,7 +79,7 @@ public class Chat
 		{
 			if(cmd.getCommand().equals(command))
 			{
-				cmd.enableCommand(args, Game.getLevel().getClientPlayer());
+				cmd.enableCommand(args, Game.getLevel().getClientPlayer()); //TODO: sender not just client player
 				return;
 			}
 		}
@@ -101,6 +105,11 @@ public class Chat
 			renderInputField(g);
 		}
 		else renderVisibleChatMessages(g);
+	}
+
+	public static void clearChatMessages()
+	{
+		messages.clear();
 	}
 
 	private static void renderVisibleChatMessages(Graphics g)

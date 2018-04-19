@@ -27,6 +27,7 @@ public abstract class Mob extends Entity
 	private float xChangeFloat = 0, yChangeFloat = 0;
 	private float xVelocity = 0, yVelocity = 0;
 	private float movementSmoothness = 0.9F;
+	private int disanceMoved = 0;
 	private boolean moving = false;
 	protected Sprite sprite;
 
@@ -74,6 +75,7 @@ public abstract class Mob extends Entity
 		{
 			x += xChange;
 			y += yChange;
+			disanceMoved += Math.abs(xChange) + Math.abs(yChange);
 		}
 		else
 		{
@@ -166,6 +168,7 @@ public abstract class Mob extends Entity
 		{
 			if((this instanceof Player))
 			{
+				moving = false;
 				dir = 0;
 				xVelocity = 0;
 				yVelocity = 0;
@@ -209,11 +212,6 @@ public abstract class Mob extends Entity
 	public void shoot(Projectile projectile)
 	{
 		level.add(projectile);
-	}
-
-	public void setTrap(Trap trap)
-	{
-		level.add(trap);
 	}
 
 	public void damage(float damage)
@@ -420,6 +418,11 @@ public abstract class Mob extends Entity
 	public float getSpeed()
 	{
 		return speed;
+	}
+
+	public int getDistanceMoved()
+	{
+		return disanceMoved;
 	}
 
 	public boolean isMoving()

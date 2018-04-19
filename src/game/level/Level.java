@@ -15,6 +15,7 @@ import game.entity.mob.Guardian;
 import game.entity.mob.Mob;
 import game.entity.mob.Salesman;
 import game.entity.mob.Slime;
+import game.entity.mob.StarChaser;
 import game.entity.mob.player.OnlinePlayer;
 import game.entity.mob.player.Player;
 import game.entity.particle.Particle;
@@ -86,17 +87,7 @@ public class Level
 	{
 		if(Game.getGameState() == GameState.IngameOffline || (Game.getGameState() == GameState.IngameOnline && Game.isHostingGame))
 		{
-			if(Game.getGameStateTicksPassed() == 0)
-			{
-				add(new Salesman(260 * Tile.DEFAULT_TILE_SIZE, 260 * Tile.DEFAULT_TILE_SIZE, null));
-				add(new Guardian(250 * Tile.DEFAULT_TILE_SIZE, 250 * Tile.DEFAULT_TILE_SIZE, null));
-			}
-
-			if(Game.getGameStateTicksPassed() % 400 == 200)
-			{
-				for(int i = 0; i < 2; i++)
-					this.add(new Slime(rand.nextInt(width * Tile.DEFAULT_TILE_SIZE), rand.nextInt(height * Tile.DEFAULT_TILE_SIZE), null));
-			}
+			handleMobSpawning();
 		}
 
 		removeKilledMobs();
@@ -113,6 +104,39 @@ public class Level
 		for(int i = 0; i < players.size(); i++)
 		{
 			players.get(i).tick();
+		}
+	}
+
+	private void handleMobSpawning()
+	{
+		for(Player player : players)
+		{
+			if(player.isMoving())
+			{
+				if(player.getDistanceMoved() % 3 == 0 && rand.nextInt(80) == 0)
+				{
+
+					int xPos = player.getX() + (-800 * rand.nextInt(2)) + 400 + (rand.nextInt(50) - 25);
+					int yPos = player.getY() + (-800 * rand.nextInt(2)) + 400 + (rand.nextInt(50) - 25);
+
+					int randomMob = rand.nextInt(4);
+
+					if(randomMob == 0) add(new Guardian(xPos, yPos, null));
+					else if(randomMob == 1) add(new Slime(xPos, yPos, null));
+					else if(randomMob == 2) add(new Salesman(xPos, yPos, null));
+					else if(randomMob == 3) add(new StarChaser(xPos, yPos, null));
+				}
+			}
+		}
+
+		for(Entity entity : entities)
+		{
+			if(entity instanceof Player) continue;
+			if(!(entity instanceof Mob)) continue;
+
+			Player player = getNearestPlayer(entity);
+			if(player == null) break;
+			if(getDistance(new Vector2i(player.getX(), player.getY()), new Vector2i(entity.getX(), entity.getY())) > 1300) entity.remove();
 		}
 	}
 
@@ -261,15 +285,29 @@ public class Level
 		return false;
 	}
 
-	public Player anyPlayerCollidedWithHitbox(int x, int y, Hitbox hitbox)
+	public List<Player> playersCollidedWithHitbox(int x, int y, Hitbox hitbox)
 	{
-		for(int i = 0; i < players.size(); i++)
+		List<Player> collidedPlayers = new ArrayList<Player>();
+
+		for(Player p : players)
 		{
-			Player p = players.get(i);
 			if(p.isDead()) continue;
-			if(hitboxCollidesWithHitbox(x, y, hitbox, p.getX(), p.getY(), p.getHitbox())) return p;
+			if(hitboxCollidesWithHitbox(x, y, hitbox, p.getX(), p.getY(), p.getHitbox())) collidedPlayers.add(p);
 		}
-		return null;
+
+		return collidedPlayers;
+	}
+
+	public List<Mob> mobsCollidedWithHitbox(int x, int y, Hitbox hitbox)
+	{
+		List<Mob> mobs = getMobs();
+		List<Mob> collidedMobs = new ArrayList<Mob>();
+		for(Mob m : mobs)
+		{
+			if(hitboxCollidesWithHitbox(x, y, hitbox, m.getX(), m.getY(), m.getHitbox())) collidedMobs.add(m);
+		}
+
+		return collidedMobs;
 	}
 
 	private boolean hitboxCollidesWithHitbox(int h0xPos, int h0yPos, Hitbox h0, int h1xPos, int h1yPos, Hitbox h1)
@@ -468,6 +506,7 @@ public class Level
 				Tile at = getTile(x + xDir, y + yDir);
 				if(at == null) continue;
 				if(at.solid()) continue;
+				if(at.getHitbox() != null) continue;
 				if(at.deadly()) continue;
 				Vector2i a = new Vector2i(x + xDir, y + yDir);
 				double gCost = current.gCost + getDistance(current.tile, a);

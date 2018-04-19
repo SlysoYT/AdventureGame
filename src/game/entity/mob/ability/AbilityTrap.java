@@ -3,6 +3,7 @@ package game.entity.mob.ability;
 import game.Game;
 import game.entity.mob.player.Player;
 import game.entity.trap.TrapBounce;
+import game.entity.trap.TrapExplosive;
 import game.entity.trap.Traps;
 import game.util.GameState;
 
@@ -21,7 +22,8 @@ public class AbilityTrap extends Ability
 	{
 		if(Game.getGameState() == GameState.IngameOffline)
 		{
-			if(trap.ordinal() == 0) player.setTrap(new TrapBounce(player.getX(), player.getY(), player, null));
+			if(trap.ordinal() == 0) Game.getLevel().add(new TrapBounce(player.getX(), player.getY(), player, null));
+			else if(trap.ordinal() == 1) Game.getLevel().add(new TrapExplosive(player.getX(), player.getY(), player, null));
 		}
 		else
 		{

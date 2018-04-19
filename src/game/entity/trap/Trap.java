@@ -11,7 +11,7 @@ import game.util.Hitbox;
 public abstract class Trap extends Entity
 {
 	protected Sprite sprite;
-	protected double x, y;
+	protected int x, y;
 	protected float damage;
 	protected Hitbox hitbox;
 	protected Mob source;

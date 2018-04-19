@@ -4,4 +4,5 @@ public class Sounds
 {
 	public static final Sound hit = new Sound("/sounds/hit.wav");
 	public static final Sound hurt = new Sound("/sounds/hurt.wav");
+	public static final Sound explosion = new Sound("/sounds/explosion.wav");
 }

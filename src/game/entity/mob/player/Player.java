@@ -10,9 +10,11 @@ import game.entity.mob.ability.Ability;
 import game.entity.mob.ability.AbilityRage;
 import game.entity.mob.ability.AbilityShooting;
 import game.entity.mob.ability.AbilityTeleporting;
+import game.entity.mob.ability.AbilityTrap;
 import game.entity.mob.effect.EffectMovementSpeed;
 import game.entity.projectile.Projectiles;
 import game.entity.spawner.ParticleSpawner;
+import game.entity.trap.Traps;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.graphics.GUIs.GUIInventory;
@@ -56,7 +58,7 @@ public class Player extends Mob
 		this.inventory = new GUIInventory();
 
 		primaryAbility = new AbilityShooting(this, Projectiles.ProjectileBoomerang, 70);
-		secondaryAbility = new AbilityTeleporting(this, 360, 100);
+		secondaryAbility = new AbilityTrap(this, Traps.TrapExplosive, 100);
 		passiveAbility = new AbilityRage(this, 600, 240);
 	}
 

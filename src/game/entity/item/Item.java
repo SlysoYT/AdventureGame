@@ -1,5 +1,7 @@
 package game.entity.item;
 
+import java.util.List;
+
 import game.entity.Entity;
 import game.entity.mob.player.Player;
 import game.graphics.Screen;
@@ -36,22 +38,26 @@ public abstract class Item extends Entity
 
 	public final void tick()
 	{
-		Player target = level.anyPlayerCollidedWithHitbox(x, y, hitbox);
+		List<Player> targets = level.playersCollidedWithHitbox(x, y, hitbox);
 
-		if(target != null)
+		if(!targets.isEmpty())
 		{
 			if(type == ItemType.InstantUse)
 			{
-				onPickup(target);
+				onPickup(targets.get(0));
 				this.remove();
 			}
 			else
 			{
-				//If adding item successfully to target players inventory: onPickup(target); and remove
-				if(target.getInventory().addItem(this))
+				for(Player player : targets)
 				{
-					onPickup(target);
-					this.remove();
+					//If adding item successfully to target players inventory: onPickup(target); and remove
+					if(player.getInventory().addItem(this))
+					{
+						onPickup(player);
+						this.remove();
+						break;
+					}
 				}
 			}
 		}

@@ -51,6 +51,12 @@ public class Sprite
 	public static final Sprite[] PARTICLE_BLOOD = { new Sprite(2, 0xEB3D3D), new Sprite(3, 0xEE4D59), new Sprite(3, 0xEE4D7F),
 			new Sprite(2, 0xFF0048) };
 
+	//Explosion
+	public static final Sprite[] EXPLOSION = { new Sprite(DEFAULT_TILE_SIZE, 55, 63, SpriteSheet.SPRITE_SHEET),
+			new Sprite(DEFAULT_TILE_SIZE, 55, 62, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 55, 61, SpriteSheet.SPRITE_SHEET),
+			new Sprite(DEFAULT_TILE_SIZE, 55, 60, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 55, 59, SpriteSheet.SPRITE_SHEET),
+			new Sprite(DEFAULT_TILE_SIZE, 55, 58, SpriteSheet.SPRITE_SHEET) };
+
 	//Projectiles
 	public static final Sprite PROJECTILE_BULLET = new Sprite(DEFAULT_TILE_SIZE, 57, 63, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite PROJECTILE_BOOMERANG = new Sprite(DEFAULT_TILE_SIZE, 58, 63, SpriteSheet.SPRITE_SHEET);
@@ -93,6 +99,7 @@ public class Sprite
 	//Slime
 	public static final Sprite SLIME_DOWN = new Sprite(DEFAULT_TILE_SIZE, 59, 63, SpriteSheet.SPRITE_SHEET);
 
+	//Text
 	private static final String[] LETTER_ORDER = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
 			"U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
 			"v", "w", "x", "y", "z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "?", "!", ".", ",", " " };

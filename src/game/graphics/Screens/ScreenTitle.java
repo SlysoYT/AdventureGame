@@ -1,13 +1,9 @@
 package game.graphics.Screens;
 
-import java.util.Random;
-
 import game.Game;
-import game.entity.mob.Slime;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.input.Keyboard;
-import game.level.GameLevel;
 import game.level.tile.Tile;
 import game.settings.Settings;
 import game.util.GameState;
@@ -19,7 +15,6 @@ public class ScreenTitle
 	private static float yOffset = 0;
 	private static float xVelocity = 0.5F;
 	private static float yVelocity = 0.5F;
-	private static Random rand = new Random();
 
 	public static void tick(Keyboard input)
 	{
@@ -74,19 +69,8 @@ public class ScreenTitle
 
 	private static void init()
 	{
-		Game.loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2), -1);
-
-		for(int i = 0; i < 10; i++)
-		{
-			int xSpawn = 0, ySpawn = 0;
-			while(true)
-			{
-				xSpawn = rand.nextInt(Tile.DEFAULT_TILE_SIZE * Game.getLevel().getLevelWidth());
-				ySpawn = rand.nextInt(Tile.DEFAULT_TILE_SIZE * Game.getLevel().getLevelHeight());
-				if(!Game.getLevel().hitboxCollidesWithSolidTile(xSpawn, ySpawn, new Slime(xSpawn, ySpawn, 0.5F).getHitbox())) break;
-			}
-			Game.getLevel().add(new Slime(xSpawn, ySpawn, 1.0F));
-		}
+		//Game.loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2), -1);
+		Game.loadLevel(null, -1);
 	}
 
 	private static void unloadTitleScreen()

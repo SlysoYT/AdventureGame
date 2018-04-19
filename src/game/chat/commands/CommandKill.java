@@ -2,20 +2,17 @@ package game.chat.commands;
 
 import java.util.List;
 
+import game.Game;
 import game.chat.Chat;
 import game.chat.Message;
 import game.entity.mob.Mob;
 import game.entity.mob.player.Player;
-import game.level.Level;
 
 public class CommandKill extends Command
 {
-	private Level level;
-
-	public CommandKill(Level level)
+	public CommandKill()
 	{
 		super("kill", "kill or kill <target>", "Kill yourself or the specified target", (byte) 0, (byte) 1);
-		this.level = level;
 	}
 
 	@Override
@@ -31,7 +28,7 @@ public class CommandKill extends Command
 
 		if(target.equals("all"))
 		{
-			List<Mob> mobs = level.getMobs();
+			List<Mob> mobs = Game.getLevel().getMobs();
 			for(Mob mob : mobs)
 			{
 				mob.kill();

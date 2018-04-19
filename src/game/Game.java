@@ -379,7 +379,7 @@ public class Game extends Canvas implements Runnable
 		}
 
 		hud = new HUD(width, height, clientPlayer, level, key);
-		new Chat(level);
+		Chat.init();
 	}
 
 	private static void initLevel(GameLevel newLevel)

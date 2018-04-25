@@ -31,7 +31,7 @@ import game.util.Vector2i;
 public class Level
 {
 	protected int width, height;
-	protected int[] tiles; //Contains pixel colors from level file that is currently loaded
+	protected int[] tiles; //Contains pixel colours from level file that is currently loaded
 	protected TileCoordinate playerSpawn = null;
 
 	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
@@ -283,6 +283,37 @@ public class Level
 		}
 
 		return false;
+	}
+
+	public Vector2i hitboxCollidesWithSolidTilePosition(int x, int y, Hitbox hitbox)
+	{
+		Vector2i vector = new Vector2i();
+
+		for(int currentX = x + hitbox.getXOffset() >> TILE_SIZE_SHIFTING; currentX <= x + hitbox.getWidth()
+				+ hitbox.getXOffset() >> TILE_SIZE_SHIFTING; currentX++)
+		{
+			for(int currentY = y + hitbox.getYOffset() >> TILE_SIZE_SHIFTING; currentY <= y + hitbox.getHeight()
+					+ hitbox.getYOffset() >> TILE_SIZE_SHIFTING; currentY++)
+			{
+				Tile currentTile = getTile(currentX, currentY);
+				if(currentTile.solid())
+				{
+					vector.set(currentX, currentY);
+					return vector;
+				}
+				if(currentTile.getHitbox() != null)
+				{
+					if(hitboxCollidesWithHitbox(x, y, hitbox, currentX * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getXOffset(),
+							currentY * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getYOffset(), currentTile.getHitbox()))
+					{
+						vector.set(currentX, currentY);
+						return vector;
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public List<Player> playersCollidedWithHitbox(int x, int y, Hitbox hitbox)
@@ -542,7 +573,7 @@ public class Level
 	{
 		//If out of bounds, return void tile
 		if(x < 0 || y < 0 || x >= width || y >= height) return Tile.TILE_VOID;
-		//Tiles: If color in level file at specific location is e.g. equal to grass, then return a grass tile
+		//Tiles: If colour in level file at specific location is e.g. equal to grass, then return a grass tile
 		if(tiles[x + y * width] == Tile.COL_TILE_DIRT) return Tile.TILE_DIRT;
 		if(tiles[x + y * width] == Tile.COL_TILE_GRASS) return Tile.TILE_GRASS;
 		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_0) return Tile.TILE_FLOWER_0;
@@ -562,7 +593,7 @@ public class Level
 		if(tiles[x + y * width] == Tile.COL_TILE_QUARTZ) return Tile.TILE_QUARTZ;
 		if(tiles[x + y * width] == Tile.COL_TILE_QUARTZ_WALL) return Tile.TILE_QUARTZ_WALL;
 
-		//Unknown color
+		//Unknown colour
 		return Tile.TILE_ERROR;
 	}
 

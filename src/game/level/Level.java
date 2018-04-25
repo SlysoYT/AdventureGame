@@ -285,7 +285,7 @@ public class Level
 		return false;
 	}
 
-	public Vector2i hitboxCollidesWithSolidTilePosition(int x, int y, Hitbox hitbox)
+	public Vector2i hitboxCollidesWithSolidTileVector(int x, int y, Hitbox hitbox)
 	{
 		Vector2i vector = new Vector2i();
 
@@ -298,7 +298,7 @@ public class Level
 				Tile currentTile = getTile(currentX, currentY);
 				if(currentTile.solid())
 				{
-					vector.set(currentX, currentY);
+					vector.set(currentX * Tile.DEFAULT_TILE_SIZE, currentY * Tile.DEFAULT_TILE_SIZE);
 					return vector;
 				}
 				if(currentTile.getHitbox() != null)
@@ -306,7 +306,9 @@ public class Level
 					if(hitboxCollidesWithHitbox(x, y, hitbox, currentX * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getXOffset(),
 							currentY * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getYOffset(), currentTile.getHitbox()))
 					{
-						vector.set(currentX, currentY);
+						vector = hitboxCollidesWithHitboxVector(x, y, hitbox,
+								currentX * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getXOffset(),
+								currentY * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getYOffset(), currentTile.getHitbox());
 						return vector;
 					}
 				}
@@ -354,6 +356,21 @@ public class Level
 		}
 
 		return false;
+	}
+
+	private Vector2i hitboxCollidesWithHitboxVector(int h0xPos, int h0yPos, Hitbox h0, int h1xPos, int h1yPos, Hitbox h1)
+	{
+		for(int currentX = h0xPos + h0.getXOffset(); currentX <= h0xPos + h0.getWidth() + h0.getXOffset(); currentX++)
+		{
+			for(int currentY = h0yPos + h0.getYOffset(); currentY <= h0yPos + h0.getHeight() + h0.getYOffset(); currentY++)
+			{
+				if(currentX >= h1xPos + h1.getXOffset() && currentX <= h1xPos + h1.getXOffset() + h1.getWidth()
+						&& currentY >= h1yPos + h1.getYOffset() && currentY <= h1yPos + h1.getYOffset() + h1.getHeight())
+					return new Vector2i(currentX, currentY);
+			}
+		}
+
+		return null;
 	}
 
 	public void add(Entity e)

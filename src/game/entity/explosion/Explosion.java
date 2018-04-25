@@ -20,7 +20,7 @@ public class Explosion extends Entity
 
 	public Explosion(int x, int y, UUID uuid, float damage)
 	{
-		hitbox = new Hitbox(-4, -4, 8, 8);
+		hitbox = new Hitbox(-6, -6, 12, 12);
 		this.x = x;
 		this.y = y;
 		setUUID(uuid);
@@ -36,7 +36,7 @@ public class Explosion extends Entity
 			PlaySound.playSound(Sounds.explosion);
 		}
 
-		if(canMakesDamage && System.currentTimeMillis() - start >= 100)
+		if(canMakesDamage && System.currentTimeMillis() - start >= 30)
 		{
 			List<Mob> collidedMobs = level.mobsCollidedWithHitbox(x, y, hitbox);
 

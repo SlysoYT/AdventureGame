@@ -27,8 +27,6 @@ public class Slime extends Mob
 	private boolean shouldDecreaseY = false;
 	private byte jumpDelay = 0;
 
-	private int xOffsetRandom = rand.nextInt(40) - 20;
-
 	private List<Node> path = null;
 
 	public Slime(int x, int y, UUID uuid)
@@ -48,13 +46,6 @@ public class Slime extends Mob
 		if(target != null)
 		{
 			yGoal = target.getY();
-
-			int distanceToPlayer = (int) Math.sqrt(Math.pow(target.getX() - this.getX(), 2) + Math.pow(target.getY() - this.getY(), 2));
-
-			/*
-			 * if(distanceToPlayer > 50) xGoal = target.getX() + xOffsetRandom;
-			 * else xGoal = target.getX();
-			 */
 
 			if(Game.getGameStateTicksPassed() % 20 == rand.nextInt(20)) //Randomness to not make all slimes tick at the same time
 			{

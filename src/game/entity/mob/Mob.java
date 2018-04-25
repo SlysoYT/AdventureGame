@@ -15,7 +15,6 @@ import game.entity.mob.effect.Effect;
 import game.entity.mob.player.Player;
 import game.entity.projectile.Projectile;
 import game.entity.spawner.ParticleSpawner;
-import game.entity.trap.Trap;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.util.GameState;

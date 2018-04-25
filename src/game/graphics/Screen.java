@@ -82,17 +82,17 @@ public class Screen
 	{
 		xPos -= xOffset;
 		yPos -= yOffset;
-		for(int y = 0; y < tile.sprite.SIZE; y++)
+		for(int y = 0; y < tile.getSprite().SIZE; y++)
 		{
 			int yAbsolute = y + yPos;
 
-			for(int x = 0; x < tile.sprite.SIZE; x++)
+			for(int x = 0; x < tile.getSprite().SIZE; x++)
 			{
 				int xAbsolute = x + xPos;
-				if(xAbsolute < -tile.sprite.SIZE || xAbsolute >= width || yAbsolute < 0 || yAbsolute >= height) break; //-tile.sprite.SIZE renders 1 more tile
+				if(xAbsolute < -tile.getSprite().SIZE || xAbsolute >= width || yAbsolute < 0 || yAbsolute >= height) break; //-tile.sprite.SIZE renders 1 more tile
 				if(xAbsolute < 0) xAbsolute = 0; //Prevents array index out of bounds exception
 
-				int pixelColour = tile.sprite.pixels[x + y * tile.sprite.SIZE];
+				int pixelColour = tile.getSprite().pixels[x + y * tile.getSprite().SIZE];
 				if(pixelColour != 0xFF00FF) pixels[xAbsolute + yAbsolute * width] = pixelColour; //So the magic pink doesn't get rendered
 			}
 		}
@@ -103,9 +103,9 @@ public class Screen
 		if(gui != null) gui.render(this);
 	}
 
-	public void applyGamma(float alpha)
+	public void applyGamma(float gamma)
 	{
-		if(alpha < 0 || alpha == 1) return;
+		if(gamma < 0 || gamma == 1) return;
 		for(int x = 0; x < width; x++)
 		{
 			for(int y = 0; y < height; y++)
@@ -114,15 +114,15 @@ public class Screen
 				int g = (pixels[x + y * width] & 0x00FF00) >> 8;
 				int b = (pixels[x + y * width] & 0x0000FF);
 
-				r *= alpha;
-				g *= alpha;
-				b *= alpha;
+				r *= gamma;
+				g *= gamma;
+				b *= gamma	;
 
 				if(r > 255) r = 255;
 				if(g > 255) g = 255;
 				if(b > 255) b = 255;
 
-				pixels[x + y * width] = (r << 16) | (g << 8) | (b << 0);
+				pixels[x + y * width] = (r << 16) | (g << 8) | (b);
 			}
 		}
 	}

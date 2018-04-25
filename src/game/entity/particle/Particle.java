@@ -15,14 +15,14 @@ public class Particle extends Entity
 	protected double xx, yy, zz;
 	protected double xAmount, yAmount, zAmount;
 
-	public Particle(int x, int y, float xSpeed, float ySpeed, int life, Sprite[] sprite)
+	public Particle(int x, int y, float xSpeed, float ySpeed, int life, Sprite sprite)
 	{
 		this.x = x;
 		this.y = y;
 		this.xx = x;
 		this.yy = y;
 		this.life = life + (rand.nextInt((int) (life * 0.8F)) - (int) (life * 0.4F));
-		this.sprite = sprite[rand.nextInt(sprite.length)];
+		this.sprite =sprite;
 
 		this.xAmount = rand.nextGaussian() * xSpeed;
 		this.yAmount = rand.nextGaussian() * ySpeed;

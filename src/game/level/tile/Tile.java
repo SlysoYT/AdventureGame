@@ -6,7 +6,7 @@ import game.util.Hitbox;
 
 public class Tile
 {
-	public Sprite sprite;
+	private Sprite sprite;
 
 	public static final byte DEFAULT_TILE_SIZE = 16;
 
@@ -22,7 +22,7 @@ public class Tile
 	public static final Tile TILE_ROCK_GRASS = new RockTile(Sprite.SPRITE_ROCK_GRASS);
 	public static final Tile TILE_ROCK_SAND = new RockTile(Sprite.SPRITE_ROCK_SAND);
 	public static final Tile TILE_SAND = new SandTile(Sprite.SPRITE_SAND);
-	public static final Tile TILE_WATER = new WaterTile(Sprite.SPRITE_WATER_0);
+	public static final Tile TILE_WATER = new WaterTile(null);
 
 	public static final Tile TILE_BOOSTER = new BoosterTile(Sprite.SPRITE_BOOSTER);
 	public static final Tile TILE_CHECKPOINT = new CheckpointTile(Sprite.SPRITE_CHECKPOINT);
@@ -65,7 +65,12 @@ public class Tile
 
 	public Sprite getSprite()
 	{
-		return null;
+		return sprite;
+	}
+	
+	public void setSprite(Sprite sprite)
+	{
+		this.sprite = sprite;
 	}
 
 	public Hitbox getHitbox()

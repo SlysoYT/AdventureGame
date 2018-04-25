@@ -1,18 +1,20 @@
 package game.graphics;
 
 import java.util.Arrays;
+import java.util.Random;
 
+import game.Game;
 import game.level.tile.Tile;
 
 public class Sprite
 {
-
 	public final int SIZE;
 	private static final int DEFAULT_TILE_SIZE = Tile.DEFAULT_TILE_SIZE;
 	private int x, y;
 	private int width, height;
 	public int[] pixels;
 	private SpriteSheet spriteSheet;
+	private static Random rand = new Random();
 
 	//Sprites
 
@@ -44,8 +46,6 @@ public class Sprite
 	public static final Sprite SPRITE_QUARTZ_WALL = new Sprite(DEFAULT_TILE_SIZE, 4, 4, SpriteSheet.SPRITE_SHEET);
 
 	//Particles
-	public static final Sprite[] PARTICLE_QUARTZ = { new Sprite(2, 0xF6F5E7), new Sprite(3, 0xF3F4E5), new Sprite(3, 0xE9E9E9),
-			new Sprite(2, 0xDEDEDE), new Sprite(2, 0xD6D5C4) };
 	public static final Sprite[] PARTICLE_SLIME = { new Sprite(2, 0x3E7CC2), new Sprite(3, 0x3371B6), new Sprite(2, 0x2160A6),
 			new Sprite(2, 0x205DA1) };
 	public static final Sprite[] PARTICLE_BLOOD = { new Sprite(2, 0xEB3D3D), new Sprite(3, 0xEE4D59), new Sprite(3, 0xEE4D7F),
@@ -146,6 +146,28 @@ public class Sprite
 			new Sprite(42, 915, 7, 13, SpriteSheet.SPRITE_SHEET), new Sprite(51, 915, 7, 13, SpriteSheet.SPRITE_SHEET),
 			new Sprite(59, 915, 7, 13, SpriteSheet.SPRITE_SHEET), new Sprite(68, 915, 7, 13, SpriteSheet.SPRITE_SHEET),
 			new Sprite(77, 915, 7, 13, SpriteSheet.SPRITE_SHEET) };
+
+	public static Sprite[] getParticleSpritesFromPosition(int xPos, int yPos, int amountOfParticles)
+	{
+		Sprite[] particles = new Sprite[amountOfParticles];
+		Tile tile = Game.getLevel().getTile(xPos >> Screen.TILE_SIZE_SHIFTING, yPos >> Screen.TILE_SIZE_SHIFTING);
+
+		xPos = xPos % Tile.DEFAULT_TILE_SIZE;
+		yPos = yPos % Tile.DEFAULT_TILE_SIZE;
+
+		int r = (tile.getSprite().pixels[xPos + yPos * tile.getSprite().width] & 0xFF0000) >> 16;
+		int g = (tile.getSprite().pixels[xPos + yPos * tile.getSprite().width] & 0x00FF00) >> 8;
+		int b = (tile.getSprite().pixels[xPos + yPos * tile.getSprite().width] & 0x0000FF);
+
+		for(int i = 0; i < particles.length; i++)
+		{
+			int colour = ((int) (r * (0.75 + rand.nextFloat() / 4)) << 16) | ((int) (g * (0.75 + rand.nextFloat() / 4)) << 8)
+					| ((int) (b * (0.75 + rand.nextFloat() / 4)));
+			particles[i] = new Sprite(1 + rand.nextInt(3), colour);
+		}
+
+		return particles;
+	}
 
 	/**
 	 * Writes text to the screen. Note: The position in the center of the text
@@ -309,5 +331,4 @@ public class Sprite
 			}
 		}
 	}
-
 }

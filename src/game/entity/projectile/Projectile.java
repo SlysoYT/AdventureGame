@@ -12,6 +12,7 @@ import game.entity.spawner.ParticleSpawner;
 import game.graphics.Sprite;
 import game.util.GameState;
 import game.util.Hitbox;
+import game.util.Vector2i;
 
 public abstract class Projectile extends Entity
 {
@@ -58,7 +59,16 @@ public abstract class Projectile extends Entity
 		if(!level.hitboxCollidesWithSolidTile(getX() + getNewX(), getY() + getNewY(), getHitbox())) move();
 		else
 		{
-			level.add(new ParticleSpawner((int) getX(), (int) getY(), 1.0F, 1.0F, 80, 20, level, Sprite.PARTICLE_QUARTZ));
+			Vector2i collisionPoint = level.hitboxCollidesWithSolidTileVector(getX() + getNewX(), getY() + getNewY(), getHitbox());
+
+			if(collisionPoint != null)
+			{
+				System.out.println(collisionPoint.getX());
+				Sprite[] particleSprites = Sprite.getParticleSpritesFromPosition(collisionPoint.getX(), collisionPoint.getY(), 20);
+				level.add(new ParticleSpawner(getX(), getY(), 1.0F, 1.0F, 80, level, particleSprites));
+			}
+			else System.exit(0);
+
 			PlaySound.playSound(Sounds.hit);
 			this.remove();
 			return;

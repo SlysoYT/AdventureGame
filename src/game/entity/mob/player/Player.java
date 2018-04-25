@@ -9,7 +9,6 @@ import game.entity.mob.Mob;
 import game.entity.mob.ability.Ability;
 import game.entity.mob.ability.AbilityRage;
 import game.entity.mob.ability.AbilityShooting;
-import game.entity.mob.ability.AbilityTeleporting;
 import game.entity.mob.ability.AbilityTrap;
 import game.entity.mob.effect.EffectMovementSpeed;
 import game.entity.projectile.Projectiles;
@@ -86,8 +85,9 @@ public class Player extends Mob
 
 		if(isMoving())
 		{
+			Sprite[] particleSprites = Sprite.getParticleSpritesFromPosition(this.getX(), this.getY(), 1);
 			if(walkParticleTicks % 5 == 0)
-				new ParticleSpawner(x + (rand.nextInt(6) - 3), y + (4 + rand.nextInt(4)), 0.2F, 0.05F, 30, 1, level, Sprite.PARTICLE_QUARTZ);
+				new ParticleSpawner(x + (rand.nextInt(6) - 3), y + (4 + rand.nextInt(4)), 0.2F, 0.05F, 30, level, particleSprites);
 			walkParticleTicks++;
 			anim++;
 		}

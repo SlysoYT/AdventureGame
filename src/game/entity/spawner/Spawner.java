@@ -14,7 +14,7 @@ public class Spawner extends Entity
 	@SuppressWarnings("unused")
 	private Type type;
 	
-	public Spawner(TileCoordinate tileCoordinate, Type type, int amount, Level level)
+	public Spawner(TileCoordinate tileCoordinate, Type type, Level level)
 	{
 		init(level);
 		this.x = tileCoordinate.getX();
@@ -22,7 +22,7 @@ public class Spawner extends Entity
 		this.type = type;
 	}
 	
-	public Spawner(int x, int y, Type type, int amount, Level level)
+	public Spawner(int x, int y, Type type, Level level)
 	{
 		init(level);
 		this.x = x;

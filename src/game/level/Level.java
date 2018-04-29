@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import game.Game;
 import game.entity.Entity;
+import game.entity.lighting.LightSource;
 import game.entity.mob.Guardian;
 import game.entity.mob.Mob;
 import game.entity.mob.Salesman;
@@ -36,14 +37,16 @@ public class Level
 
 	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
 	private String levelName = "";
-
 	private GameLevel gameLevel;
 
 	private Random rand = new Random();
 
+	private int time = 0;
+
 	private List<Entity> entities = new ArrayList<Entity>();
 	private List<Particle> particles = new ArrayList<Particle>();
 	private List<Player> players = new ArrayList<Player>();
+	private List<LightSource> lightSources = new ArrayList<LightSource>();
 
 	private Comparator<Node> nodeSorter = new Comparator<Node>()
 	{
@@ -75,6 +78,7 @@ public class Level
 		height = 0;
 		tiles = new int[0];
 		levelName = "";
+		time = 0;
 
 		playerSpawn = null;
 
@@ -87,8 +91,17 @@ public class Level
 	{
 		if(Game.getGameState() == GameState.IngameOffline || (Game.getGameState() == GameState.IngameOnline && Game.isHostingGame))
 		{
-			handleMobSpawning();
+			mobSpawning();
 		}
+
+		if(Game.getGameStateTicksPassed() == 0)
+		{
+			for(int i = 0; i < 10; i++)
+				add(new LightSource(getClientPlayer().getX() - rand.nextInt(300), getClientPlayer().getY() - rand.nextInt(300), rand.nextInt(70),
+						null));
+		}
+
+		lightSources.get(0).setPosition(getClientPlayer().getX(), getClientPlayer().getY());
 
 		removeKilledMobs();
 		removeRemovedEntities();
@@ -105,9 +118,11 @@ public class Level
 		{
 			players.get(i).tick();
 		}
+
+		time();
 	}
 
-	private void handleMobSpawning()
+	private void mobSpawning()
 	{
 		for(Player player : players)
 		{
@@ -257,10 +272,9 @@ public class Level
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private void time()
 	{
-
+		if(++time > 3600) time = 0;
 	}
 
 	public boolean hitboxCollidesWithSolidTile(int x, int y, Hitbox hitbox)
@@ -376,12 +390,11 @@ public class Level
 	public void add(Entity e)
 	{
 		e.init(this);
+
 		if(e instanceof Particle) particles.add((Particle) e);
-		else if(e instanceof Projectile)
-		{
-			entities.add((Projectile) e);
-		}
+		else if(e instanceof Projectile) entities.add((Projectile) e);
 		else if(e instanceof Player) players.add((Player) e);
+		else if(e instanceof LightSource) lightSources.add((LightSource) e);
 		else entities.add(e);
 	}
 
@@ -400,6 +413,8 @@ public class Level
 			entities.add(particle);
 		for(Entity entity : this.entities)
 			entities.add(entity);
+		for(LightSource lightSource : lightSources)
+			entities.add(lightSource);
 
 		return entities;
 	}
@@ -491,6 +506,20 @@ public class Level
 			if((entities.get(i) instanceof Projectile)) projectiles.add((Projectile) entities.get(i));
 		}
 		return projectiles;
+	}
+
+	public List<LightSource> getVisibleLightSources(int xOffset, int yOffset, int width, int height)
+	{
+		List<LightSource> visibleLightSources = new ArrayList<LightSource>();
+
+		for(LightSource ls : lightSources)
+		{
+			if(ls.getX() + ls.getRadius() >= xOffset && ls.getY() + ls.getRadius() >= yOffset && ls.getX() - ls.getRadius() <= xOffset + width
+					&& ls.getY() - ls.getRadius() <= yOffset + height)
+				visibleLightSources.add(ls);
+		}
+
+		return visibleLightSources;
 	}
 
 	public Projectile getProjectile(UUID uuid)
@@ -622,6 +651,11 @@ public class Level
 	public int getLevelHeight()
 	{
 		return height;
+	}
+
+	public int getTime()
+	{
+		return time;
 	}
 
 	public String getLevelName()

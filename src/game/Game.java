@@ -147,7 +147,7 @@ public class Game extends Canvas implements Runnable
 				timer += 1000;
 				currentFPS = fpsCount;
 				currentTPS = tpsCount;
-				if(debugMode) Print.printInfo(currentFPS + " FPS" + " | " + currentTPS + " TPS");
+				Print.printInfo(currentFPS + " FPS" + " | " + currentTPS + " TPS");
 				tpsCount = 0;
 				fpsCount = 0;
 			}
@@ -187,6 +187,7 @@ public class Game extends Canvas implements Runnable
 			Mouse.tick();
 			level.tick();
 			hud.tick();
+
 			if(activeGui != null) activeGui.tick();
 
 			if(key.escape && !clientPlayer.isTypingMessage())
@@ -272,7 +273,7 @@ public class Game extends Canvas implements Runnable
 		}
 
 		//Filters are to place here!
-		//screen.applyAlpha(0.5F);
+		screen.applyBrightness();
 
 		for(int i = 0; i < pixels.length; i++)
 		{

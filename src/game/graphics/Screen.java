@@ -1,7 +1,13 @@
 package game.graphics;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import game.Game;
+import game.entity.lighting.LightSource;
 import game.input.Keyboard;
 import game.level.tile.Tile;
+import game.util.GameState;
 
 public class Screen
 {
@@ -12,6 +18,8 @@ public class Screen
 
 	private static float xOffset;
 	private static float yOffset;
+
+	private List<LightSource> visibleLightSources = new ArrayList<LightSource>();
 
 	public Screen(int width, int height, Keyboard input)
 	{
@@ -73,7 +81,6 @@ public class Screen
 
 				int pixelColour = sprite.pixels[x + y * sprite.getWidth()];
 				if(pixelColour != 0xFFFF00FF) pixels[xAbsolute + yAbsolute * width] = pixelColour; //So the magic pink doesn't get rendered
-
 			}
 		}
 	}
@@ -103,28 +110,68 @@ public class Screen
 		if(gui != null) gui.render(this);
 	}
 
-	public void applyGamma(float gamma)
+	public void applyBrightness()
 	{
-		if(gamma < 0 || gamma == 1) return;
+		if(Game.getLevel() == null || !(Game.getGameState() == GameState.IngameOffline || Game.getGameState() == GameState.IngameOnline)) return;
+		float time = Game.getLevel().getTime() / 150F; //hour format, time ranging from 0 to 24
+
+		float gammaBase = Math.abs(Math.abs(time - 12) - 12) / 12; //Dependent on the daytime only
+		float gamma;
+
+		if(gammaBase < 0.2F) gammaBase = 0.2F; //Max darkness
+
+		visibleLightSources = Game.getLevel().getVisibleLightSources((int) xOffset, (int) yOffset, width, height);
+
 		for(int x = 0; x < width; x++)
 		{
 			for(int y = 0; y < height; y++)
 			{
-				int r = (pixels[x + y * width] & 0xFF0000) >> 16;
-				int g = (pixels[x + y * width] & 0x00FF00) >> 8;
-				int b = (pixels[x + y * width] & 0x0000FF);
+				gamma = getGammaFromLightSources(x, y, gammaBase);
 
-				r *= gamma;
-				g *= gamma;
-				b *= gamma	;
+				if(gamma >= 1F) continue; //Max brightness
 
-				if(r > 255) r = 255;
-				if(g > 255) g = 255;
-				if(b > 255) b = 255;
-
-				pixels[x + y * width] = (r << 16) | (g << 8) | (b);
+				applyGamma(gamma, x, y);
 			}
 		}
+	}
+
+	public void applyGamma(float gamma, int xPixel, int yPixel)
+	{
+		if(gamma < 0F || gamma == 1F) return;
+
+		int r = (pixels[xPixel + yPixel * width] & 0xFF0000) >> 16;
+		int g = (pixels[xPixel + yPixel * width] & 0x00FF00) >> 8;
+		int b = (pixels[xPixel + yPixel * width] & 0x0000FF);
+
+		r *= gamma;
+		g *= gamma;
+		b *= gamma;
+
+		if(r > 255) r = 255;
+		if(g > 255) g = 255;
+		if(b > 255) b = 255;
+
+		pixels[xPixel + yPixel * width] = (r << 16) | (g << 8) | (b);
+	}
+
+	public float getGammaFromLightSources(int xPixel, int yPixel, float gammaBase)
+	{
+		xPixel += xOffset;
+		yPixel += yOffset;
+
+		float gamma;
+
+		for(LightSource lightSource : visibleLightSources)
+		{
+			if(!lightSource.affectsPixelAt(xPixel, yPixel)) continue;
+
+			gamma = lightSource.getGammaAtPixel(xPixel, yPixel);
+			if(gamma <= 1.0F) continue; //It shouldn't be possible for a light source to darken
+
+			gammaBase *= gamma;
+		}
+
+		return gammaBase;
 	}
 
 	public void blur()

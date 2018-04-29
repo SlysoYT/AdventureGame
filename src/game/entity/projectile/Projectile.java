@@ -63,7 +63,6 @@ public abstract class Projectile extends Entity
 
 			if(collisionPoint != null)
 			{
-				System.out.println(collisionPoint.getX());
 				Sprite[] particleSprites = Sprite.getParticleSpritesFromPosition(collisionPoint.getX(), collisionPoint.getY(), 20);
 				level.add(new ParticleSpawner(getX(), getY(), 1.0F, 1.0F, 80, level, particleSprites));
 			}

@@ -29,7 +29,7 @@ public class GameLevel extends Level
 		this.playerSpawn = playerSpawn;
 		this.seed = seed;
 		this.customLevel = false;
-		this.levelName = levelName + " (Seed: " + seed + ")";
+		this.levelName = levelName;
 	}
 
 	public void loadLevel(String path)

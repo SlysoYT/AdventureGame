@@ -60,7 +60,7 @@ public class ScreenTitle
 
 		String[] selections = { "Singleplayer", "Multiplayer", "Settings", "Quit" };
 
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < selections.length; i++)
 		{
 			if(currentTitleScreenSelection == i) Sprite.writeText(selections[i], screen, screen.width / 2, Game.height / 2 + (i * 50 - 70), 0x45C95E);
 			else Sprite.writeText(selections[i], screen, screen.width / 2, Game.height / 2 + (i * 50 - 70), 0x000000);
@@ -69,8 +69,7 @@ public class ScreenTitle
 
 	private static void init()
 	{
-		//Game.loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2), -1);
-		Game.loadLevel(null, -1);
+		Game.loadTitleScreenLevel();
 	}
 
 	private static void unloadTitleScreen()

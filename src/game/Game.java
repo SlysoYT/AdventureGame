@@ -78,7 +78,7 @@ public class Game extends Canvas implements Runnable
 		frame = new JFrame();
 		key = new Keyboard();
 
-		screen = new Screen(width, height, key);
+		screen = new Screen(width, height);
 
 		this.debugMode = debugMode;
 
@@ -147,7 +147,8 @@ public class Game extends Canvas implements Runnable
 				timer += 1000;
 				currentFPS = fpsCount;
 				currentTPS = tpsCount;
-				Print.printInfo(currentFPS + " FPS" + " | " + currentTPS + " TPS");
+				float frameTime = Math.round(1000F / currentFPS * 10F) / 10F;
+				Print.printInfo(currentFPS + " FPS, " + currentTPS + " TPS, " + frameTime + "ms");
 				tpsCount = 0;
 				fpsCount = 0;
 			}
@@ -383,13 +384,19 @@ public class Game extends Canvas implements Runnable
 		Chat.init();
 	}
 
+	public static void loadTitleScreenLevel()
+	{
+		Random rand = new Random();
+		initLevel(new GameLevel(rand.nextLong(), "Title-Screen", new TileCoordinate(256, 256)));
+	}
+
 	private static void initLevel(GameLevel newLevel)
 	{
 		if(Game.level != null) unloadLevel();
 		Game.level = newLevel;
 		if(newLevel.isCustomLevel()) level.loadLevel(newLevel);
 		else level.generateLevel(newLevel);
-		if(newLevel.getLevelName().equals("TitleScreen")) return;
+		if(newLevel.getLevelName().equals("Title-Screen")) return;
 		clientPlayer = new Player(Game.level.getSpawnLocation().getX(), Game.level.getSpawnLocation().getY(), key);
 		level.add(clientPlayer);
 	}

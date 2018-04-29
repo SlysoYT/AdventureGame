@@ -5,7 +5,6 @@ import java.util.List;
 
 import game.Game;
 import game.entity.lighting.LightSource;
-import game.input.Keyboard;
 import game.level.tile.Tile;
 import game.util.GameState;
 
@@ -21,7 +20,7 @@ public class Screen
 
 	private List<LightSource> visibleLightSources = new ArrayList<LightSource>();
 
-	public Screen(int width, int height, Keyboard input)
+	public Screen(int width, int height)
 	{
 		this.width = width;
 		this.height = height;
@@ -127,9 +126,7 @@ public class Screen
 			for(int y = 0; y < height; y++)
 			{
 				gamma = getGammaFromLightSources(x, y, gammaBase);
-
 				if(gamma >= 1F) continue; //Max brightness
-
 				applyGamma(gamma, x, y);
 			}
 		}

@@ -6,6 +6,7 @@ import java.util.UUID;
 import game.audio.PlaySound;
 import game.audio.Sounds;
 import game.entity.Entity;
+import game.entity.lighting.LightSource;
 import game.entity.mob.Mob;
 import game.graphics.Screen;
 import game.graphics.Sprite;
@@ -38,8 +39,9 @@ public class Explosion extends Entity
 
 		if(canMakesDamage && System.currentTimeMillis() - start >= 30)
 		{
-			List<Mob> collidedMobs = level.mobsCollidedWithHitbox(x, y, hitbox);
+			level.add(new LightSource(this.getX(), this.getY(), 25, 20, null)); //Light effect
 
+			List<Mob> collidedMobs = level.mobsCollidedWithHitbox(x, y, hitbox);
 			for(Mob mob : collidedMobs)
 			{
 				mob.damage(damage);

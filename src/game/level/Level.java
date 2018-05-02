@@ -98,8 +98,7 @@ public class Level
 			lightSources.get(0).setPosition(getClientPlayer().getX(), getClientPlayer().getY());
 		}
 
-		removeKilledMobs();
-		removeRemovedEntities();
+		handleDeadAndRemovedEntities();
 
 		for(int i = 0; i < entities.size(); i++)
 		{
@@ -112,6 +111,10 @@ public class Level
 		for(int i = 0; i < players.size(); i++)
 		{
 			players.get(i).tick();
+		}
+		for(int i = 0; i < lightSources.size(); i++)
+		{
+			lightSources.get(i).tick();
 		}
 
 		time();
@@ -150,17 +153,15 @@ public class Level
 		}
 	}
 
-	private void removeKilledMobs()
+	private void handleDeadAndRemovedEntities()
 	{
-		//Players are getting handeld diffrently
+		//Dead players
 		for(int i = 0; i < players.size(); i++)
 		{
 			if(players.get(i).isDead()) players.get(i).whileDead();
 		}
-	}
 
-	private void removeRemovedEntities()
-	{
+		//Removed entities
 		for(int i = 0; i < entities.size(); i++)
 		{
 			if(entities.get(i).isRemoved()) entities.remove(i);
@@ -172,6 +173,10 @@ public class Level
 		for(int i = 0; i < players.size(); i++)
 		{
 			if(players.get(i).isRemoved()) players.remove(i);
+		}
+		for(int i = 0; i < lightSources.size(); i++)
+		{
+			if(lightSources.get(i).isRemoved()) lightSources.remove(i);
 		}
 	}
 

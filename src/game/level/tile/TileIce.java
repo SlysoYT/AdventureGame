@@ -3,11 +3,11 @@ package game.level.tile;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 
-public class CheckpointTile extends Tile
+public class TileIce extends Tile
 {
 	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
 
-	public CheckpointTile(Sprite sprite)
+	public TileIce(Sprite sprite)
 	{
 		super(sprite);
 	}
@@ -16,8 +16,8 @@ public class CheckpointTile extends Tile
 	{
 		screen.renderTile(x << TILE_SIZE_SHIFTING, y << TILE_SIZE_SHIFTING, this);
 	}
-	
-	public boolean checkpoint()
+
+	public boolean sliding()
 	{
 		return true;
 	}

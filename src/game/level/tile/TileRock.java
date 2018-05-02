@@ -2,12 +2,13 @@ package game.level.tile;
 
 import game.graphics.Screen;
 import game.graphics.Sprite;
+import game.util.Hitbox;
 
-public class ErrorTile extends Tile
+public class TileRock extends Tile
 {
 	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
 
-	public ErrorTile(Sprite sprite)
+	public TileRock(Sprite sprite)
 	{
 		super(sprite);
 	}
@@ -15,5 +16,10 @@ public class ErrorTile extends Tile
 	public void render(int x, int y, Screen screen)
 	{
 		screen.renderTile(x << TILE_SIZE_SHIFTING, y << TILE_SIZE_SHIFTING, this);
+	}
+
+	public Hitbox getHitbox()
+	{
+		return new Hitbox(2, 3, 10, 6);
 	}
 }

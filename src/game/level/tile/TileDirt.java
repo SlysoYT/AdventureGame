@@ -3,11 +3,11 @@ package game.level.tile;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 
-public class GrassTile extends Tile
+public class TileDirt extends Tile
 {
 	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
 
-	public GrassTile(Sprite sprite)
+	public TileDirt(Sprite sprite)
 	{
 		super(sprite);
 	}

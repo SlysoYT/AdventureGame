@@ -3,11 +3,11 @@ package game.level.tile;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 
-public class KillerTile extends Tile
+public class TileBooster extends Tile
 {
 	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
 
-	public KillerTile(Sprite sprite)
+	public TileBooster(Sprite sprite)
 	{
 		super(sprite);
 	}
@@ -17,7 +17,7 @@ public class KillerTile extends Tile
 		screen.renderTile(x << TILE_SIZE_SHIFTING, y << TILE_SIZE_SHIFTING, this);
 	}
 
-	public boolean deadly()
+	public boolean booster()
 	{
 		return true;
 	}

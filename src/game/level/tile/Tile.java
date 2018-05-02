@@ -10,26 +10,26 @@ public class Tile
 
 	public static final byte DEFAULT_TILE_SIZE = 16;
 
-	public static final Tile TILE_ERROR = new ErrorTile(Sprite.SPRITE_ERROR);
-	public static final Tile TILE_VOID = new VoidTile(Sprite.SPRITE_VOID);
+	public static final Tile TILE_ERROR = new TileError(Sprite.SPRITE_ERROR);
+	public static final Tile TILE_VOID = new TileVoid(Sprite.SPRITE_VOID);
 
-	public static final Tile TILE_DIRT = new DirtTile(Sprite.SPRITE_DIRT);
-	public static final Tile TILE_GRASS = new GrassTile(Sprite.SPRITE_GRASS);
-	public static final Tile TILE_FLOWER_0 = new GrassTile(Sprite.SPRITE_FLOWER_0);
-	public static final Tile TILE_FLOWER_1 = new GrassTile(Sprite.SPRITE_FLOWER_1);
-	public static final Tile TILE_FLOWER_2 = new GrassTile(Sprite.SPRITE_FLOWER_2);
-	public static final Tile TILE_FLOWER_3 = new GrassTile(Sprite.SPRITE_FLOWER_3);
-	public static final Tile TILE_ROCK_GRASS = new RockTile(Sprite.SPRITE_ROCK_GRASS);
-	public static final Tile TILE_ROCK_SAND = new RockTile(Sprite.SPRITE_ROCK_SAND);
-	public static final Tile TILE_SAND = new SandTile(Sprite.SPRITE_SAND);
-	public static final Tile TILE_WATER = new WaterTile(null);
+	public static final Tile TILE_DIRT = new TileDirt(Sprite.SPRITE_DIRT);
+	public static final Tile TILE_GRASS = new TileGrass(Sprite.SPRITE_GRASS);
+	public static final Tile TILE_FLOWER_0 = new TileGrass(Sprite.SPRITE_FLOWER_0);
+	public static final Tile TILE_FLOWER_1 = new TileGrass(Sprite.SPRITE_FLOWER_1);
+	public static final Tile TILE_FLOWER_2 = new TileGrass(Sprite.SPRITE_FLOWER_2);
+	public static final Tile TILE_FLOWER_3 = new TileGrass(Sprite.SPRITE_FLOWER_3);
+	public static final Tile TILE_ROCK_GRASS = new TileRock(Sprite.SPRITE_ROCK_GRASS);
+	public static final Tile TILE_ROCK_SAND = new TileRock(Sprite.SPRITE_ROCK_SAND);
+	public static final Tile TILE_SAND = new TileSand(Sprite.SPRITE_SAND);
+	public static final Tile TILE_WATER = new TileWater(null);
 
-	public static final Tile TILE_BOOSTER = new BoosterTile(Sprite.SPRITE_BOOSTER);
-	public static final Tile TILE_CHECKPOINT = new CheckpointTile(Sprite.SPRITE_CHECKPOINT);
-	public static final Tile TILE_ICE = new IceTile(Sprite.SPRITE_ICE);
-	public static final Tile TILE_KILLER = new KillerTile(Sprite.SPRITE_KILLER);
-	public static final Tile TILE_QUARTZ = new QuartzTile(Sprite.SPRITE_QUARTZ);
-	public static final Tile TILE_QUARTZ_WALL = new QuartzWallTile(Sprite.SPRITE_QUARTZ_WALL);
+	public static final Tile TILE_BOOSTER = new TileBooster(Sprite.SPRITE_BOOSTER);
+	public static final Tile TILE_CHECKPOINT = new TileCheckpoint(Sprite.SPRITE_CHECKPOINT);
+	public static final Tile TILE_ICE = new TileIce(Sprite.SPRITE_ICE);
+	public static final Tile TILE_KILLER = new TileKiller(Sprite.SPRITE_KILLER);
+	public static final Tile TILE_QUARTZ = new TileQuartz(Sprite.SPRITE_QUARTZ);
+	public static final Tile TILE_QUARTZ_WALL = new TileQuartzWall(Sprite.SPRITE_QUARTZ_WALL);
 
 	//Colors of tiles in level files and level tiles array
 	public static final int COL_TILE_VOID = 0xFF0000;
@@ -67,7 +67,7 @@ public class Tile
 	{
 		return sprite;
 	}
-	
+
 	public void setSprite(Sprite sprite)
 	{
 		this.sprite = sprite;

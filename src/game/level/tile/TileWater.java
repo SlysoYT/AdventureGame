@@ -3,11 +3,11 @@ package game.level.tile;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 
-public class WaterTile extends Tile
+public class TileWater extends Tile
 {
 	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
 
-	public WaterTile(Sprite sprite)
+	public TileWater(Sprite sprite)
 	{
 		super(sprite);
 	}

@@ -130,7 +130,7 @@ public class HUD
 		g.drawString("Velocity: " + player.getXVelocity() + ", " + player.getYVelocity(), 5, (DEBUG_FONT.getSize() + 3) * 3);
 		g.drawString("Dir: " + player.getDirectionFacing(), 5, (DEBUG_FONT.getSize() + 3) * 4);
 		g.drawString("Mouse: " + Mouse.getX() + ", " + Mouse.getY() + ", " + Mouse.getButton(), 5, (DEBUG_FONT.getSize() + 3) * 5);
-		g.drawString("Level: " + Game.getLevel().getLevelName(), 5, (DEBUG_FONT.getSize() + 3) * 6);
+		g.drawString("Level: " + Game.getLevel().getLevelName() + ", " + Game.getLevel().getSeed(), 5, (DEBUG_FONT.getSize() + 3) * 6);
 
 		String fpsTpsInfo = "FPS: " + Game.getCurrentFPS() + " | TPS: " + Game.getCurrentTPS();
 		g.drawString(fpsTpsInfo, Game.width * SCALE - g.getFontMetrics().stringWidth(fpsTpsInfo) - 3, Game.height * SCALE - 3);

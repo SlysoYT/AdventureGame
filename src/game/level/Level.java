@@ -41,7 +41,8 @@ public class Level
 
 	private Random rand = new Random();
 
-	private int time = 0;
+	private final int MAX_TIME = 3600;
+	private int time = MAX_TIME / 2;
 
 	private List<Entity> entities = new ArrayList<Entity>();
 	private List<Particle> particles = new ArrayList<Particle>();
@@ -92,16 +93,10 @@ public class Level
 		if(Game.getGameState() == GameState.IngameOffline || (Game.getGameState() == GameState.IngameOnline && Game.isHostingGame))
 		{
 			mobSpawning();
-		}
 
-		if(Game.getGameStateTicksPassed() == 0)
-		{
-			for(int i = 0; i < 10; i++)
-				add(new LightSource(getClientPlayer().getX() - rand.nextInt(300), getClientPlayer().getY() - rand.nextInt(300), rand.nextInt(70),
-						null));
+			if(Game.getGameStateTicksPassed() == 0) add(new LightSource(getClientPlayer().getX(), getClientPlayer().getY(), 50, null));
+			lightSources.get(0).setPosition(getClientPlayer().getX(), getClientPlayer().getY());
 		}
-
-		lightSources.get(0).setPosition(getClientPlayer().getX(), getClientPlayer().getY());
 
 		removeKilledMobs();
 		removeRemovedEntities();
@@ -274,7 +269,7 @@ public class Level
 
 	private void time()
 	{
-		if(++time > 3600) time = 0;
+		if(++time > MAX_TIME) time = 0;
 	}
 
 	public boolean hitboxCollidesWithSolidTile(int x, int y, Hitbox hitbox)
@@ -661,6 +656,11 @@ public class Level
 	public String getLevelName()
 	{
 		return levelName;
+	}
+
+	public long getSeed()
+	{
+		return -1;
 	}
 
 	public TileCoordinate getSpawnLocation()

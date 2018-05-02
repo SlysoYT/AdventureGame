@@ -254,7 +254,6 @@ public class Game extends Canvas implements Runnable
 
 			level.render(screen);
 			hud.render(screen);
-			screen.renderGUI(activeGui);
 		}
 		else if(gameState == GameState.Options)
 		{
@@ -275,6 +274,13 @@ public class Game extends Canvas implements Runnable
 
 		//Filters are to place here!
 		screen.applyBrightness();
+
+		//Ingame GUI shouldn't be affected by the brightness
+		if(gameState == GameState.IngameOffline || gameState == GameState.IngameOnline)
+		{
+			if(level == null) return;
+			screen.renderGUI(activeGui);
+		}
 
 		for(int i = 0; i < pixels.length; i++)
 		{

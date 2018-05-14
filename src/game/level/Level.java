@@ -93,12 +93,7 @@ public class Level
 		if(Game.getGameState() == GameState.IngameOffline || (Game.getGameState() == GameState.IngameOnline && Game.isHostingGame))
 		{
 			mobSpawning();
-
-			if(Game.getGameStateTicksPassed() == 0) add(new LightSource(getClientPlayer().getX(), getClientPlayer().getY(), 50, null));
-			lightSources.get(0).setPosition(getClientPlayer().getX(), getClientPlayer().getY());
 		}
-
-		handleDeadAndRemovedEntities();
 
 		for(int i = 0; i < entities.size(); i++)
 		{
@@ -117,6 +112,7 @@ public class Level
 			lightSources.get(i).tick();
 		}
 
+		handleDeadAndRemovedEntities();
 		time();
 	}
 
@@ -155,28 +151,28 @@ public class Level
 
 	private void handleDeadAndRemovedEntities()
 	{
+		//Removed entities
+		for(int i = 0; i < entities.size(); i++)
+		{
+			if(entities.get(i).isRemoved()) entities.remove(i--);
+		}
+		for(int i = 0; i < particles.size(); i++)
+		{
+			if(particles.get(i).isRemoved()) particles.remove(i--);
+		}
+		for(int i = 0; i < players.size(); i++)
+		{
+			if(players.get(i).isRemoved()) players.remove(i--);
+		}
+		for(int i = 0; i < lightSources.size(); i++)
+		{
+			if(lightSources.get(i).isRemoved()) lightSources.remove(i--);
+		}
+
 		//Dead players
 		for(int i = 0; i < players.size(); i++)
 		{
 			if(players.get(i).isDead()) players.get(i).whileDead();
-		}
-
-		//Removed entities
-		for(int i = 0; i < entities.size(); i++)
-		{
-			if(entities.get(i).isRemoved()) entities.remove(i);
-		}
-		for(int i = 0; i < particles.size(); i++)
-		{
-			if(particles.get(i).isRemoved()) particles.remove(i);
-		}
-		for(int i = 0; i < players.size(); i++)
-		{
-			if(players.get(i).isRemoved()) players.remove(i);
-		}
-		for(int i = 0; i < lightSources.size(); i++)
-		{
-			if(lightSources.get(i).isRemoved()) lightSources.remove(i);
 		}
 	}
 

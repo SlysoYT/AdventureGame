@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import game.Game;
+import game.entity.item.ItemCoin;
 import game.entity.mob.player.Player;
 import game.entity.spawner.ParticleSpawner;
 import game.graphics.Screen;
@@ -32,6 +33,7 @@ public class Slime extends Mob
 	public Slime(int x, int y, UUID uuid)
 	{
 		super(x, y, new Hitbox(-7, -1, 13, 7), Sprite.SLIME_DOWN, 20.0F, 0.75F, 10.0F, 30, uuid);
+		getItemDrop().addItem(new ItemCoin(x, y), 3, 50);
 		xGoal = x;
 		yGoal = y;
 	}

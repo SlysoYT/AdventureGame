@@ -5,6 +5,7 @@ import java.util.UUID;
 import game.Game;
 import game.chat.Chat;
 import game.chat.Message;
+import game.entity.lighting.LightSource;
 import game.entity.mob.Mob;
 import game.entity.mob.ability.Ability;
 import game.entity.mob.ability.AbilityRage;
@@ -47,6 +48,8 @@ public class Player extends Mob
 	private Ability primaryAbility;
 	private Ability secondaryAbility;
 	private Ability passiveAbility;
+
+	private LightSource playersLantern;
 
 	public Player(int x, int y, Keyboard input)
 	{
@@ -92,6 +95,13 @@ public class Player extends Mob
 			anim++;
 		}
 		else anim = 0;
+
+		if(playersLantern == null)
+		{
+			playersLantern = new LightSource(this.x, this.y, 50, null);
+			level.add(playersLantern);
+		}
+		playersLantern.setPosition(this.x, this.y);
 
 		if(!isClient) return;
 

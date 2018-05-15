@@ -151,7 +151,7 @@ public class Level
 
 	private void handleDeadAndRemovedEntities()
 	{
-		//Removed entities
+		//Entities
 		for(int i = 0; i < entities.size(); i++)
 		{
 			if(entities.get(i).isRemoved()) entities.remove(i--);

@@ -251,6 +251,13 @@ public class GUIInventory extends GUI
 		selectedShopOffer = 0;
 	}
 
+	/**
+	 * Attempt to add the item to the inventory. Return false if failed to add
+	 * the specified item to the inventory.
+	 * 
+	 * @param item
+	 * @return
+	 */
 	public boolean addItem(Item item)
 	{
 		for(int i = 0; i < slots.length; i++)

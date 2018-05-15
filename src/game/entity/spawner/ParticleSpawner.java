@@ -1,11 +1,16 @@
 package game.entity.spawner;
 
+import java.util.Random;
+
+import game.entity.Entity;
 import game.entity.particle.Particle;
 import game.graphics.Sprite;
 import game.level.Level;
 
-public class ParticleSpawner extends Spawner
+public class ParticleSpawner extends Entity
 {
+	private Random rand = new Random();
+
 	/**
 	 * Spawn random sprites from the sprites array.
 	 * 
@@ -20,8 +25,6 @@ public class ParticleSpawner extends Spawner
 	 */
 	public ParticleSpawner(int x, int y, float xSpeed, float ySpeed, int life, int amount, Level level, Sprite[] sprites)
 	{
-		super(x, y, Type.PARTICLE, level);
-
 		for(int i = 0; i < amount; i++)
 		{
 			level.add(new Particle(x, y, xSpeed, ySpeed, life, sprites[rand.nextInt(sprites.length)]));
@@ -41,8 +44,6 @@ public class ParticleSpawner extends Spawner
 	 */
 	public ParticleSpawner(int x, int y, float xSpeed, float ySpeed, int life, Level level, Sprite[] sprites)
 	{
-		super(x, y, Type.PARTICLE, level);
-
 		for(int i = 0; i < sprites.length; i++)
 		{
 			level.add(new Particle(x, y, xSpeed, ySpeed, life, sprites[i]));

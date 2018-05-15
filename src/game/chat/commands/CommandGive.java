@@ -2,7 +2,6 @@ package game.chat.commands;
 
 import java.util.List;
 
-import game.Game;
 import game.chat.Chat;
 import game.chat.Message;
 import game.entity.item.ItemArmourLeather;
@@ -26,17 +25,17 @@ public class CommandGive extends Command
 		if(item.equals("health"))
 		{
 			for(int i = 0; i < amount; i++)
-				if(!Game.getLevel().getClientPlayer().getInventory().addItem(new ItemHealth(0, 0, 10))) break;
+				if(!sender.getInventory().addItem(new ItemHealth(0, 0, 10))) break;
 		}
 		else if(item.equals("coin") || item.equals("coins") || item.equals("money"))
 		{
 			for(int i = 0; i < amount; i++)
-				if(!Game.getLevel().getClientPlayer().getInventory().addItem(new ItemCoin(0, 0))) break;
+				if(!sender.getInventory().addItem(new ItemCoin(0, 0))) break;
 		}
 		else if(item.equals("armour"))
 		{
 			for(int i = 0; i < amount; i++)
-				if(!Game.getLevel().getClientPlayer().getInventory().addItem(new ItemArmourLeather(0, 0))) break;
+				if(!sender.getInventory().addItem(new ItemArmourLeather(0, 0))) break;
 		}
 		else
 		{

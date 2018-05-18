@@ -13,7 +13,7 @@ public class TrapExplosive extends Trap
 {
 	public TrapExplosive(int x, int y, Mob source, UUID uuid)
 	{
-		super(x, y, 8.5F, source, new Hitbox(-3, -3, 6, 6), Sprite.SPRITE_CHECKPOINT, uuid);
+		super(x, y, 8.5F, source, new Hitbox(-5, -2, 8, 3), Sprite.TRAP_EXPLOSIVE_1, uuid);
 	}
 
 	@Override
@@ -30,6 +30,9 @@ public class TrapExplosive extends Trap
 
 	public void render(Screen screen)
 	{
+		if(System.nanoTime() % 1_000_000_000 <= 500_000_000) sprite = Sprite.TRAP_EXPLOSIVE_1;
+		else sprite = Sprite.TRAP_EXPLOSIVE_2;
+
 		screen.renderSprite(getX() - Tile.DEFAULT_TILE_SIZE / 2, getY() - Tile.DEFAULT_TILE_SIZE / 2, getSprite(), true);
 	}
 }

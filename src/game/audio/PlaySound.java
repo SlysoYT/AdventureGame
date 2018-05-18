@@ -33,6 +33,24 @@ public class PlaySound
 		}
 	}
 
+	public static long getSoundLengthInMicroseconds(Sound sound)
+	{
+		try
+		{
+			AudioInputStream inputStream = AudioSystem.getAudioInputStream(PlaySound.class.getResource(sound.getPath()));
+			AudioFormat format = inputStream.getFormat();
+			DataLine.Info info = new DataLine.Info(Clip.class, format);
+			clip = (Clip) AudioSystem.getLine(info);
+			clip.open(inputStream);
+		}
+		catch(UnsupportedAudioFileException | LineUnavailableException | IOException e)
+		{
+			Print.printError(e.getMessage());
+		}
+
+		return clip.getMicrosecondLength();
+	}
+
 	public static void initAudioSystem()
 	{
 		//Just open a sound, without playing it

@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import game.Game;
+import game.audio.PlayMusic;
 import game.entity.Entity;
 import game.entity.lighting.LightSource;
 import game.entity.mob.Guardian;
@@ -43,6 +44,8 @@ public class Level
 
 	private final int MAX_TIME = 3600;
 	private int time = MAX_TIME / 2;
+	
+	private boolean musicPlaying = false;
 
 	private List<Entity> entities = new ArrayList<Entity>();
 	private List<Particle> particles = new ArrayList<Particle>();
@@ -114,6 +117,7 @@ public class Level
 
 		handleDeadAndRemovedEntities();
 		time();
+		PlayMusic.tick();
 	}
 
 	private void mobSpawning()

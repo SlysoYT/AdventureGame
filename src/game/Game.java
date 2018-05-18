@@ -18,6 +18,7 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 import game.audio.PlaySound;
+import game.audio.Sounds;
 import game.chat.Chat;
 import game.entity.mob.player.Player;
 import game.graphics.GUI;

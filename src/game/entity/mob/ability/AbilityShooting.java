@@ -4,6 +4,7 @@ import game.Game;
 import game.entity.mob.player.Player;
 import game.entity.projectile.ProjectileBoomerang;
 import game.entity.projectile.ProjectileBullet;
+import game.entity.projectile.ProjectileGranade;
 import game.entity.projectile.ProjectileGuardian;
 import game.entity.projectile.Projectiles;
 import game.graphics.Screen;
@@ -36,6 +37,8 @@ public class AbilityShooting extends Ability
 			else if(projectile == Projectiles.ProjectileBullet) player.shoot(new ProjectileBullet(player.getX(), player.getY(), angle, player, null));
 			else if(projectile == Projectiles.ProjectileGuardian)
 				player.shoot(new ProjectileGuardian(player.getX(), player.getY(), angle, player, null));
+			else if(projectile == Projectiles.ProjectileGranade)
+				player.shoot(new ProjectileGranade(player.getX(), player.getY(), angle, player, null));
 		}
 		else
 		{
@@ -43,12 +46,6 @@ public class AbilityShooting extends Ability
 			//TODO
 		}
 	}
-
-	/*@Override
-	protected Ability getAbility()
-	{
-		return this;
-	}*/
 
 	public float getAngle()
 	{

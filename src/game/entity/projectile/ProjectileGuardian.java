@@ -27,6 +27,11 @@ public class ProjectileGuardian extends Projectile
 		mob.damage(damage);
 	}
 
+	@Override
+	protected void onTileCollisioin()
+	{
+	}
+
 	public void render(Screen screen)
 	{
 		screen.renderSprite(getX() - Tile.DEFAULT_TILE_SIZE / 2, getY() - Tile.DEFAULT_TILE_SIZE / 2, getSprite(), true);

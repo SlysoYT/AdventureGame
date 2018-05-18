@@ -2,5 +2,5 @@ package game.entity.projectile;
 
 public enum Projectiles
 {
-	ProjectileBoomerang, ProjectileBullet, ProjectileGuardian;
+	ProjectileBoomerang, ProjectileBullet, ProjectileGuardian, ProjectileGranade;
 }

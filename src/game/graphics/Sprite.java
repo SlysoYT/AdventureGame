@@ -50,17 +50,24 @@ public class Sprite
 			new Sprite(2, 0x205DA1) };
 	public static final Sprite[] PARTICLE_BLOOD = { new Sprite(2, 0xEB3D3D), new Sprite(3, 0xEE4D59), new Sprite(3, 0xEE4D7F),
 			new Sprite(2, 0xFF0048) };
+	public static final Sprite[] PARTICLE_SPARK = { new Sprite(1, 0xEDD92D), new Sprite(2, 0xEDB02D), new Sprite(2, 0xED6C2D),
+			new Sprite(1, 0xF3D650) };
 
 	//Explosion
 	public static final Sprite[] EXPLOSION = { new Sprite(DEFAULT_TILE_SIZE, 55, 63, SpriteSheet.SPRITE_SHEET),
 			new Sprite(DEFAULT_TILE_SIZE, 55, 62, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 55, 61, SpriteSheet.SPRITE_SHEET),
 			new Sprite(DEFAULT_TILE_SIZE, 55, 60, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 55, 59, SpriteSheet.SPRITE_SHEET),
 			new Sprite(DEFAULT_TILE_SIZE, 55, 58, SpriteSheet.SPRITE_SHEET) };
+	
+	//Traps
+	public static final Sprite TRAP_EXPLOSIVE_1 = new Sprite(DEFAULT_TILE_SIZE, 57, 62, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite TRAP_EXPLOSIVE_2 = new Sprite(DEFAULT_TILE_SIZE, 57, 61, SpriteSheet.SPRITE_SHEET);
 
 	//Projectiles
 	public static final Sprite PROJECTILE_BULLET = new Sprite(DEFAULT_TILE_SIZE, 57, 63, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite PROJECTILE_BOOMERANG = new Sprite(DEFAULT_TILE_SIZE, 58, 63, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite PROJECTILE_GUARDIAN = new Sprite(DEFAULT_TILE_SIZE, 56, 63, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite PROJECTILE_GRANADE = new Sprite(DEFAULT_TILE_SIZE, 58, 62, SpriteSheet.SPRITE_SHEET);
 
 	//Items
 	public static final Sprite ITEM_HEALTH = new Sprite(DEFAULT_TILE_SIZE, 0, 6, SpriteSheet.SPRITE_SHEET);

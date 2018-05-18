@@ -51,6 +51,8 @@ public abstract class Projectile extends Entity
 	protected abstract void tickProjectile();
 
 	protected abstract void onMobHit(Mob mob);
+	
+	protected abstract void onTileCollisioin();
 
 	public void tick()
 	{
@@ -66,8 +68,9 @@ public abstract class Projectile extends Entity
 				Sprite[] particleSprites = Sprite.getParticleSpritesFromPosition(collisionPoint.getX(), collisionPoint.getY(), 20);
 				level.add(new ParticleSpawner(getX(), getY(), 1.0F, 1.0F, 80, level, particleSprites));
 			}
-			else System.exit(0);
 
+			onTileCollisioin();
+			
 			PlaySound.playSound(Sounds.hit);
 			this.remove();
 			return;

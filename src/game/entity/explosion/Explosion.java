@@ -15,6 +15,12 @@ import game.util.Hitbox;
 public class Explosion extends Entity
 {
 	private Sprite sprite;
+	private LightSource lightSource;
+
+	private int lightRadius = 10;
+	private final int MAX_LIGHT_RADIUS = 30;
+	private boolean lightRadiusIncreasing = true;
+
 	private long start;
 	private float damage;
 	private boolean canMakesDamage = true;
@@ -26,6 +32,7 @@ public class Explosion extends Entity
 		this.y = y;
 		setUUID(uuid);
 		this.damage = damage;
+		this.lightSource = new LightSource(x, y, 25, null);
 	}
 
 	public void tick()
@@ -39,7 +46,7 @@ public class Explosion extends Entity
 
 		if(canMakesDamage && System.currentTimeMillis() - start >= 30)
 		{
-			level.add(new LightSource(this.getX(), this.getY(), 25, 20, null)); //Light effect
+			level.add(lightSource); //Light effect
 
 			List<Mob> collidedMobs = level.mobsCollidedWithHitbox(x, y, hitbox);
 			for(Mob mob : collidedMobs)
@@ -50,7 +57,23 @@ public class Explosion extends Entity
 			canMakesDamage = false;
 		}
 
-		if(System.currentTimeMillis() - start >= 280) this.remove();
+		if(lightSource != null)
+		{
+			if(lightRadiusIncreasing)
+			{
+				lightRadius += 2;
+				if(lightRadius >= MAX_LIGHT_RADIUS) lightRadiusIncreasing = false;
+			}
+			else lightRadius -= 2;
+
+			lightSource.setRadius(lightRadius);
+		}
+
+		if(System.currentTimeMillis() - start >= 280)
+		{
+			lightSource.remove();
+			this.remove();
+		}
 	}
 
 	public void render(Screen screen)

@@ -7,7 +7,6 @@ import game.entity.Entity;
 public class LightSource extends Entity
 {
 	private int radius;
-	private int lifeTime = 0, maxLifeTime = -1;
 
 	public LightSource(int x, int y, int radius, UUID uuid)
 	{
@@ -17,20 +16,13 @@ public class LightSource extends Entity
 		this.radius = radius;
 	}
 
-	public LightSource(int x, int y, int radius, int lifeTime, UUID uuid)
-	{
-		setUUID(uuid);
-		this.x = x;
-		this.y = y;
-		this.radius = radius;
-		this.maxLifeTime = lifeTime;
-	}
-
 	public void tick()
 	{
-		if(maxLifeTime == -1) return;
+	}
 
-		if(lifeTime++ >= maxLifeTime) this.remove();
+	public void setRadius(int radius)
+	{
+		this.radius = radius;
 	}
 
 	public int getRadius()

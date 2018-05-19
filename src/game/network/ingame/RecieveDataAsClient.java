@@ -21,7 +21,6 @@ import game.network.serialization.SObject;
 import game.network.serialization.SString;
 import game.network.serialization.SerializationReader;
 import game.util.GameState;
-import game.util.Print;
 
 public class RecieveDataAsClient
 {
@@ -35,7 +34,7 @@ public class RecieveDataAsClient
 		if(object.findString("kickPlayer") != null)
 		{
 			Game.setGameState(GameState.TitleScreen);
-			Print.printInfo("You got kicked from the server! Reason: " + object.findString("kickPlayer").getString());
+			Game.getPrinter().printInfo("You got kicked from the server! Reason: " + object.findString("kickPlayer").getString());
 			return;
 		}
 

@@ -8,7 +8,6 @@ import game.network.NetworkPackage;
 import game.network.Server;
 import game.network.serialization.SObject;
 import game.network.serialization.SerializationReader;
-import game.util.Print;
 
 public class RecieveDataAsHost
 {
@@ -30,7 +29,7 @@ public class RecieveDataAsHost
 
 				level.add(new OnlinePlayer(level.getSpawnLocation().getX(), level.getSpawnLocation().getY(), IPAddressSender,
 						object.findString("requestJoin").getString()));
-				Print.printImportantInfo(((OnlinePlayer) level.getPlayerByIP(IPAddressSender)).getPlayerName() + " joined the game!");
+				Game.getPrinter().printImportantInfo(((OnlinePlayer) level.getPlayerByIP(IPAddressSender)).getPlayerName() + " joined the game!");
 			}
 
 			return;
@@ -42,7 +41,7 @@ public class RecieveDataAsHost
 			{
 				Server.removeClient(IPAddressSender);
 				level.getPlayerByIP(IPAddressSender).remove();
-				Print.printImportantInfo(((OnlinePlayer) level.getPlayerByIP(IPAddressSender)).getPlayerName() + " disconnected from the game!");
+				Game.getPrinter().printImportantInfo(((OnlinePlayer) level.getPlayerByIP(IPAddressSender)).getPlayerName() + " disconnected from the game!");
 			}
 		}
 
@@ -62,7 +61,7 @@ public class RecieveDataAsHost
 
 			if(Math.abs(xVelocity) <= senderPlayer.getSpeed() && Math.abs(yVelocity) <= senderPlayer.getSpeed())
 				senderPlayer.motion(xVelocity, yVelocity);
-			else Print.printInfo("Anti cheat detected illegal movement: " + xVelocity + " " + yVelocity);
+			else Game.getPrinter().printInfo("Anti cheat detected illegal movement: " + xVelocity + " " + yVelocity);
 
 			AbilityOnline.recieveAsHost(IPAddressSender, object);
 		}

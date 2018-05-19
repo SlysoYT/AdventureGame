@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.UUID;
 
 import game.Game;
+import game.entity.item.ItemAbilityProjectileBoomerang;
+import game.entity.item.ItemAbilityProjectileBullet;
+import game.entity.item.ItemAbilityProjectileGranade;
+import game.entity.item.ItemAbilityTrapExplosive;
 import game.entity.item.ItemCoin;
 import game.entity.mob.player.Player;
 import game.entity.spawner.ParticleSpawner;
@@ -34,6 +38,11 @@ public class Slime extends Mob
 	{
 		super(x, y, new Hitbox(-7, -1, 13, 7), Sprite.SLIME_DOWN, 20.0F, 0.75F, 10.0F, 30, uuid);
 		getItemDrop().addItem(new ItemCoin(x, y), 3, 50);
+		getItemDrop().addItem(new ItemAbilityProjectileGranade(x, y), 1, 5);
+		getItemDrop().addItem(new ItemAbilityProjectileBoomerang(x, y), 1, 5);
+		getItemDrop().addItem(new ItemAbilityProjectileBullet(x, y), 1, 5);
+		getItemDrop().addItem(new ItemAbilityTrapExplosive(x, y), 1, 5);
+
 		xGoal = x;
 		yGoal = y;
 	}
@@ -47,8 +56,6 @@ public class Slime extends Mob
 
 		if(target != null)
 		{
-			yGoal = target.getY();
-
 			if(Game.getGameStateTicksPassed() % 20 == rand.nextInt(20)) //Randomness to not make all slimes tick at the same time
 			{
 				Vector2i start = new Vector2i(this.getX() >> Screen.TILE_SIZE_SHIFTING, this.getY() >> Screen.TILE_SIZE_SHIFTING);

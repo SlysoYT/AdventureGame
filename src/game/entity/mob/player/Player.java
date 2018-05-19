@@ -8,13 +8,10 @@ import game.chat.Message;
 import game.entity.lighting.LightSource;
 import game.entity.mob.Mob;
 import game.entity.mob.ability.Ability;
-import game.entity.mob.ability.AbilityRage;
 import game.entity.mob.ability.AbilityShooting;
-import game.entity.mob.ability.AbilityTrap;
 import game.entity.mob.effect.EffectMovementSpeed;
 import game.entity.projectile.Projectiles;
 import game.entity.spawner.ParticleSpawner;
-import game.entity.trap.Traps;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.graphics.GUIs.GUIInventory;
@@ -59,9 +56,7 @@ public class Player extends Mob
 		this.input = input;
 		this.inventory = new GUIInventory();
 
-		primaryAbility = new AbilityShooting(this, Projectiles.ProjectileBoomerang, 70);
-		secondaryAbility = new AbilityTrap(this, Traps.TrapExplosive, 100);
-		passiveAbility = new AbilityRage(this, 600, 240);
+		primaryAbility = new AbilityShooting(this, Projectiles.ProjectileBullet, 70); //Standart starting skill
 	}
 
 	public Player(int x, int y, String IPAddress)
@@ -105,9 +100,9 @@ public class Player extends Mob
 
 		if(!isClient) return;
 
-		primaryAbility.tick();
-		secondaryAbility.tick();
-		passiveAbility.tick();
+		if(primaryAbility != null) primaryAbility.tick();
+		if(secondaryAbility != null) secondaryAbility.tick();
+		if(passiveAbility != null) passiveAbility.tick();
 
 		if(inventory.armourEquipped()) this.applyEffect(new EffectMovementSpeed(1, 5, this));
 
@@ -122,9 +117,9 @@ public class Player extends Mob
 		}
 		if(Game.getActiveGUI() != null) return;
 
-		if(Mouse.getButton() == 1) primaryAbility.enable();
-		if(Mouse.getButton() == 3) secondaryAbility.enable();
-		if(Mouse.getButton() == 2) passiveAbility.enable();
+		if(Mouse.getButton() == 1 && primaryAbility != null) primaryAbility.enable();
+		if(Mouse.getButton() == 3 && secondaryAbility != null) secondaryAbility.enable();
+		if(Mouse.getButton() == 2 && passiveAbility != null) passiveAbility.enable();
 
 		handleChat();
 
@@ -310,11 +305,13 @@ public class Player extends Mob
 
 	public float getSecondaryAbilityCooldownProgress()
 	{
+		if(secondaryAbility == null) return 0;
 		return (float) secondaryAbility.getCurrentCooldown() / secondaryAbility.getCooldown();
 	}
 
 	public float getPassiveAbilityCooldownProgress()
 	{
+		if(passiveAbility == null) return 0;
 		return (float) passiveAbility.getCurrentCooldown() / passiveAbility.getCooldown();
 	}
 
@@ -331,5 +328,14 @@ public class Player extends Mob
 	public String getIPAddress()
 	{
 		return IPAddress;
+	}
+
+	//Setters
+
+	public void setAbility(Ability ability, int abilityNumber)
+	{
+		if(abilityNumber == 0) this.primaryAbility = ability;
+		else if(abilityNumber == 1) this.secondaryAbility = ability;
+		else this.passiveAbility = ability;
 	}
 }

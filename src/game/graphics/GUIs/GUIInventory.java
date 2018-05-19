@@ -118,6 +118,9 @@ public class GUIInventory extends GUI
 		//Move item stack from slot to moving stack
 		if(!isMovingStack && slots[x + y * width][0] != null)
 		{
+			//Remove the players skill
+			if(requiredItemType == ItemType.Skill && slots == skillSlots) Game.getLevel().getClientPlayer().setAbility(null, x);
+
 			for(int i = 0; i < slots[x + y * width].length; i++)
 			{
 				movingStack[i] = slots[x + y * width][i];
@@ -132,6 +135,10 @@ public class GUIInventory extends GUI
 
 			if(slots[x + y * width][0] == null)
 			{
+				//Set the players skill
+				if(requiredItemType == ItemType.Skill && slots == skillSlots)
+					Game.getLevel().getClientPlayer().setAbility(movingStack[0].getItemAbility(Game.getLevel().getClientPlayer()), x);
+
 				for(int i = 0; i < movingStack.length; i++)
 				{
 					slots[x + y * width][i] = movingStack[i];

@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import game.util.Print;
+import game.Game;
 
 public class SpriteSheet
 {
@@ -35,7 +35,7 @@ public class SpriteSheet
 		}
 		catch(IOException e)
 		{
-			Print.printError(e.getMessage());
+			Game.getPrinter().printError(e.getMessage());
 		}
 	}
 

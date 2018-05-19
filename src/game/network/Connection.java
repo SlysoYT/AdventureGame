@@ -15,7 +15,6 @@ import game.Game;
 import game.network.ingame.GetSendDataAsClient;
 import game.settings.Settings;
 import game.util.GameState;
-import game.util.Print;
 
 public class Connection implements Runnable
 {
@@ -64,17 +63,17 @@ public class Connection implements Runnable
 			if(ip == null) ip = getPublicIP();
 			if(ip == null)
 			{
-				Print.printError("You are not connected to the internet!");
+				Game.getPrinter().printError("You are not connected to the internet!");
 				close();
 				Game.setGameState(GameState.TitleScreen);
 				return;
 			}
 
-			Print.printImportantInfo("Started server, IP: " + ip + " or " + InetAddress.getLocalHost());
+			Game.getPrinter().printImportantInfo("Started server, IP: " + ip + " or " + InetAddress.getLocalHost());
 		}
 		catch(IOException e)
 		{
-			Print.printError(e.getMessage());
+			Game.getPrinter().printError(e.getMessage());
 		}
 	}
 
@@ -87,7 +86,7 @@ public class Connection implements Runnable
 		}
 		catch(SocketException e)
 		{
-			Print.printError(e.getMessage());
+			Game.getPrinter().printError(e.getMessage());
 		}
 	}
 
@@ -116,12 +115,12 @@ public class Connection implements Runnable
 			{
 				if(e instanceof UnknownHostException)
 				{
-					Print.printError("Unknown host!");
+					Game.getPrinter().printError("Unknown host!");
 					Game.setGameState(GameState.TitleScreen);
 				}
 				else if(e instanceof SocketTimeoutException)
 				{
-					Print.printError("Connection failed! Server not found!");
+					Game.getPrinter().printError("Connection failed! Server not found!");
 					Game.setGameState(GameState.TitleScreen);
 				}
 				connectionEstablished = false;
@@ -178,7 +177,7 @@ public class Connection implements Runnable
 		}
 		catch(IOException e)
 		{
-			Print.printError("Couldn't connect, " + e.getMessage());
+			Game.getPrinter().printError("Couldn't connect, " + e.getMessage());
 			return null;
 		}
 	}
@@ -191,7 +190,7 @@ public class Connection implements Runnable
 		if(isClient) clientSocket.close();
 		else hostSocket.close();
 		if(!isClient) stopThread();
-		Print.printInfo("Connection closed");
+		Game.getPrinter().printInfo("Connection closed");
 	}
 
 	public boolean isClient()
@@ -216,7 +215,7 @@ public class Connection implements Runnable
 		}
 		catch(InterruptedException e)
 		{
-			Print.printError(e.getMessage());
+			Game.getPrinter().printError(e.getMessage());
 		}
 	}
 

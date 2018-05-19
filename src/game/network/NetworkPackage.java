@@ -1,5 +1,6 @@
 package game.network;
 
+import game.Game;
 import game.network.ingame.GetSendDataAsClient;
 import game.network.ingame.GetSendDataAsHost;
 import game.network.ingame.RecieveDataAsClient;
@@ -7,7 +8,6 @@ import game.network.ingame.RecieveDataAsHost;
 import game.network.serialization.SField;
 import game.network.serialization.SObject;
 import game.network.serialization.SerializationReader;
-import game.util.Print;
 
 public class NetworkPackage
 {
@@ -43,7 +43,7 @@ public class NetworkPackage
 	{
 		if(object == null)
 		{
-			Print.printError("Failed to deserialize!");
+			Game.getPrinter().printError("Failed to deserialize!");
 			return false;
 		}
 
@@ -51,11 +51,11 @@ public class NetworkPackage
 		{
 			if(SerializationReader.readShort(object.findField("version").getData(), 0) == VERSION) return true;
 
-			Print.printError("Client version not matching with server version!");
+			Game.getPrinter().printError("Client version not matching with server version!");
 			return false;
 		}
 
-		Print.printError("Invalid packet!");
+		Game.getPrinter().printError("Invalid packet!");
 		return false;
 	}
 }

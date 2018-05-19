@@ -6,26 +6,26 @@ import game.settings.Settings;
 
 public class Print
 {
-	public static void printInfo(String message)
+	public void printInfo(String message)
 	{
 		if(!Settings.debugMode) return;
 		System.out.println("INFO: " + message);
 	}
 
-	public static void printImportantInfo(String message)
+	public void printImportantInfo(String message)
 	{
 		Chat.addMessage(new Message(message, PrintType.Info));
 		System.out.println("INFO: " + message);
 	}
-	
-	public static void printWarning(String message)
+
+	public void printWarning(String message)
 	{
 		if(!Settings.debugMode) return;
 		Chat.addMessage(new Message(message, PrintType.Warning));
 		System.out.println("WARNING: " + message);
 	}
 
-	public static void printError(String message)
+	public void printError(String message)
 	{
 		if(!Settings.debugMode) return;
 		Chat.addMessage(new Message(message, PrintType.Error));

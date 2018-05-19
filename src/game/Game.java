@@ -18,7 +18,6 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 import game.audio.PlaySound;
-import game.audio.Sounds;
 import game.chat.Chat;
 import game.entity.mob.player.Player;
 import game.graphics.GUI;
@@ -48,6 +47,7 @@ public class Game extends Canvas implements Runnable
 	private boolean debugMode;
 	private static boolean running = false;
 	private static int currentFPS = 0, currentTPS = 0;
+	private static float currentFrameTime = 0;
 
 	private JFrame frame;
 	private Thread thread;
@@ -58,6 +58,7 @@ public class Game extends Canvas implements Runnable
 	private static Player clientPlayer;
 	private static HUD hud;
 	private static GUI activeGui;
+	private static Print printer = new Print();
 
 	private static Connection connection = null;
 	private static boolean multiplayer = false;
@@ -97,14 +98,14 @@ public class Game extends Canvas implements Runnable
 		running = true;
 		thread = new Thread(this, "Game");
 		thread.start();
-		Print.printInfo("Launched game");
+		printer.printInfo("Launched game");
 	}
 
 	public synchronized void stop()
 	{
 		if(connection != null) connection.close();
 		running = false;
-		Print.printInfo("Stopped game");
+		printer.printInfo("Stopped game");
 		System.exit(0);
 
 		try
@@ -113,7 +114,7 @@ public class Game extends Canvas implements Runnable
 		}
 		catch(InterruptedException e)
 		{
-			Print.printError(e.getMessage());
+			printer.printError(e.getMessage());
 		}
 	}
 
@@ -129,6 +130,8 @@ public class Game extends Canvas implements Runnable
 		while(running)
 		{
 			long now = System.nanoTime();
+			long frameTimeStart;
+			long frameTimeEnd;
 			delta += (now - lastTime) / NS_PER_TICK;
 			lastTime = now;
 
@@ -140,18 +143,23 @@ public class Game extends Canvas implements Runnable
 				delta--;
 			}
 
+			frameTimeStart = System.nanoTime();
+
 			render();
 			fpsCount++;
+
+			frameTimeEnd = System.nanoTime();
 
 			if(System.currentTimeMillis() - timer >= 1000)
 			{
 				timer += 1000;
 				currentFPS = fpsCount;
 				currentTPS = tpsCount;
-				float frameTime = Math.round(1000F / currentFPS * 10F) / 10F;
-				Print.printInfo(currentFPS + " FPS, " + currentTPS + " TPS, " + frameTime + "ms");
 				tpsCount = 0;
 				fpsCount = 0;
+
+				currentFrameTime = Math.round((frameTimeEnd - frameTimeStart) / 1_000_000.0F * 100F) / 100F;
+				printer.printInfo(currentFPS + " FPS, " + currentTPS + " TPS, " + currentFrameTime + " ms");
 			}
 		}
 		stop();
@@ -452,6 +460,11 @@ public class Game extends Canvas implements Runnable
 		return currentTPS;
 	}
 
+	public static float getCurrentFrameTime()
+	{
+		return currentFrameTime;
+	}
+
 	public static String getVersion()
 	{
 		return VERSION;
@@ -481,6 +494,11 @@ public class Game extends Canvas implements Runnable
 	public static int getGameStateTicksPassed()
 	{
 		return gameStateTicksPassed;
+	}
+
+	public static Print getPrinter()
+	{
+		return printer;
 	}
 
 	public static boolean isWindows()

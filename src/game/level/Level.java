@@ -17,7 +17,6 @@ import game.entity.mob.Guardian;
 import game.entity.mob.Mob;
 import game.entity.mob.Salesman;
 import game.entity.mob.Slime;
-import game.entity.mob.StarChaser;
 import game.entity.mob.player.OnlinePlayer;
 import game.entity.mob.player.Player;
 import game.entity.particle.Particle;
@@ -44,8 +43,6 @@ public class Level
 
 	private final int MAX_TIME = 3600;
 	private int time = MAX_TIME / 2;
-	
-	private boolean musicPlaying = false;
 
 	private List<Entity> entities = new ArrayList<Entity>();
 	private List<Particle> particles = new ArrayList<Particle>();
@@ -137,7 +134,6 @@ public class Level
 					if(randomMob == 0) add(new Guardian(xPos, yPos, null));
 					else if(randomMob == 1) add(new Slime(xPos, yPos, null));
 					else if(randomMob == 2) add(new Salesman(xPos, yPos, null));
-					else if(randomMob == 3) add(new StarChaser(xPos, yPos, null));
 				}
 			}
 		}

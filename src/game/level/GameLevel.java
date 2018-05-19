@@ -5,8 +5,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import game.Game;
 import game.level.generation.GenerateLevel;
-import game.util.Print;
 import game.util.TileCoordinate;
 
 public class GameLevel extends Level
@@ -45,7 +45,7 @@ public class GameLevel extends Level
 		}
 		catch(IOException e)
 		{
-			Print.printError(e.getMessage());
+			Game.getPrinter().printError(e.getMessage());
 		}
 	}
 

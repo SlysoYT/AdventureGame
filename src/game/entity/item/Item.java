@@ -3,6 +3,7 @@ package game.entity.item;
 import java.util.List;
 
 import game.entity.Entity;
+import game.entity.mob.ability.Ability;
 import game.entity.mob.player.Player;
 import game.graphics.Screen;
 import game.graphics.Sprite;
@@ -91,5 +92,10 @@ public abstract class Item extends Entity
 	public ItemType getType()
 	{
 		return type;
+	}
+	
+	public Ability getItemAbility(Player player)
+	{
+		return null;
 	}
 }

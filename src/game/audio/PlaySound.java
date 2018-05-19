@@ -10,7 +10,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import game.util.Print;
+import game.Game;
 
 public class PlaySound
 {
@@ -29,7 +29,7 @@ public class PlaySound
 		}
 		catch(UnsupportedAudioFileException | LineUnavailableException | IOException e)
 		{
-			Print.printError(e.getMessage());
+			Game.getPrinter().printError(e.getMessage());
 		}
 	}
 
@@ -45,7 +45,7 @@ public class PlaySound
 		}
 		catch(UnsupportedAudioFileException | LineUnavailableException | IOException e)
 		{
-			Print.printError(e.getMessage());
+			Game.getPrinter().printError(e.getMessage());
 		}
 
 		return clip.getMicrosecondLength();
@@ -64,7 +64,7 @@ public class PlaySound
 		}
 		catch(LineUnavailableException | IOException | UnsupportedAudioFileException e)
 		{
-			Print.printError(e.getMessage());
+			Game.getPrinter().printError(e.getMessage());
 		}
 	}
 }

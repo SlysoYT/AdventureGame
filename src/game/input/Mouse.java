@@ -21,7 +21,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import game.Game;
-import game.graphics.Screen;
 
 public class Mouse implements MouseListener, MouseMotionListener
 {
@@ -48,12 +47,12 @@ public class Mouse implements MouseListener, MouseMotionListener
 
 	public static int getLevelPointingX()
 	{
-		return mouseX / Game.SCALE + Screen.getXOffset();
+		return mouseX / Game.SCALE + Game.getScreen().getXOffset();
 	}
 
 	public static int getLevelPointingY()
 	{
-		return mouseY / Game.SCALE + Screen.getYOffset();
+		return mouseY / Game.SCALE + Game.getScreen().getYOffset();
 	}
 
 	public static int getButton()

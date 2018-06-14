@@ -16,6 +16,7 @@
  ******************************************************************************/
 package game.entity;
 
+import game.Game;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 
@@ -43,6 +44,6 @@ public class DamageValue extends Entity
 
 	public void render(Screen screen)
 	{
-		Sprite.writeValues(String.valueOf((int) (damageValue)), screen, x - Screen.getXOffset(), y - Screen.getYOffset(), 0x000000);
+		Sprite.writeValues(String.valueOf((int) (damageValue)), screen, x - Game.getScreen().getXOffset(), y - Game.getScreen().getYOffset(), 0x000000);
 	}
 }

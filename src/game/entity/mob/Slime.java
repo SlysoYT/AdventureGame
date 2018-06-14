@@ -74,15 +74,15 @@ public class Slime extends Mob
 		{
 			if(Game.getGameStateTicksPassed() % 20 == rand.nextInt(20)) //Randomness to not make all slimes tick at the same time
 			{
-				Vector2i start = new Vector2i(this.getX() >> Screen.TILE_SIZE_SHIFTING, this.getY() >> Screen.TILE_SIZE_SHIFTING);
-				Vector2i end = new Vector2i(target.getX() >> Screen.TILE_SIZE_SHIFTING, target.getY() >> Screen.TILE_SIZE_SHIFTING);
+				Vector2i start = new Vector2i(this.getX() >> Game.getScreen().TILE_SIZE_SHIFTING, this.getY() >> Game.getScreen().TILE_SIZE_SHIFTING);
+				Vector2i end = new Vector2i(target.getX() >> Game.getScreen().TILE_SIZE_SHIFTING, target.getY() >> Game.getScreen().TILE_SIZE_SHIFTING);
 				path = level.findPath(start, end);
 				if(path == null) return;
 				if(path.size() > 0)
 				{
 					Vector2i pathVector = path.get(path.size() - 1).tile;
-					xGoal = (pathVector.getX() << Screen.TILE_SIZE_SHIFTING) + this.getHitbox().getXOffset() + this.getHitbox().getWidth() + 1;
-					yGoal = (pathVector.getY() << Screen.TILE_SIZE_SHIFTING) + this.getHitbox().getYOffset() + this.getHitbox().getHeight() + 1;
+					xGoal = (pathVector.getX() << Game.getScreen().TILE_SIZE_SHIFTING) + this.getHitbox().getXOffset() + this.getHitbox().getWidth() + 1;
+					yGoal = (pathVector.getY() << Game.getScreen().TILE_SIZE_SHIFTING) + this.getHitbox().getYOffset() + this.getHitbox().getHeight() + 1;
 				}
 			}
 		}

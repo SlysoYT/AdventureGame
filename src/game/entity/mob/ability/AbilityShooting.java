@@ -23,7 +23,6 @@ import game.entity.projectile.ProjectileBullet;
 import game.entity.projectile.ProjectileGranade;
 import game.entity.projectile.ProjectileGuardian;
 import game.entity.projectile.Projectiles;
-import game.graphics.Screen;
 import game.input.Mouse;
 import game.util.GameState;
 
@@ -41,8 +40,8 @@ public class AbilityShooting extends Ability
 	@Override
 	protected void onEnable()
 	{
-		int deltaX = Mouse.getX() / Game.SCALE - Game.getLevel().getClientPlayer().getX() + Screen.getXOffset();
-		int deltaY = Mouse.getY() / Game.SCALE - Game.getLevel().getClientPlayer().getY() + Screen.getYOffset();
+		int deltaX = Mouse.getX() / Game.SCALE - Game.getLevel().getClientPlayer().getX() + Game.getScreen().getXOffset();
+		int deltaY = Mouse.getY() / Game.SCALE - Game.getLevel().getClientPlayer().getY() + Game.getScreen().getYOffset();
 
 		angle = Math.atan2(deltaY, deltaX); //Atan = tan^-1, difference to atan: doesn't crash when dividing by 0, = atan(deltaY / deltaX)
 

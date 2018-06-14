@@ -16,6 +16,7 @@
  ******************************************************************************/
 package game.level.tile;
 
+import game.Game;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.util.Hitbox;
@@ -24,6 +25,7 @@ public class Tile
 {
 	private Sprite sprite;
 
+	protected final int TILE_SIZE_SHIFTING = Game.getScreen().TILE_SIZE_SHIFTING;
 	public static final byte DEFAULT_TILE_SIZE = 16;
 
 	public static final Tile TILE_ERROR = new TileError(Sprite.SPRITE_ERROR);

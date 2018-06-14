@@ -76,8 +76,8 @@ public class HUD
 		//Player infos
 		if(player.isDead()) return;
 
-		int xPos = player.getX() - Screen.getXOffset() - Tile.DEFAULT_TILE_SIZE / 2;
-		int yPos = player.getY() - Screen.getYOffset();
+		int xPos = player.getX() - Game.getScreen().getXOffset() - Tile.DEFAULT_TILE_SIZE / 2;
+		int yPos = player.getY() - Game.getScreen().getYOffset();
 
 		//Health bar
 		screen.renderSprite(xPos, (int) (yPos - Tile.DEFAULT_TILE_SIZE * 1.25), Sprite.BAR_EMPTY, false);
@@ -118,8 +118,8 @@ public class HUD
 			if(player instanceof OnlinePlayer)
 			{
 				String playerName = ((OnlinePlayer) player).getPlayerName(); //TODO: Pos of text
-				int xPos = player.getX() * Game.SCALE - Screen.getXOffset() * Game.SCALE - g.getFontMetrics().stringWidth(playerName) / 2;
-				int yPos = player.getY() * Game.SCALE - Screen.getYOffset() * Game.SCALE - player.getHitbox().getHeight() / 2
+				int xPos = player.getX() * Game.SCALE - Game.getScreen().getXOffset() * Game.SCALE - g.getFontMetrics().stringWidth(playerName) / 2;
+				int yPos = player.getY() * Game.SCALE - Game.getScreen().getYOffset() * Game.SCALE - player.getHitbox().getHeight() / 2
 						- PLAYER_NAME_FONT.getSize();
 				g.drawString(playerName, xPos, yPos);
 			}

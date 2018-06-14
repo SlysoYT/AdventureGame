@@ -21,8 +21,6 @@ import game.graphics.Sprite;
 
 public class TileBooster extends Tile
 {
-	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
-
 	public TileBooster(Sprite sprite)
 	{
 		super(sprite);

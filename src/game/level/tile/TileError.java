@@ -21,8 +21,6 @@ import game.graphics.Sprite;
 
 public class TileError extends Tile
 {
-	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
-
 	public TileError(Sprite sprite)
 	{
 		super(sprite);

@@ -213,6 +213,7 @@ public class Game extends Canvas implements Runnable
 			Mouse.tick();
 			level.tick();
 			hud.tick();
+			screen.tick();
 
 			if(activeGui != null) activeGui.tick();
 

@@ -21,8 +21,6 @@ import game.graphics.Sprite;
 
 public class TileQuartz extends Tile
 {
-	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
-
 	public TileQuartz(Sprite sprite)
 	{
 		super(sprite);

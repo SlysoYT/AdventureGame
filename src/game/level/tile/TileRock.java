@@ -22,8 +22,6 @@ import game.util.Hitbox;
 
 public class TileRock extends Tile
 {
-	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
-
 	public TileRock(Sprite sprite)
 	{
 		super(sprite);

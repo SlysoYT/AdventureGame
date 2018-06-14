@@ -173,7 +173,7 @@ public class Sprite
 	public static Sprite[] getParticleSpritesFromPosition(int xPos, int yPos, int amountOfParticles)
 	{
 		Sprite[] particles = new Sprite[amountOfParticles];
-		Tile tile = Game.getLevel().getTile(xPos >> Screen.TILE_SIZE_SHIFTING, yPos >> Screen.TILE_SIZE_SHIFTING);
+		Tile tile = Game.getLevel().getTile(xPos >> Game.getScreen().TILE_SIZE_SHIFTING, yPos >> Game.getScreen().TILE_SIZE_SHIFTING);
 
 		xPos = xPos % Tile.DEFAULT_TILE_SIZE;
 		yPos = yPos % Tile.DEFAULT_TILE_SIZE;

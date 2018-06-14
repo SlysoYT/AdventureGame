@@ -19,7 +19,6 @@ package game.entity.mob.ability;
 import game.Game;
 import game.entity.mob.player.Player;
 import game.graphics.HUD;
-import game.graphics.Screen;
 import game.input.Mouse;
 import game.level.tile.Tile;
 
@@ -36,8 +35,8 @@ public class AbilityTeleporting extends Ability
 	@Override
 	protected void onEnable()
 	{
-		int deltaX = Mouse.getX() / Game.SCALE - Game.getLevel().getClientPlayer().getX() + Screen.getXOffset();
-		int deltaY = Mouse.getY() / Game.SCALE - Game.getLevel().getClientPlayer().getY() + Screen.getYOffset();
+		int deltaX = Mouse.getX() / Game.SCALE - Game.getLevel().getClientPlayer().getX() + Game.getScreen().getXOffset();
+		int deltaY = Mouse.getY() / Game.SCALE - Game.getLevel().getClientPlayer().getY() + Game.getScreen().getYOffset();
 
 		//Out of range
 		if(Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) > range)

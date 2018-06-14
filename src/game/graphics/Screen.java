@@ -29,10 +29,10 @@ public class Screen
 	public int width, height;
 	public int[] pixels;
 
-	public static final byte TILE_SIZE_SHIFTING = 4; //3: 8x8 Tiles, 4: 16x16 Tiles, 5: 32x32 Tiles, 2^tileSize = tiles in pixels
+	public final byte TILE_SIZE_SHIFTING = 4; //3: 8x8 Tiles, 4: 16x16 Tiles, 5: 32x32 Tiles, 2^tileSize = tiles in pixels
 
-	private static float xOffset;
-	private static float yOffset;
+	private float xOffset, yOffset;
+	private float xMotion, yMotion;
 
 	private List<LightSource> visibleLightSources = new ArrayList<LightSource>();
 
@@ -41,6 +41,23 @@ public class Screen
 		this.width = width;
 		this.height = height;
 		pixels = new int[width * height];
+	}
+
+	public void tick()
+	{
+		if(Math.abs(xMotion) < 0.3) xMotion = 0;
+		if(Math.abs(yMotion) < 0.3) yMotion = 0;
+		
+		if(xMotion != 0)
+		{
+			xOffset += xMotion;
+			xMotion *= 0.9;
+		}
+		if(yMotion != 0)
+		{
+			yOffset += yMotion;
+			yMotion *= 0.9;
+		}
 	}
 
 	public void clear()
@@ -350,26 +367,32 @@ public class Screen
 
 	public void setOffset(float xOffset, float yOffset)
 	{
-		Screen.xOffset = xOffset;
-		Screen.yOffset = yOffset;
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
 	}
 
-	public static int getXOffset()
+	public void setCameraMotion(float xMotion, float yMotion)
+	{
+		this.xMotion = xMotion;
+		this.yMotion = yMotion;
+	}
+
+	public int getXOffset()
 	{
 		return (int) xOffset;
 	}
 
-	public static int getYOffset()
+	public int getYOffset()
 	{
 		return (int) yOffset;
 	}
 
-	public static float getXOffsetFloat()
+	public float getXOffsetFloat()
 	{
 		return xOffset;
 	}
 
-	public static float getYOffsetFloat()
+	public float getYOffsetFloat()
 	{
 		return yOffset;
 	}

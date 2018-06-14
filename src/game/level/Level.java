@@ -51,7 +51,7 @@ public class Level
 	protected int[] tiles; //Contains pixel colours from level file that is currently loaded
 	protected TileCoordinate playerSpawn = null;
 
-	private final int TILE_SIZE_SHIFTING = Screen.TILE_SIZE_SHIFTING;
+	private final int TILE_SIZE_SHIFTING = Game.getScreen().TILE_SIZE_SHIFTING;
 	private String levelName = "";
 	private GameLevel gameLevel;
 
@@ -106,9 +106,22 @@ public class Level
 
 	public void tick()
 	{
+		if(getClientPlayer() != null)
+		{
+			float deltaX = getClientPlayer().getX() - Game.width / 2 - Game.getScreen().getXOffsetFloat();
+			float deltaY = getClientPlayer().getY() - Game.height / 2 - Game.getScreen().getYOffsetFloat();
+
+			Game.getScreen().setCameraMotion(deltaX / 20, deltaY / 20);
+		}
+
 		if(Game.getGameState() == GameState.IngameOffline || (Game.getGameState() == GameState.IngameOnline && Game.isHostingGame))
 		{
 			mobSpawning();
+
+			if(Game.getGameStateTicksPassed() == 0)
+			{
+				Game.getScreen().setOffset(getClientPlayer().getX() - Game.width, getClientPlayer().getY() - Game.height);
+			}
 		}
 
 		for(int i = 0; i < entities.size(); i++)
@@ -193,25 +206,6 @@ public class Level
 	}
 
 	/**
-	 * Rendering level with the client player in the center with smooth
-	 * scrolling
-	 * 
-	 * @param screen
-	 */
-	public void render(Screen screen)
-	{
-		int deltaX = getClientPlayer().getX() - Game.width / 2 - Screen.getXOffset();
-		int deltaY = getClientPlayer().getY() - Game.height / 2 - Screen.getYOffset();
-		int xScroll = Screen.getXOffset() + (int) (deltaX * 0.02F);
-		int yScroll = Screen.getYOffset() + (int) (deltaY * 0.02F);
-
-		screen.setOffset(xScroll, yScroll);
-
-		renderVisibleTiles(xScroll, yScroll, screen);
-		renderVisibleEntities(xScroll, yScroll, screen);
-	}
-
-	/**
 	 * Rendering level at defined location
 	 * 
 	 * @param xScroll
@@ -220,10 +214,16 @@ public class Level
 	 */
 	public void render(int xScroll, int yScroll, Screen screen)
 	{
-		screen.setOffset(xScroll, yScroll);
+		Game.getScreen().setOffset(xScroll, yScroll);
 
 		renderVisibleTiles(xScroll, yScroll, screen);
 		renderVisibleEntities(xScroll, yScroll, screen);
+	}
+
+	public void render(Screen screen)
+	{
+		renderVisibleTiles(screen.getXOffset(), screen.getYOffset(), screen);
+		renderVisibleEntities(screen.getXOffset(), screen.getYOffset(), screen);
 	}
 
 	private void renderVisibleTiles(int xScroll, int yScroll, Screen screen)
@@ -278,9 +278,9 @@ public class Level
 		{
 			Hitbox hitbox = allEntities.get(i).getHitbox();
 			if(hitbox == null) continue;
-			g.drawRect(Game.SCALE * (allEntities.get(i).getX() - Screen.getXOffset() + hitbox.getXOffset()),
-					Game.SCALE * (allEntities.get(i).getY() - Screen.getYOffset() + hitbox.getYOffset()), (hitbox.getWidth() + 1) * Game.SCALE,
-					(hitbox.getHeight() + 1) * Game.SCALE);
+			g.drawRect(Game.SCALE * (allEntities.get(i).getX() - Game.getScreen().getXOffset() + hitbox.getXOffset()),
+					Game.SCALE * (allEntities.get(i).getY() - Game.getScreen().getYOffset() + hitbox.getYOffset()),
+					(hitbox.getWidth() + 1) * Game.SCALE, (hitbox.getHeight() + 1) * Game.SCALE);
 		}
 	}
 

@@ -52,7 +52,7 @@ public class ScreenTitle
 			unloadTitleScreen();
 			if(currentTitleScreenSelection == 0) Game.setGameState(GameState.IngameOffline);
 			else if(currentTitleScreenSelection == 1) Game.setGameState(GameState.OnlineScreen);
-			else if(currentTitleScreenSelection == 2) Game.setGameState(GameState.Options);
+			else if(currentTitleScreenSelection == 2) Game.setGameState(GameState.Settings);
 			else if(currentTitleScreenSelection == 3) Game.terminate();
 		}
 
@@ -67,7 +67,7 @@ public class ScreenTitle
 	{
 		if(Game.getLevel() != null) Game.getLevel().render((int) xOffset, (int) yOffset, screen);
 
-		if(Settings.maximumGraphicsQuality)
+		if(Settings.getSettingBool("Maximum graphics quality"))
 		{
 			screen.blur();
 			screen.blur();

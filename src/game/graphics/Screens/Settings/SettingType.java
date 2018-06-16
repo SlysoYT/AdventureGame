@@ -14,21 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package game;
+package game.graphics.Screens.Settings;
 
-import game.settings.Settings;
-
-public class Launcher
+public enum SettingType
 {
-	public static void main(String[] args)
-	{
-		if(Settings.getSettingBool("Fullscreen"))
-		{
-			Game.launchFullscreenGame(Settings.getSettingBool("Debug mode"));
-		}
-		else
-		{
-			Game.launchWindowedGame(300, 200, Settings.getSettingBool("Debug mode"));
-		}
-	}
+	Boolean, Range;
 }

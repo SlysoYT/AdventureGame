@@ -14,21 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package game;
+package game.graphics.Screens.Settings;
 
-import game.settings.Settings;
-
-public class Launcher
+public class SettingIntegerRange extends Setting
 {
-	public static void main(String[] args)
+	public SettingIntegerRange(String name, int minValue, int maxValue, int standardValue)
 	{
-		if(Settings.getSettingBool("Fullscreen"))
-		{
-			Game.launchFullscreenGame(Settings.getSettingBool("Debug mode"));
-		}
-		else
-		{
-			Game.launchWindowedGame(300, 200, Settings.getSettingBool("Debug mode"));
-		}
+		SettingRange(name, minValue, maxValue, standardValue);
 	}
 }

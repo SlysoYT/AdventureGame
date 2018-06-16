@@ -16,17 +16,54 @@
  ******************************************************************************/
 package game.settings;
 
+import game.Game;
+import game.graphics.Screens.Settings.Setting;
+import game.graphics.Screens.Settings.SettingBoolean;
+import game.graphics.Screens.Settings.SettingIntegerRange;
+import game.graphics.Screens.Settings.SettingType;
+
 public class Settings
 {
-	//Video settings
-	public static boolean multiMonitorConfiguration = false;
-	public static boolean maximumGraphicsQuality = true;
-	public static boolean fullscreen = true;
-	public static byte bufferStrategy = 2;
+	private static Setting[] settings = {
 
-	//Server settings
-	public static boolean serverIsPublic = true;
+			//Video settings
+			new SettingBoolean("Multi monitor configuration", false), new SettingBoolean("Maximum graphics quality", true),
+			new SettingBoolean("Fullscreen", false), new SettingIntegerRange("Buffer strategy", 2, 4, 2),
 
-	//Advanced
-	public static boolean debugMode = false;
+			//Server settings
+			//TODO
+
+			//Advanced
+			new SettingBoolean("Debug mode", true) };
+
+	public static Setting[] getSettings()
+	{
+		return settings;
+	}
+
+	public static boolean getSettingBool(String name)
+	{
+		for(int i = 0; i < settings.length; i++)
+		{
+			if(settings[i].getSettingName().equals(name))
+			{
+				if(settings[i].getType() == SettingType.Boolean) return settings[i].getBoolValue();
+			}
+		}
+		Game.getPrinter().printError("Setting '" + name + "' not found!");
+		return false;
+	}
+
+	public static int getSettingInt(String name)
+	{
+		for(int i = 0; i < settings.length; i++)
+		{
+			if(settings[i].getSettingName().equals(name))
+			{
+				if(settings[i].getType() == SettingType.Range) return settings[i].getIntValue();
+			}
+		}
+		Game.getPrinter().printError("Setting '" + name + "' not found!");
+		return -1;
+	}
 }

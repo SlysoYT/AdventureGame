@@ -21,6 +21,7 @@ import java.util.List;
 
 import game.Game;
 import game.entity.item.Item;
+import game.entity.item.ItemAbilityProjectileBullet;
 import game.entity.item.ItemType;
 import game.graphics.GUI;
 import game.graphics.Screen;
@@ -48,6 +49,7 @@ public class GUIInventory extends GUI
 	public GUIInventory()
 	{
 		super(Sprite.INVENTORY);
+		skillSlots[0][0] = new ItemAbilityProjectileBullet(0, 0);
 	}
 
 	public void setType(GUIInventoryType type)

@@ -24,7 +24,7 @@ public class Print
 {
 	public void printInfo(String message)
 	{
-		if(!Settings.debugMode) return;
+		if(!Settings.getSettingBool("Debug mode")) return;
 		System.out.println("INFO: " + message);
 	}
 
@@ -36,14 +36,14 @@ public class Print
 
 	public void printWarning(String message)
 	{
-		if(!Settings.debugMode) return;
+		if(!Settings.getSettingBool("Debug mode")) return;
 		Chat.addMessage(new Message(message, PrintType.Warning));
 		System.out.println("WARNING: " + message);
 	}
 
 	public void printError(String message)
 	{
-		if(!Settings.debugMode) return;
+		if(!Settings.getSettingBool("Debug mode")) return;
 		Chat.addMessage(new Message(message, PrintType.Error));
 		System.out.println("ERROR: " + message);
 	}

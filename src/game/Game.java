@@ -39,9 +39,11 @@ import game.entity.mob.player.Player;
 import game.graphics.GUI;
 import game.graphics.HUD;
 import game.graphics.Screen;
+import game.graphics.Screens.ScreenInfo;
 import game.graphics.Screens.ScreenOnline;
 import game.graphics.Screens.ScreenServerList;
 import game.graphics.Screens.ScreenTitle;
+import game.graphics.Screens.Settings.ScreenSettings;
 import game.input.Keyboard;
 import game.input.Mouse;
 import game.level.GameLevel;
@@ -88,7 +90,7 @@ public class Game extends Canvas implements Runnable
 	private static int gameStateTicksPassed = -1;
 	private static GameState gameState = GameState.TitleScreen;
 
-	public Game(boolean debugMode)
+	private Game(boolean debugMode)
 	{
 		Dimension size = new Dimension(width * SCALE, height * SCALE);
 		setPreferredSize(size);
@@ -185,32 +187,32 @@ public class Game extends Canvas implements Runnable
 	{
 		gameStateTicksPassed++;
 
-		if(gameState == GameState.TitleScreen)
-		{
-			ScreenTitle.tick(key);
-		}
+		if(gameState == GameState.TitleScreen) ScreenTitle.tick(key);
+		else if(gameState == GameState.ServerListScreen) ScreenServerList.tick(key);
+		else if(gameState == GameState.OnlineScreen) ScreenOnline.tick(key);
+		else if(gameState == GameState.Settings) ScreenSettings.tick(key);
+		else if(gameState == GameState.InfoScreen) ScreenInfo.tick(key);
 		else if(gameState == GameState.IngameOnline || gameState == GameState.IngameOffline)
 		{
-			if(level == null && !(gameState == GameState.IngameOnline && !isHostingGame)) loadLevel(null, -1);
-
+			if(gameState == GameState.IngameOffline && level == null) loadLevel(null, -1);
 			if(gameState == GameState.IngameOnline)
 			{
 				if(multiplayer)
 				{
-					if(isHostingGame)
-					{
-						if(connection == null) startMultiplayer(null);
-					}
-					else
+					if(!isHostingGame)
 					{
 						connection.tick();
-						if(!connection.connectionEstablished) multiplayer = false; //Connection interrupted
+						if(!connection.connectionEstablished)
+						{
+							abortMultiplayer(); //Connection interrupted
+							return;
+						}
 					}
 				}
 			}
 
-			key.tick();
 			Mouse.tick();
+			key.tick();
 			level.tick();
 			hud.tick();
 			screen.tick();
@@ -219,41 +221,29 @@ public class Game extends Canvas implements Runnable
 
 			if(key.escape && !clientPlayer.isTypingMessage())
 			{
-				if(gameState == GameState.IngameOnline)
-				{
-					connection.close();
-					connection = null;
-				}
-
-				unloadLevel();
+				if(gameState == GameState.IngameOnline) abortMultiplayer();
+				else unloadLevel();
 				setGameState(GameState.TitleScreen);
 			}
 		}
-		else if(gameState == GameState.ServerListScreen)
-		{
-			ScreenServerList.tick(key);
-		}
-		else if(gameState == GameState.OnlineScreen)
-		{
-			ScreenOnline.tick(key);
-		}
 		else if(gameState == GameState.StartServer)
 		{
-			setGameState(GameState.IngameOnline);
-			isHostingGame = true;
 			multiplayer = true;
+			isHostingGame = true;
+			startMultiplayer(null);
+
+			if(connection != null)
+			{
+				loadLevel(null, -1);
+				setGameState(GameState.IngameOnline);
+			}
 		}
 		else if(gameState == GameState.ConnectToServer)
 		{
+			multiplayer = true;
 			isHostingGame = false;
 			startMultiplayer(hostIp);
-			if(multiplayer) setGameState(GameState.IngameOnline);
-			else setGameState(GameState.TitleScreen);
-		}
-		else
-		{
-			key.tick();
-			if(key.escapeToggle) setGameState(GameState.TitleScreen);
+			if(connection != null) setGameState(GameState.IngameOnline);
 		}
 	}
 
@@ -262,36 +252,23 @@ public class Game extends Canvas implements Runnable
 		BufferStrategy bs = getBufferStrategy();
 		if(bs == null)
 		{
-			if(Settings.bufferStrategy == 2) createBufferStrategy(2); //Creates the first time the render method runs either a double buffer
-			else createBufferStrategy(3); //Or a triple buffer
+			createBufferStrategy(Settings.getSettingInt("Buffer strategy")); //Creates the first time the render method runs a double buffer, triple buffer, etc.
 			return;
 		}
 		Graphics g = bs.getDrawGraphics(); //Creates a link between the buffer and graphics
 
 		screen.clear();
 
-		if(gameState == GameState.TitleScreen)
-		{
-			ScreenTitle.render(screen);
-		}
+		if(gameState == GameState.TitleScreen) ScreenTitle.render(screen);
+		else if(gameState == GameState.Settings) ScreenSettings.render(screen);
+		else if(gameState == GameState.ServerListScreen) ScreenServerList.render(screen);
+		else if(gameState == GameState.OnlineScreen) ScreenOnline.render(screen);
+		else if(gameState == GameState.InfoScreen) ScreenInfo.render(screen);
 		else if(gameState == GameState.IngameOffline || gameState == GameState.IngameOnline)
 		{
-			if(level == null) return;
-
+			if(level == null || hud == null) return;
 			level.render(screen);
 			hud.render(screen);
-		}
-		else if(gameState == GameState.Options)
-		{
-
-		}
-		else if(gameState == GameState.ServerListScreen)
-		{
-			ScreenServerList.render(screen);
-		}
-		else if(gameState == GameState.OnlineScreen)
-		{
-			ScreenOnline.render(screen);
 		}
 		else if(gameState == GameState.StartServer)
 		{
@@ -302,20 +279,16 @@ public class Game extends Canvas implements Runnable
 		screen.applyBrightness();
 
 		//Ingame GUI shouldn't be affected by the brightness
-		if(gameState == GameState.IngameOffline || gameState == GameState.IngameOnline)
-		{
-			if(level == null) return;
-			screen.renderGUI(activeGui);
-		}
+		if(gameState == GameState.IngameOffline || gameState == GameState.IngameOnline) screen.renderGUI(activeGui);
 
 		for(int i = 0; i < pixels.length; i++)
 		{
 			pixels[i] = screen.pixels[i];
 		}
 
-		g.drawImage(image, 0, 0, getWidth(), getHeight(), null); //Draws everything rendered to the screen
+		g.drawImage(image, 0, 0, getWidth(), getHeight(), null); //Draw rendered stuff to the buffer
 
-		//Draw with g only here
+		//Draw with graphics g on the same buffer
 		if(gameState == GameState.IngameOffline || gameState == GameState.IngameOnline)
 		{
 			hud.render(g, debugMode);
@@ -325,7 +298,6 @@ public class Game extends Canvas implements Runnable
 		bs.show(); //Shows and swaps the buffers
 	}
 
-	//Launch game
 	public static void launchWindowedGame(int width, int height, boolean debugMode)
 	{
 		Game.width = width;
@@ -338,7 +310,7 @@ public class Game extends Canvas implements Runnable
 
 	public static void launchFullscreenGame(boolean debugMode)
 	{
-		if(!Settings.multiMonitorConfiguration)
+		if(!Settings.getSettingBool("Multi monitor configuration"))
 		{
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -437,14 +409,33 @@ public class Game extends Canvas implements Runnable
 	{
 		level.unloadLevel();
 		level = null;
+		connection = null;
 		multiplayer = false;
 	}
 
+	/**
+	 * Start multiplayer. Automatically abort if any problem occurs.
+	 * 
+	 * @param ip
+	 *            The host ip as string or null if hosting a game.
+	 */
 	private static void startMultiplayer(String ip)
 	{
 		connection = new Connection(ip, isHostingGame);
-		connection.connect();
-		multiplayer = isHostingGame || connection.connectionEstablished;
+		boolean success = connection.connect();
+		if(!success) abortMultiplayer();
+	}
+
+	private static void abortMultiplayer()
+	{
+		if(connection != null) connection.close();
+		if(level != null) unloadLevel();
+		else
+		{
+			connection = null;
+			multiplayer = false;
+		}
+		setGameState(GameState.InfoScreen);
 	}
 
 	public static void terminate()

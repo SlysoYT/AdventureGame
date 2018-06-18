@@ -28,9 +28,8 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import game.Game;
+import game.graphics.Screens.ScreenInfo;
 import game.network.ingame.GetSendDataAsClient;
-import game.settings.Settings;
-import game.util.GameState;
 
 public class Connection implements Runnable
 {
@@ -56,20 +55,26 @@ public class Connection implements Runnable
 		if(!isClient) thread = new Thread(this, "Connection");
 	}
 
-	public void connect()
+	public boolean connect()
 	{
-		if(!isClient) connectAsHost();
-		else connectAsClient();
+		if(!isClient)
+		{
+			if(!connectAsHost()) return false;
+		}
+		else prepareClient();
 
-		if(ip == null) return;
+		if(isClient && ip == null) return false;
 
 		networkPackage = new NetworkPackage(isClient);
 
 		if(isClient) tick();
 		else startThread();
+
+		if(isClient && !connectionEstablished) return false;
+		return true;
 	}
 
-	private void connectAsHost()
+	private boolean connectAsHost()
 	{
 		try
 		{
@@ -79,21 +84,23 @@ public class Connection implements Runnable
 			if(ip == null) ip = getPublicIP();
 			if(ip == null)
 			{
-				Game.getPrinter().printError("You are not connected to the internet!");
+				Game.getPrinter().printWarning("You are not connected to the internet!");
+				ScreenInfo.setInfoMessage("You are not connected to the internet!");
 				close();
-				Game.setGameState(GameState.TitleScreen);
-				return;
+				return false;
 			}
 
-			Game.getPrinter().printImportantInfo("Started server, IP: " + ip + " or " + InetAddress.getLocalHost());
+			Game.getPrinter().printImportantInfo("Started server, IP: " + ip + " or " + InetAddress.getLocalHost().getHostAddress() + " (local)");
+			return true;
 		}
 		catch(IOException e)
 		{
 			Game.getPrinter().printError(e.getMessage());
+			return false;
 		}
 	}
 
-	private void connectAsClient()
+	private void prepareClient()
 	{
 		try
 		{
@@ -129,25 +136,30 @@ public class Connection implements Runnable
 			}
 			catch(IOException e)
 			{
+				connectionEstablished = false;
+				e.printStackTrace();
+
 				if(e instanceof UnknownHostException)
 				{
-					Game.getPrinter().printError("Unknown host!");
-					Game.setGameState(GameState.TitleScreen);
+					Game.getPrinter().printWarning("Unknown host!");
+					ScreenInfo.setInfoMessage("Unknown host!");
 				}
 				else if(e instanceof SocketTimeoutException)
 				{
-					Game.getPrinter().printError("Connection failed! Server not found!");
-					Game.setGameState(GameState.TitleScreen);
+					Game.getPrinter().printWarning("Connection failed! Server not found!");
+					ScreenInfo.setInfoMessage("Connection failed! Server not found!");
 				}
-				connectionEstablished = false;
-				e.printStackTrace();
+				else
+				{
+					Game.getPrinter().printWarning("Network is unreachable!");
+					ScreenInfo.setInfoMessage("Network is unreachable!");
+				}
 			}
 		}
 		else
 		{
 			try
 			{
-				if(!Settings.serverIsPublic) return;
 				receiveData = new byte[packetSize];
 
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -193,13 +205,15 @@ public class Connection implements Runnable
 		}
 		catch(IOException e)
 		{
-			Game.getPrinter().printError("Couldn't connect, " + e.getMessage());
+			Game.getPrinter().printWarning("Couldn't connect, " + e.getMessage());
 			return null;
 		}
 	}
 
 	public void close()
 	{
+		if(!connectionEstablished) return;
+
 		if(isClient) GetSendDataAsClient.disconnect();
 		tick();
 

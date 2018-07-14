@@ -18,6 +18,8 @@ package game.entity.mob;
 
 import java.util.UUID;
 
+import game.entity.item.ItemAbilitySpeed;
+import game.entity.item.ItemAbilityTeleporting;
 import game.entity.item.ItemCoin;
 import game.entity.mob.player.Player;
 import game.entity.projectile.ProjectileGuardian;
@@ -35,6 +37,8 @@ public class Guardian extends Mob
 	{
 		super(x, y, new Hitbox(-5, -8, 9, 15), Sprite.PLAYER_DOWN[0], 10.0F, 0.0F, 10.0F, 60, uuid);
 		getItemDrop().addItem(new ItemCoin(x, y), 1, 75);
+		getItemDrop().addItem(new ItemAbilityTeleporting(x, y), 1, 7);
+		getItemDrop().addItem(new ItemAbilitySpeed(x, y), 1, 7);
 	}
 
 	public void tickMob()

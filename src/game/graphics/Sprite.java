@@ -74,7 +74,7 @@ public class Sprite
 			new Sprite(DEFAULT_TILE_SIZE, 55, 62, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 55, 61, SpriteSheet.SPRITE_SHEET),
 			new Sprite(DEFAULT_TILE_SIZE, 55, 60, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 55, 59, SpriteSheet.SPRITE_SHEET),
 			new Sprite(DEFAULT_TILE_SIZE, 55, 58, SpriteSheet.SPRITE_SHEET) };
-	
+
 	//Traps
 	public static final Sprite TRAP_EXPLOSIVE_1 = new Sprite(DEFAULT_TILE_SIZE, 57, 62, SpriteSheet.SPRITE_SHEET);
 	public static final Sprite TRAP_EXPLOSIVE_2 = new Sprite(DEFAULT_TILE_SIZE, 57, 61, SpriteSheet.SPRITE_SHEET);
@@ -91,6 +91,10 @@ public class Sprite
 			new Sprite(DEFAULT_TILE_SIZE, 1, 8, SpriteSheet.SPRITE_SHEET), new Sprite(DEFAULT_TILE_SIZE, 1, 7, SpriteSheet.SPRITE_SHEET),
 			new Sprite(DEFAULT_TILE_SIZE, 1, 6, SpriteSheet.SPRITE_SHEET) };
 	public static final Sprite ITEM_ARMOUR_LEATHER = new Sprite(DEFAULT_TILE_SIZE, 2, 6, SpriteSheet.SPRITE_SHEET);
+	//Item skills
+	public static final Sprite ITEM_SKILL_TELEPORTING = new Sprite(DEFAULT_TILE_SIZE, 3, 6, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite ITEM_SKILL_SPEED = new Sprite(DEFAULT_TILE_SIZE, 3, 7, SpriteSheet.SPRITE_SHEET);
+	public static final Sprite ITEM_SKILL_RAGE = new Sprite(DEFAULT_TILE_SIZE, 3, 8, SpriteSheet.SPRITE_SHEET);
 
 	//GUIs
 	public static final Sprite INVENTORY = new Sprite(864, 16, 160, 109, SpriteSheet.SPRITE_SHEET);
@@ -174,7 +178,7 @@ public class Sprite
 	{
 		if(xPos < 0) xPos = Sprite.DEFAULT_TILE_SIZE * Game.getLevel().getLevelWidth() + 1;
 		if(yPos < 0) yPos = Sprite.DEFAULT_TILE_SIZE * Game.getLevel().getLevelHeight() + 1;
-		
+
 		Sprite[] particles = new Sprite[amountOfParticles];
 		Tile tile = Game.getLevel().getTile(xPos >> Game.getScreen().TILE_SIZE_SHIFTING, yPos >> Game.getScreen().TILE_SIZE_SHIFTING);
 

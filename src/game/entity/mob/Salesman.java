@@ -19,7 +19,7 @@ package game.entity.mob;
 import java.util.UUID;
 
 import game.Game;
-import game.entity.item.ItemArmourLeather;
+import game.entity.item.ItemAbilityRage;
 import game.graphics.Screen;
 import game.graphics.Sprite;
 import game.graphics.GUIs.GUIInventoryType;
@@ -42,7 +42,7 @@ public class Salesman extends Mob
 			if(Mouse.getButton() == 1 && Mouse.onClick())
 			{
 				Game.getLevel().getClientPlayer().getInventory().resetShopOffers();
-				Game.getLevel().getClientPlayer().getInventory().addShopOffer(5, new ItemArmourLeather(0, 0));
+				Game.getLevel().getClientPlayer().getInventory().addShopOffer(20, new ItemAbilityRage(0, 0));
 				Game.getLevel().getClientPlayer().getInventory().setType(GUIInventoryType.Shop);
 				Game.setActiveGUI(Game.getLevel().getClientPlayer().getInventory());
 			}

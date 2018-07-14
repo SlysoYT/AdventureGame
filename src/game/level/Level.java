@@ -278,8 +278,8 @@ public class Level
 		{
 			Hitbox hitbox = allEntities.get(i).getHitbox();
 			if(hitbox == null) continue;
-			g.drawRect(Game.SCALE * (allEntities.get(i).getX() - Game.getScreen().getXOffset() + hitbox.getXOffset()),
-					Game.SCALE * (allEntities.get(i).getY() - Game.getScreen().getYOffset() + hitbox.getYOffset()),
+			g.drawRect(Game.SCALE * (allEntities.get(i).getX() - Game.getScreen().getXOffset() + hitbox.getXOffset() - 1),
+					Game.SCALE * (allEntities.get(i).getY() - Game.getScreen().getYOffset() + hitbox.getYOffset() - 1),
 					(hitbox.getWidth() + 1) * Game.SCALE, (hitbox.getHeight() + 1) * Game.SCALE);
 		}
 	}

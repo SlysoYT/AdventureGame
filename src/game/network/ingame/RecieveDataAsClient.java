@@ -30,6 +30,7 @@ import game.entity.mob.player.Player;
 import game.entity.projectile.ProjectileBoomerang;
 import game.entity.projectile.ProjectileBullet;
 import game.entity.projectile.ProjectileGuardian;
+import game.graphics.Screens.ScreenInfo;
 import game.level.Level;
 import game.network.NetworkPackage;
 import game.network.serialization.SField;
@@ -49,8 +50,10 @@ public class RecieveDataAsClient
 
 		if(object.findString("kickPlayer") != null)
 		{
-			Game.setGameState(GameState.TitleScreen);
-			Game.getPrinter().printInfo("You got kicked from the server! Reason: " + object.findString("kickPlayer").getString());
+			String message = "You got kicked from the server! Reason: " + object.findString("kickPlayer").getString();
+			Game.getPrinter().printInfo(message);
+			ScreenInfo.setInfoMessage(message);
+			Game.setGameState(GameState.InfoScreen);
 			return;
 		}
 

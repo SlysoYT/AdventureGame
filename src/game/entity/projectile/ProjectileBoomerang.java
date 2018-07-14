@@ -31,7 +31,7 @@ public class ProjectileBoomerang extends Projectile
 
 	public ProjectileBoomerang(int x, int y, double direction, Mob source, UUID uuid)
 	{
-		super(x, y, direction, 1.8D, 250, 0.0F, source, new Hitbox(-4, -4, 5, 5), Sprite.PROJECTILE_BOOMERANG, Projectiles.ProjectileBoomerang, uuid);
+		super(x, y, direction, 1.8D, 250, 0.0F, source, new Hitbox(-3, -3, 5, 5), Sprite.PROJECTILE_BOOMERANG, Projectiles.ProjectileBoomerang, uuid);
 	}
 
 	@Override

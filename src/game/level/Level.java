@@ -152,7 +152,7 @@ public class Level
 		{
 			if(player.isMoving())
 			{
-				if(player.getDistanceMoved() % 3 == 0 && rand.nextInt(80) == 0)
+				if(player.getDistanceMoved() % 3 == 0 && rand.nextInt(30) == 0)
 				{
 
 					int xPos = player.getX() + (-800 * rand.nextInt(2)) + 400 + (rand.nextInt(50) - 25);

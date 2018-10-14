@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import game.Game;
 import game.audio.PlayMusic;
@@ -180,29 +181,13 @@ public class Level
 
 	private void handleDeadAndRemovedEntities()
 	{
-		//Entities
-		for(int i = 0; i < entities.size(); i++)
-		{
-			if(entities.get(i).isRemoved()) entities.remove(i--);
-		}
-		for(int i = 0; i < particles.size(); i++)
-		{
-			if(particles.get(i).isRemoved()) particles.remove(i--);
-		}
-		for(int i = 0; i < players.size(); i++)
-		{
-			if(players.get(i).isRemoved()) players.remove(i--);
-		}
-		for(int i = 0; i < lightSources.size(); i++)
-		{
-			if(lightSources.get(i).isRemoved()) lightSources.remove(i--);
-		}
+		entities.removeIf(e -> e.isRemoved());
+		particles.removeIf(p -> p.isRemoved());
+		players.removeIf(p -> p.isRemoved());
+		lightSources.removeIf(l -> l.isRemoved());
 
 		//Dead players
-		for(int i = 0; i < players.size(); i++)
-		{
-			if(players.get(i).isDead()) players.get(i).whileDead();
-		}
+		players.stream().filter(p -> p.isDead()).forEach(p -> p.whileDead());
 	}
 
 	/**
@@ -251,37 +236,34 @@ public class Level
 		int y0 = yScroll - Tile.DEFAULT_TILE_SIZE;
 		int y1 = yScroll + screen.height + Tile.DEFAULT_TILE_SIZE;
 
-		for(int i = 0; i < particles.size(); i++)
+		entities.forEach(e ->
 		{
-			if(particles.get(i).getX() > x0 && particles.get(i).getX() < x1 && particles.get(i).getY() > y0 && particles.get(i).getY() < y1)
-				particles.get(i).render(screen);
-		}
-		for(int i = 0; i < players.size(); i++)
+			if(e.getX() > x0 && e.getX() < x1 && e.getY() > y0 && e.getY() < y1) e.render(screen);
+		});
+
+		players.forEach(p ->
 		{
-			if(players.get(i).getX() > x0 && players.get(i).getX() < x1 && players.get(i).getY() > y0 && players.get(i).getY() < y1)
-				players.get(i).render(screen);
-		}
-		for(int i = 0; i < entities.size(); i++)
+			if(p.getX() > x0 && p.getX() < x1 && p.getY() > y0 && p.getY() < y1) p.render(screen);
+		});
+
+		particles.forEach(p ->
 		{
-			if(entities.get(i).getX() > x0 && entities.get(i).getX() < x1 && entities.get(i).getY() > y0 && entities.get(i).getY() < y1)
-				entities.get(i).render(screen);
-		}
+			if(p.getX() > x0 && p.getX() < x1 && p.getY() > y0 && p.getY() < y1) p.render(screen);
+		});
 	}
 
 	public void renderHitboxes(Graphics g)
 	{
 		g.setColor(Color.BLUE);
 
-		List<Entity> allEntities = getAllEntities();
-
-		for(int i = 0; i < allEntities.size(); i++)
+		getAllEntities().stream().filter(e -> e.getHitbox() != null).forEach(e ->
 		{
-			Hitbox hitbox = allEntities.get(i).getHitbox();
-			if(hitbox == null) continue;
-			g.drawRect(Game.SCALE * (allEntities.get(i).getX() - Game.getScreen().getXOffset() + hitbox.getXOffset() - 1),
-					Game.SCALE * (allEntities.get(i).getY() - Game.getScreen().getYOffset() + hitbox.getYOffset() - 1),
-					(hitbox.getWidth() + 1) * Game.SCALE, (hitbox.getHeight() + 1) * Game.SCALE);
-		}
+			Hitbox hitbox = e.getHitbox();
+
+			g.drawRect(Game.SCALE * (e.getX() - Game.getScreen().getXOffset() + hitbox.getXOffset() - 1),
+					Game.SCALE * (e.getY() - Game.getScreen().getYOffset() + hitbox.getYOffset() - 1), (hitbox.getWidth() + 1) * Game.SCALE,
+					(hitbox.getHeight() + 1) * Game.SCALE);
+		});
 	}
 
 	private void time()
@@ -346,27 +328,13 @@ public class Level
 
 	public List<Player> playersCollidedWithHitbox(int x, int y, Hitbox hitbox)
 	{
-		List<Player> collidedPlayers = new ArrayList<Player>();
-
-		for(Player p : players)
-		{
-			if(p.isDead()) continue;
-			if(hitboxCollidesWithHitbox(x, y, hitbox, p.getX(), p.getY(), p.getHitbox())) collidedPlayers.add(p);
-		}
-
-		return collidedPlayers;
+		return getPlayersAlive().stream().filter(p -> hitboxCollidesWithHitbox(x, y, hitbox, p.getX(), p.getY(), p.getHitbox()))
+				.collect(Collectors.toList());
 	}
 
 	public List<Mob> mobsCollidedWithHitbox(int x, int y, Hitbox hitbox)
 	{
-		List<Mob> mobs = getMobs();
-		List<Mob> collidedMobs = new ArrayList<Mob>();
-		for(Mob m : mobs)
-		{
-			if(hitboxCollidesWithHitbox(x, y, hitbox, m.getX(), m.getY(), m.getHitbox())) collidedMobs.add(m);
-		}
-
-		return collidedMobs;
+		return getMobs().stream().filter(m -> hitboxCollidesWithHitbox(x, y, hitbox, m.getX(), m.getY(), m.getHitbox())).collect(Collectors.toList());
 	}
 
 	private boolean hitboxCollidesWithHitbox(int h0xPos, int h0yPos, Hitbox h0, int h1xPos, int h1yPos, Hitbox h1)
@@ -404,7 +372,6 @@ public class Level
 		e.init(this);
 
 		if(e instanceof Particle) particles.add((Particle) e);
-		else if(e instanceof Projectile) entities.add((Projectile) e);
 		else if(e instanceof Player) players.add((Player) e);
 		else if(e instanceof LightSource) lightSources.add((LightSource) e);
 		else entities.add(e);
@@ -419,14 +386,11 @@ public class Level
 	{
 		List<Entity> entities = new ArrayList<Entity>();
 
-		for(Player player : players)
-			entities.add(player);
-		for(Particle particle : particles)
-			entities.add(particle);
-		for(Entity entity : this.entities)
-			entities.add(entity);
-		for(LightSource lightSource : lightSources)
-			entities.add(lightSource);
+		entities.addAll(this.entities);
+
+		entities.addAll(players);
+		entities.addAll(particles);
+		entities.addAll(lightSources);
 
 		return entities;
 	}
@@ -435,53 +399,27 @@ public class Level
 	{
 		List<Mob> mobs = new ArrayList<Mob>();
 
-		for(Player player : players)
-			mobs.add(player);
-		for(Entity entity : entities)
-			if(entity instanceof Mob) mobs.add((Mob) entity);
+		mobs.addAll(players);
+		entities.stream().filter(e -> e instanceof Mob).collect(Collectors.toList()).forEach(m -> mobs.add((Mob) m));
 
 		return mobs;
 	}
 
-	public List<Player> getPlayers()
+	public List<Player> getPlayersAlive()
 	{
-		return players;
+		return players.stream().filter(player -> !player.isDead()).collect(Collectors.toList());
 	}
 
 	public Player getPlayerByIP(String IPAddress)
 	{
 		if(IPAddress == null) return null;
-
-		for(int i = 0; i < players.size(); i++)
-		{
-			if(players.get(i).getIPAddress() == null) continue;
-			if(players.get(i).getIPAddress().equals(IPAddress)) return players.get(i);
-		}
-
-		return null;
+		return players.stream().filter(p -> p.getIPAddress() != null).filter(p -> p.getIPAddress().equals(IPAddress)).findFirst().orElse(null);
 	}
 
 	public Player getPlayerByName(String playerName)
 	{
-		for(Player player : players)
-		{
-			if(!(player instanceof OnlinePlayer)) continue;
-			if(((OnlinePlayer) player).getPlayerName().equals(playerName)) return player;
-		}
-
-		return null;
-	}
-
-	public Player getPlayer(UUID uuid)
-	{
-		if(uuid == null) return null;
-
-		for(int i = 0; i < players.size(); i++)
-		{
-			if(players.get(i).getUUID().compareTo(uuid) == 0) return players.get(i);
-		}
-
-		return null;
+		return players.stream().filter(p -> p instanceof OnlinePlayer).filter(p -> ((OnlinePlayer) p).getPlayerName().equals(playerName)).findFirst()
+				.orElse(null);
 	}
 
 	public Player getClientPlayer()
@@ -510,53 +448,24 @@ public class Level
 		return nearestPlayer;
 	}
 
-	public List<Projectile> getProjectiles()
-	{
-		List<Projectile> projectiles = new ArrayList<Projectile>();
-		for(int i = 0; i < entities.size(); i++)
-		{
-			if((entities.get(i) instanceof Projectile)) projectiles.add((Projectile) entities.get(i));
-		}
-		return projectiles;
-	}
-
 	public List<LightSource> getVisibleLightSources(int xOffset, int yOffset, int width, int height)
 	{
-		List<LightSource> visibleLightSources = new ArrayList<LightSource>();
-
-		for(LightSource ls : lightSources)
+		return lightSources.stream().filter(ls ->
 		{
-			if(ls.getX() + ls.getRadius() >= xOffset && ls.getY() + ls.getRadius() >= yOffset && ls.getX() - ls.getRadius() <= xOffset + width
-					&& ls.getY() - ls.getRadius() <= yOffset + height)
-				visibleLightSources.add(ls);
-		}
-
-		return visibleLightSources;
+			return ls.getX() + ls.getRadius() >= xOffset && ls.getY() + ls.getRadius() >= yOffset && ls.getX() - ls.getRadius() <= xOffset + width
+					&& ls.getY() - ls.getRadius() <= yOffset + height;
+		}).collect(Collectors.toList());
 	}
 
 	public Projectile getProjectile(UUID uuid)
 	{
 		if(uuid == null) return null;
-
-		for(int i = 0; i < entities.size(); i++)
-		{
-			if(!(entities.get(i) instanceof Projectile)) continue;
-			if(entities.get(i).getUUID().compareTo(uuid) == 0) return (Projectile) entities.get(i);
-		}
-
-		return null;
+		return (Projectile) entities.stream().filter(e -> e instanceof Projectile).filter(p -> p.getUUID().equals(uuid)).findFirst().orElse(null);
 	}
 
 	public Entity getEntity(UUID uuid)
 	{
-		List<Entity> allEntities = getAllEntities();
-
-		for(Entity entity : allEntities)
-		{
-			if(entity.getUUID().compareTo(uuid) == 0) return entity;
-		}
-
-		return null;
+		return getAllEntities().stream().filter(e -> e.getUUID().equals(uuid)).findFirst().orElse(null);
 	}
 
 	public List<Node> findPath(Vector2i start, Vector2i end)

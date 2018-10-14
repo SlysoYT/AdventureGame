@@ -44,6 +44,7 @@ public class DamageValue extends Entity
 
 	public void render(Screen screen)
 	{
+		if(damageValue > 999F) return;
 		Sprite.writeValues(String.valueOf((int) (damageValue)), screen, x - Game.getScreen().getXOffset(), y - Game.getScreen().getYOffset(), 0x000000);
 	}
 }

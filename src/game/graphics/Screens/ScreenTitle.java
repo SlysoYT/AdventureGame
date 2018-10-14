@@ -33,7 +33,7 @@ public class ScreenTitle
 	private static float yVelocity = 0.5F;
 
 	public static void tick(Keyboard input)
-	{
+	{		
 		if(Game.getLevel() == null) init();
 
 		input.tick();

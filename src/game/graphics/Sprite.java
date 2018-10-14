@@ -185,9 +185,11 @@ public class Sprite
 		xPos = xPos % Tile.DEFAULT_TILE_SIZE;
 		yPos = yPos % Tile.DEFAULT_TILE_SIZE;
 
-		int r = (tile.getSprite().pixels[xPos + yPos * tile.getSprite().width] & 0xFF0000) >> 16;
-		int g = (tile.getSprite().pixels[xPos + yPos * tile.getSprite().width] & 0x00FF00) >> 8;
-		int b = (tile.getSprite().pixels[xPos + yPos * tile.getSprite().width] & 0x0000FF);
+		int rgb = tile.getSprite() != null ? tile.getSprite().pixels[xPos + yPos * tile.getSprite().width] : 0;
+
+		int r = (rgb & 0xFF0000) >> 16;
+		int g = (rgb & 0x00FF00) >> 8;
+		int b = (rgb & 0x0000FF);
 
 		for(int i = 0; i < particles.length; i++)
 		{

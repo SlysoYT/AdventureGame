@@ -13,7 +13,11 @@ public class ScreenInfo
 	public static void tick(Keyboard key)
 	{
 		key.tick();
-		if(key.escapeToggle || key.enterToggle || key.spaceToggle) Game.setGameState(GameState.TitleScreen);
+		if(key.escapeToggle || key.enterToggle || key.spaceToggle)
+		{
+			message = "";
+			Game.setGameState(GameState.TitleScreen);
+		}
 	}
 
 	public static void render(Screen screen)
@@ -24,5 +28,6 @@ public class ScreenInfo
 	public static void setInfoMessage(String infoMessage)
 	{
 		message = infoMessage;
+		Game.setGameState(GameState.InfoScreen);
 	}
 }

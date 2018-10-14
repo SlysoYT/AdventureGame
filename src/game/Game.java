@@ -22,7 +22,6 @@ import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -223,7 +222,7 @@ public class Game extends Canvas implements Runnable
 			{
 				if(gameState == GameState.IngameOnline) abortMultiplayer();
 				else unloadLevel();
-				setGameState(GameState.TitleScreen);
+				if(gameState != GameState.InfoScreen) setGameState(GameState.TitleScreen);
 			}
 		}
 		else if(gameState == GameState.StartServer)
@@ -235,7 +234,7 @@ public class Game extends Canvas implements Runnable
 			if(connection != null)
 			{
 				loadLevel(null, -1);
-				setGameState(GameState.IngameOnline);
+				if(gameState != GameState.InfoScreen) setGameState(GameState.IngameOnline);
 			}
 		}
 		else if(gameState == GameState.ConnectToServer)
@@ -243,7 +242,7 @@ public class Game extends Canvas implements Runnable
 			multiplayer = true;
 			isHostingGame = false;
 			startMultiplayer(hostIp);
-			if(connection != null) setGameState(GameState.IngameOnline);
+			if(connection != null && gameState != GameState.InfoScreen) setGameState(GameState.IngameOnline);
 		}
 	}
 
@@ -338,13 +337,14 @@ public class Game extends Canvas implements Runnable
 
 		game.frame.setResizable(false);
 		game.frame.setTitle("2D Adventure" + " (" + VERSION + ")");
-		game.frame.setCursor(toolkit.createCustomCursor(cursor, new Point(game.frame.getX(), game.frame.getY()), "cursor"));
+		//game.frame.setCursor(toolkit.createCustomCursor(cursor, new Point(game.frame.getX(), game.frame.getY()), "cursor")); //TODO: fix
 		game.frame.add(game);
 		game.frame.pack(); //Apply the size to the window
 		game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Makes that the process gets terminated when closing the window
 		game.frame.setLocationRelativeTo(null); //Centers the frame
 		game.requestFocus(); //So you don't have to click inside the window in order to get key input working
 		game.frame.setVisible(true);
+
 		game.frame.addWindowListener(new WindowAdapter()
 		{
 			public void windowClosing(WindowEvent e)
@@ -357,11 +357,12 @@ public class Game extends Canvas implements Runnable
 
 	/**
 	 * Load a level. Example: <br>
-	 * <code>
-	 * loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2), -1); <br>
-	 * loadLevel(null, -1); <br>
-	 * loadLevel(null, -31415962L); <br>
-	 * </code>
+	 * <br>
+	 * {@code loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2), -1);}
+	 * <br>
+	 * {@code loadLevel(null, -1);} <br>
+	 * {@code loadLevel(null, -31415962L);} <br>
+	 * 
 	 * 
 	 * @param gameLevel
 	 *            Must be null to generate level

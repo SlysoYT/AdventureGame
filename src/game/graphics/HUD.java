@@ -111,13 +111,13 @@ public class HUD
 		g.setFont(PLAYER_NAME_FONT);
 		g.setColor(Color.BLUE);
 
-		List<Player> players = level.getPlayers();
+		List<Player> players = level.getPlayersAlive();
 
 		for(Player player : players)
 		{
 			if(player instanceof OnlinePlayer)
 			{
-				String playerName = ((OnlinePlayer) player).getPlayerName(); //TODO: Pos of text
+				String playerName = ((OnlinePlayer) player).getPlayerName();
 				int xPos = player.getX() * Game.SCALE - Game.getScreen().getXOffset() * Game.SCALE - g.getFontMetrics().stringWidth(playerName) / 2;
 				int yPos = player.getY() * Game.SCALE - Game.getScreen().getYOffset() * Game.SCALE - player.getHitbox().getHeight() / 2
 						- PLAYER_NAME_FONT.getSize();

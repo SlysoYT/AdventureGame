@@ -28,13 +28,16 @@ public class Settings
 
 			//Video settings
 			new SettingBoolean("Multi monitor configuration", false), new SettingBoolean("Maximum graphics quality", true),
-			new SettingBoolean("Fullscreen", true), new SettingIntegerRange("Buffer strategy", 2, 4, 2),
+			new SettingBoolean("Fullscreen", false), new SettingIntegerRange("Buffer strategy", 2, 4, 2),
+			
+			//Audio settings
+			new SettingBoolean("Music", false),
 
 			//Server settings
 			//TODO
 
 			//Advanced
-			new SettingBoolean("Debug mode", false) };
+			new SettingBoolean("Debug mode", true) };
 
 	public static Setting[] getSettings()
 	{

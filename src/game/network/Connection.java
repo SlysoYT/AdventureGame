@@ -82,10 +82,9 @@ public class Connection implements Runnable
 			hostSocket.setSoTimeout(1000);
 			isClient = false;
 			if(ip == null) ip = getPublicIP();
-			if(ip == null)
+			if(ip != null)
 			{
 				Game.getPrinter().printWarning("You are not connected to the internet!");
-				ScreenInfo.setInfoMessage("You are not connected to the internet!");
 				close();
 				return false;
 			}
@@ -138,22 +137,14 @@ public class Connection implements Runnable
 			{
 				connectionEstablished = false;
 				e.printStackTrace();
+				String message;
 
-				if(e instanceof UnknownHostException)
-				{
-					Game.getPrinter().printWarning("Unknown host!");
-					ScreenInfo.setInfoMessage("Unknown host!");
-				}
-				else if(e instanceof SocketTimeoutException)
-				{
-					Game.getPrinter().printWarning("Connection failed! Server not found!");
-					ScreenInfo.setInfoMessage("Connection failed! Server not found!");
-				}
-				else
-				{
-					Game.getPrinter().printWarning("Network is unreachable!");
-					ScreenInfo.setInfoMessage("Network is unreachable!");
-				}
+				if(e instanceof UnknownHostException) message = "Unknown host!";
+				else if(e instanceof SocketTimeoutException) message = "Connection timeout!";
+				else message = "Network is unreachable!";
+				
+				Game.getPrinter().printWarning(message);
+				ScreenInfo.setInfoMessage(message);
 			}
 		}
 		else

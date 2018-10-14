@@ -16,6 +16,8 @@
  ******************************************************************************/
 package game.audio;
 
+import game.settings.Settings;
+
 public class PlayMusic
 {
 	private static final Sound musicChiptune1 = new Sound("/audio/music/Chiptune1.wav");
@@ -26,6 +28,8 @@ public class PlayMusic
 
 	public static void tick()
 	{
+		if(!Settings.getSettingBool("Music")) return;
+
 		if(playingMusic)
 		{
 			if(System.nanoTime() / 1000 >= musicPlayingSince + soundLengthInMicroSeconds) playingMusic = false;

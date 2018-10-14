@@ -61,10 +61,10 @@ public class Level
 	private final int MAX_TIME = 3600;
 	private int time = MAX_TIME / 2;
 
-	private List<Entity> entities = new ArrayList<Entity>();
-	private List<Particle> particles = new ArrayList<Particle>();
-	private List<Player> players = new ArrayList<Player>();
-	private List<LightSource> lightSources = new ArrayList<LightSource>();
+	private List<Entity> entities = Collections.synchronizedList(new ArrayList<>());
+	private List<Particle> particles = Collections.synchronizedList(new ArrayList<>());
+	private List<Player> players = Collections.synchronizedList(new ArrayList<>());
+	private List<LightSource> lightSources = Collections.synchronizedList(new ArrayList<>());
 
 	private Comparator<Node> nodeSorter = new Comparator<Node>()
 	{

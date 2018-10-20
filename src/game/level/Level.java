@@ -39,6 +39,7 @@ import game.entity.mob.player.Player;
 import game.entity.particle.Particle;
 import game.entity.projectile.Projectile;
 import game.graphics.Screen;
+import game.input.Keyboard;
 import game.level.tile.Tile;
 import game.util.GameState;
 import game.util.Hitbox;
@@ -50,11 +51,10 @@ public class Level
 {
 	protected int width, height;
 	protected int[] tiles; //Contains pixel colours from level file that is currently loaded
-	protected TileCoordinate playerSpawn = null;
+	protected TileCoordinate playerSpawn;
 
 	private final int TILE_SIZE_SHIFTING = Game.getScreen().TILE_SIZE_SHIFTING;
 	private String levelName = "";
-	private GameLevel gameLevel;
 
 	private Random rand = new Random();
 
@@ -76,33 +76,17 @@ public class Level
 		}
 	};
 
-	public void loadLevel(GameLevel level)
+	public Level(int width, int height, int[] tiles, Keyboard keyboard, String levelName)
 	{
-		gameLevel = level;
-		gameLevel.loadLevel(level.getPath());
-		levelName = level.getLevelName();
-	}
+		this.width = width;
+		this.height = height;
+		this.tiles = tiles;
 
-	public void generateLevel(GameLevel level)
-	{
-		gameLevel = level;
-		gameLevel.loadLevel(level.getSeed());
-		levelName = level.getLevelName();
-	}
+		this.levelName = levelName;
+		this.playerSpawn = new TileCoordinate(width / 2, height / 2);
 
-	public void unloadLevel()
-	{
-		width = 0;
-		height = 0;
-		tiles = new int[0];
-		levelName = "";
-		time = 0;
-
-		playerSpawn = null;
-
-		entities.clear();
-		particles.clear();
-		players.clear();
+		//Add the client player
+		if(!levelName.equals("TitleScreen")) add(new Player(getSpawnLocation().getX(), getSpawnLocation().getY(), keyboard));
 	}
 
 	public void tick()
@@ -592,10 +576,5 @@ public class Level
 	public TileCoordinate getSpawnLocation()
 	{
 		return playerSpawn;
-	}
-
-	public GameLevel getGameLevel()
-	{
-		return gameLevel;
 	}
 }

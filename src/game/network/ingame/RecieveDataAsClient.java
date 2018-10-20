@@ -59,7 +59,7 @@ public class RecieveDataAsClient
 
 		if(level == null)
 		{
-			if(object.findField("levelSeed") != null) Game.loadLevel(null, SerializationReader.readLong(object.findField("levelSeed").getData(), 0));
+			if(object.findField("levelSeed") != null) Game.loadLevel(SerializationReader.readLong(object.findField("levelSeed").getData(), 0));
 			if(object.findString("yourUUID") != null)
 				Game.getLevel().getClientPlayer().setUUID(UUID.fromString(object.findString("yourUUID").getString()));
 			return;

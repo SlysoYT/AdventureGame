@@ -19,8 +19,6 @@ package game;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -34,7 +32,6 @@ import javax.swing.JFrame;
 
 import game.audio.PlaySound;
 import game.chat.Chat;
-import game.entity.mob.player.Player;
 import game.graphics.GUI;
 import game.graphics.HUD;
 import game.graphics.Screen;
@@ -45,13 +42,12 @@ import game.graphics.Screens.ScreenTitle;
 import game.graphics.Screens.Settings.ScreenSettings;
 import game.input.Keyboard;
 import game.input.Mouse;
-import game.level.GameLevel;
 import game.level.Level;
+import game.level.LevelLoader;
 import game.network.Connection;
 import game.settings.Settings;
 import game.util.GameState;
 import game.util.Print;
-import game.util.TileCoordinate;
 
 public class Game extends Canvas implements Runnable
 {
@@ -67,12 +63,11 @@ public class Game extends Canvas implements Runnable
 	private static float currentFrameTime = 0;
 
 	private JFrame frame;
-	private Thread thread;
+	private static Thread thread;
 
 	private static Screen screen;
 	private static Keyboard key;
 	private static Level level;
-	private static Player clientPlayer;
 	private static HUD hud;
 	private static GUI activeGui;
 	private static Print printer = new Print();
@@ -118,21 +113,11 @@ public class Game extends Canvas implements Runnable
 		printer.printInfo("Launched game");
 	}
 
-	public synchronized void stop()
+	public static synchronized void stop()
 	{
+		printer.printInfo("Stopping game");
 		if(connection != null) connection.close();
 		running = false;
-		printer.printInfo("Stopped game");
-		System.exit(0);
-
-		try
-		{
-			thread.join();
-		}
-		catch(InterruptedException e)
-		{
-			printer.printError(e.getMessage());
-		}
 	}
 
 	public void run()
@@ -176,10 +161,10 @@ public class Game extends Canvas implements Runnable
 				fpsCount = 0;
 
 				currentFrameTime = Math.round((frameTimeEnd - frameTimeStart) / 1_000_000.0F * 100F) / 100F;
-				printer.printInfo(currentFPS + " FPS, " + currentTPS + " TPS, " + currentFrameTime + " ms");
 			}
 		}
-		stop();
+
+		System.exit(0);
 	}
 
 	public void tick()
@@ -193,7 +178,7 @@ public class Game extends Canvas implements Runnable
 		else if(gameState == GameState.InfoScreen) ScreenInfo.tick(key);
 		else if(gameState == GameState.IngameOnline || gameState == GameState.IngameOffline)
 		{
-			if(gameState == GameState.IngameOffline && level == null) loadLevel(null, -1);
+			if(gameState == GameState.IngameOffline && level == null) loadLevel(0);
 			if(gameState == GameState.IngameOnline)
 			{
 				if(multiplayer)
@@ -218,7 +203,7 @@ public class Game extends Canvas implements Runnable
 
 			if(activeGui != null) activeGui.tick();
 
-			if(key.escape && !clientPlayer.isTypingMessage())
+			if(key.escape && !level.getClientPlayer().isTypingMessage())
 			{
 				if(gameState == GameState.IngameOnline) abortMultiplayer();
 				else unloadLevel();
@@ -233,7 +218,7 @@ public class Game extends Canvas implements Runnable
 
 			if(connection != null)
 			{
-				loadLevel(null, -1);
+				loadLevel(0);
 				if(gameState != GameState.InfoScreen) setGameState(GameState.IngameOnline);
 			}
 		}
@@ -309,20 +294,10 @@ public class Game extends Canvas implements Runnable
 
 	public static void launchFullscreenGame(boolean debugMode)
 	{
-		if(!Settings.getSettingBool("Multi monitor configuration"))
-		{
-			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-			Game.width = (int) (screenSize.getWidth() / SCALE);
-			Game.height = (int) (screenSize.getHeight() / SCALE);
-		}
-		else
-		{
-			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-
-			Game.width = gd.getDisplayMode().getWidth() / SCALE;
-			Game.height = gd.getDisplayMode().getWidth() / SCALE;
-		}
+		Game.width = (int) (screenSize.getWidth() / SCALE);
+		Game.height = (int) (screenSize.getHeight() / SCALE);
 
 		Game game = new Game(debugMode);
 		game.frame.setUndecorated(true);
@@ -347,68 +322,39 @@ public class Game extends Canvas implements Runnable
 
 		game.frame.addWindowListener(new WindowAdapter()
 		{
-			public void windowClosing(WindowEvent e)
+			public void windowClosing(WindowEvent windowEvent)
 			{
-				running = false;
-			}
+				stop();
 
+				try
+				{
+					thread.join();
+				}
+				catch(InterruptedException e)
+				{
+					printer.printError(e.getMessage());
+				}
+			}
 		});
 	}
 
-	/**
-	 * Load a level. Example: <br>
-	 * <br>
-	 * {@code loadLevel(new GameLevel("/levels/TitleScreen.png", "Level-1", 2, 2), -1);}
-	 * <br>
-	 * {@code loadLevel(null, -1);} <br>
-	 * {@code loadLevel(null, -31415962L);} <br>
-	 * 
-	 * 
-	 * @param gameLevel
-	 *            Must be null to generate level
-	 * @param seed
-	 *            Must be -1 to generate random level
-	 */
-	public static void loadLevel(GameLevel gameLevel, long seed)
+	public static void loadLevel(long seed)
 	{
-		if(gameLevel != null) initLevel(gameLevel);
-		else
-		{
-			if(seed == -1L)
-			{
-				Random rand = new Random();
-				initLevel(new GameLevel(rand.nextLong(), "Generated-Level", new TileCoordinate(256, 256)));
-			}
-			else
-			{
-				initLevel(new GameLevel(seed, "Generated-Level", new TileCoordinate(256, 256)));
-			}
-		}
+		Random rand = new Random();
+		level = new LevelLoader().fromSeed(seed == 0 ? rand.nextLong() : seed).load(key, "GeneratedLevel");
 
-		hud = new HUD(width, height, clientPlayer, level, key);
+		hud = new HUD(width, height, level, key);
 		Chat.init();
 	}
 
 	public static void loadTitleScreenLevel()
 	{
 		Random rand = new Random();
-		initLevel(new GameLevel(rand.nextLong(), "Title-Screen", new TileCoordinate(256, 256)));
-	}
-
-	private static void initLevel(GameLevel newLevel)
-	{
-		if(Game.level != null) unloadLevel();
-		Game.level = newLevel;
-		if(newLevel.isCustomLevel()) level.loadLevel(newLevel);
-		else level.generateLevel(newLevel);
-		if(newLevel.getLevelName().equals("Title-Screen")) return;
-		clientPlayer = new Player(Game.level.getSpawnLocation().getX(), Game.level.getSpawnLocation().getY(), key);
-		level.add(clientPlayer);
+		level = new LevelLoader().fromSeed(rand.nextLong()).load(key, "TitleScreen");
 	}
 
 	public static void unloadLevel()
 	{
-		level.unloadLevel();
 		level = null;
 		connection = null;
 		multiplayer = false;
@@ -437,11 +383,6 @@ public class Game extends Canvas implements Runnable
 			multiplayer = false;
 		}
 		setGameState(GameState.InfoScreen);
-	}
-
-	public static void terminate()
-	{
-		running = false;
 	}
 
 	public static Level getLevel()

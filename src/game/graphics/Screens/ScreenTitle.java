@@ -53,7 +53,7 @@ public class ScreenTitle
 			if(currentTitleScreenSelection == 0) Game.setGameState(GameState.IngameOffline);
 			else if(currentTitleScreenSelection == 1) Game.setGameState(GameState.OnlineScreen);
 			else if(currentTitleScreenSelection == 2) Game.setGameState(GameState.Settings);
-			else if(currentTitleScreenSelection == 3) Game.terminate();
+			else if(currentTitleScreenSelection == 3) Game.stop();
 		}
 
 		if(input.downToggle) currentTitleScreenSelection++;

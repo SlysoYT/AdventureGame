@@ -32,7 +32,7 @@ import game.level.tile.Tile;
 
 public class HUD
 {
-	private Player player;
+	private Player clientPlayer;
 	private Level level;
 	private Keyboard key;
 
@@ -49,10 +49,10 @@ public class HUD
 	private Font PLAYER_NAME_FONT = new Font("Verdana", 0, 22);
 	private Font DEBUG_FONT = new Font("Verdana", 0, 14);
 
-	public HUD(int width, int height, Player player, Level level, Keyboard keyboard)
+	public HUD(int width, int height, Level level, Keyboard keyboard)
 	{
 		this.level = level;
-		this.player = player;
+		this.clientPlayer = level.getClientPlayer();
 		this.width = width;
 		this.height = height;
 		this.key = keyboard;
@@ -62,10 +62,10 @@ public class HUD
 	{
 		Chat.tick(key);
 
-		if(player.isDead()) return;
-		cooldownSecondary = 1.0F - player.getSecondaryAbilityCooldownProgress();
-		cooldownPassive = 1.0F - player.getPassiveAbilityCooldownProgress();
-		health = player.getCurrentHealth() / player.getMaxHealth();
+		if(clientPlayer.isDead()) return;
+		cooldownSecondary = 1.0F - clientPlayer.getSecondaryAbilityCooldownProgress();
+		cooldownPassive = 1.0F - clientPlayer.getPassiveAbilityCooldownProgress();
+		health = clientPlayer.getCurrentHealth() / clientPlayer.getMaxHealth();
 		if(titleTextTimer > 0) titleTextTimer--;
 	}
 
@@ -74,10 +74,10 @@ public class HUD
 		//Other infos
 		//TODO
 		//Player infos
-		if(player.isDead()) return;
+		if(clientPlayer.isDead()) return;
 
-		int xPos = player.getX() - Game.getScreen().getXOffset() - Tile.DEFAULT_TILE_SIZE / 2;
-		int yPos = player.getY() - Game.getScreen().getYOffset();
+		int xPos = clientPlayer.getX() - Game.getScreen().getXOffset() - Tile.DEFAULT_TILE_SIZE / 2;
+		int yPos = clientPlayer.getY() - Game.getScreen().getYOffset();
 
 		//Health bar
 		screen.renderSprite(xPos, (int) (yPos - Tile.DEFAULT_TILE_SIZE * 1.25), Sprite.BAR_EMPTY, false);
@@ -97,7 +97,7 @@ public class HUD
 	{
 		renderPlayerNames(g);
 		Chat.render(g);
-		if(!player.isDead()) renderAlert(g);
+		if(!clientPlayer.isDead()) renderAlert(g);
 		else renderDeathScreen(g);
 		if(debugMode)
 		{
@@ -142,9 +142,9 @@ public class HUD
 		g.setColor(Color.BLUE);
 		g.drawString("Debug mode (Version: " + Game.getVersion() + ")", 5, (DEBUG_FONT.getSize() + 3) * 1);
 		g.setColor(Color.WHITE);
-		g.drawString("X: " + player.getX() + " | Y: " + player.getY(), 5, (DEBUG_FONT.getSize() + 3) * 2);
-		g.drawString("Velocity: " + player.getXVelocity() + ", " + player.getYVelocity(), 5, (DEBUG_FONT.getSize() + 3) * 3);
-		g.drawString("Dir: " + player.getDirectionFacing(), 5, (DEBUG_FONT.getSize() + 3) * 4);
+		g.drawString("X: " + clientPlayer.getX() + " | Y: " + clientPlayer.getY(), 5, (DEBUG_FONT.getSize() + 3) * 2);
+		g.drawString("Velocity: " + clientPlayer.getXVelocity() + ", " + clientPlayer.getYVelocity(), 5, (DEBUG_FONT.getSize() + 3) * 3);
+		g.drawString("Dir: " + clientPlayer.getDirectionFacing(), 5, (DEBUG_FONT.getSize() + 3) * 4);
 		g.drawString("Mouse: " + Mouse.getX() + ", " + Mouse.getY() + ", " + Mouse.getButton(), 5, (DEBUG_FONT.getSize() + 3) * 5);
 		g.drawString("Level: " + Game.getLevel().getLevelName() + ", " + Game.getLevel().getSeed(), 5, (DEBUG_FONT.getSize() + 3) * 6);
 

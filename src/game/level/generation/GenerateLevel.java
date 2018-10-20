@@ -27,7 +27,7 @@ public class GenerateLevel
 	public static int[] generateLevel(long seed)
 	{
 		Random rand = new Random(seed);
-		float[] normValues = generateLevelNormValues(seed);
+		float[] normValues = generateLevelNormValues(rand);
 		int[] tileValues = new int[size * size];
 
 		//Convert norm values to tile values containing corresponding rgb values
@@ -65,10 +65,9 @@ public class GenerateLevel
 		return tileValues;
 	}
 
-	private static float[] generateLevelNormValues(long seed)
+	private static float[] generateLevelNormValues(Random rand)
 	{
 		int stepSize = size;
-		Random rand = new Random(seed);
 		float[][] tiles = { new float[size * size], new float[size * size], new float[size * size], new float[size * size], new float[size * size] };
 		int[] weights = { 20, 5, 4, 3, 2 };
 

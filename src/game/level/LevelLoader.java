@@ -22,37 +22,24 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import game.Game;
+import game.input.Keyboard;
 import game.level.generation.GenerateLevel;
-import game.util.TileCoordinate;
 
-public class GameLevel extends Level
+public class LevelLoader
 {
-	private String path;
-	private long seed;
+	private int width, height;
+	private int[] tiles;
+	
 	private String levelName;
 	private boolean customLevel;
-
-	public GameLevel(String path, String levelName, int spawnX, int spawnY)
+	
+	public LevelLoader fromFile(String filePath)
 	{
-		this.playerSpawn = new TileCoordinate(spawnX, spawnY);
-		this.path = path;
 		this.customLevel = true;
-		this.levelName = levelName;
-	}
-
-	public GameLevel(long seed, String levelName, TileCoordinate playerSpawn)
-	{
-		this.playerSpawn = playerSpawn;
-		this.seed = seed;
-		this.customLevel = false;
-		this.levelName = levelName;
-	}
-
-	public void loadLevel(String path)
-	{
+		
 		try
 		{
-			BufferedImage image = ImageIO.read(GameLevel.class.getResource(path));
+			BufferedImage image = ImageIO.read(LevelLoader.class.getResource(filePath));
 			width = image.getWidth();
 			height = image.getHeight();
 			tiles = new int[width * height];
@@ -63,22 +50,23 @@ public class GameLevel extends Level
 		{
 			Game.getPrinter().printError(e.getMessage());
 		}
+		
+		return this;
 	}
 
-	public void loadLevel(long seed)
+	public LevelLoader fromSeed(long seed)
 	{
+		this.customLevel = false;
+		
 		height = width = 512;
 		tiles = GenerateLevel.generateLevel(seed);
+		
+		return this;
 	}
-
-	public String getPath()
+	
+	public Level load(Keyboard keyboard, String levelName)
 	{
-		return path;
-	}
-
-	public long getSeed()
-	{
-		return seed;
+		return new Level(width, height, tiles, keyboard, levelName);
 	}
 
 	public boolean isCustomLevel()

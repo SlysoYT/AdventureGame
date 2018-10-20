@@ -33,7 +33,7 @@ import game.network.ingame.GetSendDataAsClient;
 
 public class Connection implements Runnable
 {
-	private Thread thread;
+	private Thread connectionThread;
 	private boolean running = false;
 
 	private DatagramSocket hostSocket = null;
@@ -52,7 +52,7 @@ public class Connection implements Runnable
 	{
 		this.ip = ip;
 		isClient = !asHost;
-		if(!isClient) thread = new Thread(this, "Connection");
+		if(!isClient) connectionThread = new Thread(this, "Connection");
 	}
 
 	public boolean connect()
@@ -81,7 +81,9 @@ public class Connection implements Runnable
 			hostSocket = new DatagramSocket(port);
 			hostSocket.setSoTimeout(1000);
 			isClient = false;
-			if(ip == null) ip = getPublicIP();
+
+			ip = getPublicIP();
+
 			if(ip == null)
 			{
 				Game.getPrinter().printImportantInfo("You are not connected to the internet!");
@@ -136,7 +138,6 @@ public class Connection implements Runnable
 			catch(IOException e)
 			{
 				connectionEstablished = false;
-				e.printStackTrace();
 				String message;
 
 				if(e instanceof UnknownHostException) message = "Unknown host!";
@@ -162,7 +163,8 @@ public class Connection implements Runnable
 				catch(IOException e)
 				{
 					connectionEstablished = false;
-					e.printStackTrace();
+
+					if(!(e instanceof SocketTimeoutException)) e.printStackTrace();
 					return;
 				}
 
@@ -203,6 +205,8 @@ public class Connection implements Runnable
 
 	public void close()
 	{
+		if(isClient && !connectionEstablished) return;
+
 		if(isClient)
 		{
 			GetSendDataAsClient.disconnect();
@@ -211,10 +215,18 @@ public class Connection implements Runnable
 		}
 		else
 		{
-			hostSocket.close();
-			stopThread();
+			running = false;
+
+			try
+			{
+				connectionThread.join();
+			}
+			catch(InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
-		
+
 		Game.getPrinter().printInfo("Connection closed");
 	}
 
@@ -226,22 +238,8 @@ public class Connection implements Runnable
 	private synchronized void startThread()
 	{
 		running = true;
-		thread = new Thread(this, "Connection");
-		thread.start();
-	}
-
-	private synchronized void stopThread()
-	{
-		running = false;
-
-		try
-		{
-			thread.join();
-		}
-		catch(InterruptedException e)
-		{
-			Game.getPrinter().printError(e.getMessage());
-		}
+		connectionThread = new Thread(this, "Connection");
+		connectionThread.start();
 	}
 
 	public synchronized void run()
@@ -250,5 +248,7 @@ public class Connection implements Runnable
 		{
 			tick(); //Runs at same TPS as the game
 		}
+
+		hostSocket.close();
 	}
 }

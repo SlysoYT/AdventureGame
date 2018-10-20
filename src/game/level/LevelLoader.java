@@ -33,9 +33,11 @@ public class LevelLoader
 	private String levelName;
 	private boolean customLevel;
 	
+	private long seed = 0;
+	
 	public LevelLoader fromFile(String filePath)
 	{
-		this.customLevel = true;
+		customLevel = true;
 		
 		try
 		{
@@ -56,7 +58,8 @@ public class LevelLoader
 
 	public LevelLoader fromSeed(long seed)
 	{
-		this.customLevel = false;
+		customLevel = false;
+		this.seed = seed;
 		
 		height = width = 512;
 		tiles = GenerateLevel.generateLevel(seed);
@@ -66,7 +69,7 @@ public class LevelLoader
 	
 	public Level load(Keyboard keyboard, String levelName)
 	{
-		return new Level(width, height, tiles, keyboard, levelName);
+		return new Level(width, height, tiles, seed, keyboard, levelName);
 	}
 
 	public boolean isCustomLevel()

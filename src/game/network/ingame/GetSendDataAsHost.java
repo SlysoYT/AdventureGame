@@ -53,7 +53,7 @@ public class GetSendDataAsHost
 		{
 			if(Server.clientShouldLoadLevel(IPAddress))
 			{
-				object.addField(SField.Long("levelSeed", Game.getLevel().getGameLevel().getSeed()));
+				object.addField(SField.Long("levelSeed", Game.getLevel().getSeed()));
 				object.addString(SString.String("yourUUID", Game.getLevel().getPlayerByIP(IPAddress).getUUID().toString()));
 
 				byte[] data = new byte[object.getSize()];

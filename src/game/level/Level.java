@@ -56,6 +56,8 @@ public class Level
 	private final int TILE_SIZE_SHIFTING = Game.getScreen().TILE_SIZE_SHIFTING;
 	private String levelName = "";
 
+	private final long seed;
+
 	private Random rand = new Random();
 
 	private final int MAX_TIME = 3600;
@@ -76,11 +78,13 @@ public class Level
 		}
 	};
 
-	public Level(int width, int height, int[] tiles, Keyboard keyboard, String levelName)
+	public Level(int width, int height, int[] tiles, long seed, Keyboard keyboard, String levelName)
 	{
 		this.width = width;
 		this.height = height;
 		this.tiles = tiles;
+
+		this.seed = seed;
 
 		this.levelName = levelName;
 		this.playerSpawn = new TileCoordinate(width / 2, height / 2);
@@ -91,48 +95,19 @@ public class Level
 
 	public void tick()
 	{
-		if(getClientPlayer() != null)
-		{
-			float deltaX = getClientPlayer().getX() - Game.width / 2 - Game.getScreen().getXOffsetFloat();
-			float deltaY = getClientPlayer().getY() - Game.height / 2 - Game.getScreen().getYOffsetFloat();
+		handleCamera();
+		mobSpawning();
 
-			Game.getScreen().setCameraMotion(deltaX / 20, deltaY / 20);
-		}
+		tickAllEntities();
 
-		if(Game.getGameState() == GameState.IngameOffline || (Game.getGameState() == GameState.IngameOnline && Game.isHostingGame))
-		{
-			mobSpawning();
-
-			if(Game.getGameStateTicksPassed() == 0)
-			{
-				Game.getScreen().setOffset(getClientPlayer().getX() - Game.width, getClientPlayer().getY() - Game.height);
-			}
-		}
-
-		for(int i = 0; i < entities.size(); i++)
-		{
-			entities.get(i).tick();
-		}
-		for(int i = 0; i < particles.size(); i++)
-		{
-			particles.get(i).tick();
-		}
-		for(int i = 0; i < players.size(); i++)
-		{
-			players.get(i).tick();
-		}
-		for(int i = 0; i < lightSources.size(); i++)
-		{
-			lightSources.get(i).tick();
-		}
-
-		handleDeadAndRemovedEntities();
 		time();
 		PlayMusic.tick();
 	}
 
 	private void mobSpawning()
 	{
+		if(!(Game.getGameState() == GameState.IngameOffline || (Game.getGameState() == GameState.IngameOnline && Game.isHostingGame))) return;
+
 		for(Player player : players)
 		{
 			if(player.isMoving())
@@ -163,8 +138,45 @@ public class Level
 		}
 	}
 
-	private void handleDeadAndRemovedEntities()
+	private void handleCamera()
 	{
+		if(getClientPlayer() == null) return;
+
+		if(Game.getGameStateTicksPassed() == 0)
+		{
+			Game.getScreen().setOffset(getClientPlayer().getX() - Game.width, getClientPlayer().getY() - Game.height);
+		}
+
+		float deltaX = getClientPlayer().getX() - Game.width / 2 - Game.getScreen().getXOffsetFloat();
+		float deltaY = getClientPlayer().getY() - Game.height / 2 - Game.getScreen().getYOffsetFloat();
+
+		Game.getScreen().setCameraMotion(deltaX / 20, deltaY / 20);
+	}
+
+	private void tickAllEntities()
+	{
+		//Tick entities
+		for(int i = 0; i < entities.size(); i++)
+		{
+			entities.get(i).tick();
+		}
+
+		for(int i = 0; i < particles.size(); i++)
+		{
+			particles.get(i).tick();
+		}
+
+		for(int i = 0; i < players.size(); i++)
+		{
+			players.get(i).tick();
+		}
+
+		for(int i = 0; i < lightSources.size(); i++)
+		{
+			lightSources.get(i).tick();
+		}
+
+		//Handle dead and removed entities
 		entities.removeIf(e -> e.isRemoved());
 		particles.removeIf(p -> p.isRemoved());
 		players.removeIf(p -> p.isRemoved());
@@ -570,7 +582,7 @@ public class Level
 
 	public long getSeed()
 	{
-		return -1;
+		return seed;
 	}
 
 	public TileCoordinate getSpawnLocation()

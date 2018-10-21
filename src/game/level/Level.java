@@ -68,16 +68,6 @@ public class Level
 	private List<Player> players = Collections.synchronizedList(new ArrayList<>());
 	private List<LightSource> lightSources = Collections.synchronizedList(new ArrayList<>());
 
-	private Comparator<Node> nodeSorter = new Comparator<Node>()
-	{
-		public int compare(Node n0, Node n1)
-		{
-			if(n1.fCost < n0.fCost) return +1; //If so, move it up in the index
-			if(n1.fCost > n0.fCost) return -1; //If this is the case, move it down
-			return 0;
-		}
-	};
-
 	public Level(int width, int height, int[] tiles, long seed, Keyboard keyboard, String levelName)
 	{
 		this.width = width;
@@ -269,24 +259,7 @@ public class Level
 
 	public boolean hitboxCollidesWithSolidTile(int x, int y, Hitbox hitbox)
 	{
-		for(int currentX = x + hitbox.getXOffset() >> TILE_SIZE_SHIFTING; currentX <= x + hitbox.getWidth()
-				+ hitbox.getXOffset() >> TILE_SIZE_SHIFTING; currentX++)
-		{
-			for(int currentY = y + hitbox.getYOffset() >> TILE_SIZE_SHIFTING; currentY <= y + hitbox.getHeight()
-					+ hitbox.getYOffset() >> TILE_SIZE_SHIFTING; currentY++)
-			{
-				Tile currentTile = getTile(currentX, currentY);
-				if(currentTile.solid()) return true;
-				if(currentTile.getHitbox() != null)
-				{
-					if(hitboxCollidesWithHitbox(x, y, hitbox, currentX * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getXOffset(),
-							currentY * Tile.DEFAULT_TILE_SIZE + currentTile.getHitbox().getYOffset(), currentTile.getHitbox()))
-						return true;
-				}
-			}
-		}
-
-		return false;
+		return hitboxCollidesWithSolidTileVector(x, y, hitbox) != null;
 	}
 
 	public Vector2i hitboxCollidesWithSolidTileVector(int x, int y, Hitbox hitbox)
@@ -335,17 +308,7 @@ public class Level
 
 	private boolean hitboxCollidesWithHitbox(int h0xPos, int h0yPos, Hitbox h0, int h1xPos, int h1yPos, Hitbox h1)
 	{
-		for(int currentX = h0xPos + h0.getXOffset(); currentX <= h0xPos + h0.getWidth() + h0.getXOffset(); currentX++)
-		{
-			for(int currentY = h0yPos + h0.getYOffset(); currentY <= h0yPos + h0.getHeight() + h0.getYOffset(); currentY++)
-			{
-				if(currentX >= h1xPos + h1.getXOffset() && currentX <= h1xPos + h1.getXOffset() + h1.getWidth()
-						&& currentY >= h1yPos + h1.getYOffset() && currentY <= h1yPos + h1.getYOffset() + h1.getHeight())
-					return true;
-			}
-		}
-
-		return false;
+		return hitboxCollidesWithHitboxVector(h0xPos, h0yPos, h0, h1xPos, h1yPos, h1) != null;
 	}
 
 	private Vector2i hitboxCollidesWithHitboxVector(int h0xPos, int h0yPos, Hitbox h0, int h1xPos, int h1yPos, Hitbox h1)
@@ -431,9 +394,8 @@ public class Level
 
 		Player nearestPlayer = null;
 
-		for(Player player : players)
+		for(Player player : getPlayersAlive())
 		{
-			if(player.isDead()) continue;
 			if(nearestPlayer == null) nearestPlayer = player;
 
 			if(Math.sqrt(Math.pow(x0 - player.getX(), 2) + Math.pow(y0 - player.getY(), 2)) < Math
@@ -464,67 +426,7 @@ public class Level
 		return getAllEntities().stream().filter(e -> e.getUUID().equals(uuid)).findFirst().orElse(null);
 	}
 
-	public List<Node> findPath(Vector2i start, Vector2i end)
-	{
-		List<Node> openList = new ArrayList<Node>();
-		List<Node> closedList = new ArrayList<Node>();
-		Node current = new Node(start, null, 0, getDistance(start, end));
-		openList.add(current);
-
-		while(openList.size() > 0)
-		{
-			Collections.sort(openList, nodeSorter); //Sorts nodes by cost, lowest cost is on top, highest on bottom
-			current = openList.get(0); //Current is now the node with the lowest cost
-			if(current.tile.equals(end))
-			{
-				ArrayList<Node> path = new ArrayList<Node>();
-				//Will be looping throught till the start, because the start's parent is null
-				while(current.parent != null)
-				{
-					path.add(current);
-					current = current.parent;
-				}
-				openList.clear();
-				closedList.clear();
-				return path;
-			}
-			openList.remove(current); //Move lowest cost node to the closed list
-			closedList.add(current);
-			for(int i = 0; i < 9; i++)
-			{
-				if(i == 4) continue;
-				int x = current.tile.getX();
-				int y = current.tile.getY();
-				int xDir = (i % 3) - 1;
-				int yDir = (i / 3) - 1;
-				Tile at = getTile(x + xDir, y + yDir);
-				if(at == null) continue;
-				if(at.solid()) continue;
-				if(at.getHitbox() != null) continue;
-				if(at.deadly()) continue;
-				Vector2i a = new Vector2i(x + xDir, y + yDir);
-				double gCost = current.gCost + getDistance(current.tile, a);
-				double hCost = getDistance(a, end);
-				Node node = new Node(a, current, gCost, hCost);
-				if(vectorInList(closedList, a) && gCost >= node.gCost) continue;
-				if(!vectorInList(openList, a) || gCost < node.gCost) openList.add(node);
-			}
-		}
-
-		closedList.clear();
-		return null;
-	}
-
-	private boolean vectorInList(List<Node> list, Vector2i vector)
-	{
-		for(Node n : list)
-		{
-			if(n.tile.equals(vector)) return true;
-		}
-		return false;
-	}
-
-	private double getDistance(Vector2i vector1, Vector2i vector2)
+	public double getDistance(Vector2i vector1, Vector2i vector2)
 	{
 		double deltaX = vector1.getX() - vector2.getX();
 		double deltaY = vector1.getY() - vector2.getY();
@@ -536,25 +438,27 @@ public class Level
 	{
 		//If out of bounds, return void tile
 		if(x < 0 || y < 0 || x >= width || y >= height) return Tile.TILE_VOID;
-		//Tiles: If colour in level file at specific location is e.g. equal to grass, then return a grass tile
-		if(tiles[x + y * width] == Tile.COL_TILE_DIRT) return Tile.TILE_DIRT;
-		if(tiles[x + y * width] == Tile.COL_TILE_GRASS) return Tile.TILE_GRASS;
-		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_0) return Tile.TILE_FLOWER_0;
-		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_1) return Tile.TILE_FLOWER_1;
-		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_2) return Tile.TILE_FLOWER_2;
-		if(tiles[x + y * width] == Tile.COL_TILE_FLOWER_3) return Tile.TILE_FLOWER_3;
-		if(tiles[x + y * width] == Tile.COL_TILE_ROCK_GRASS) return Tile.TILE_ROCK_GRASS;
-		if(tiles[x + y * width] == Tile.COL_TILE_ROCK_SAND) return Tile.TILE_ROCK_SAND;
-		if(tiles[x + y * width] == Tile.COL_TILE_SAND) return Tile.TILE_SAND;
-		if(tiles[x + y * width] == Tile.COL_TILE_WATER) return Tile.TILE_WATER;
 
-		if(tiles[x + y * width] == Tile.COL_TILE_BOOSTER) return Tile.TILE_BOOSTER;
-		if(tiles[x + y * width] == Tile.COL_TILE_CHECKPOINT) return Tile.TILE_CHECKPOINT;
-		if(tiles[x + y * width] == Tile.COL_TILE_ICE) return Tile.TILE_ICE;
-		if(tiles[x + y * width] == Tile.COL_TILE_KILLER) return Tile.TILE_KILLER;
-		if(tiles[x + y * width] == Tile.COL_TILE_VOID) return Tile.TILE_VOID;
-		if(tiles[x + y * width] == Tile.COL_TILE_QUARTZ) return Tile.TILE_QUARTZ;
-		if(tiles[x + y * width] == Tile.COL_TILE_QUARTZ_WALL) return Tile.TILE_QUARTZ_WALL;
+		int tileCol = tiles[x + y * width];
+		//Tiles: If colour in level file at specific location is e.g. equal to grass, then return a grass tile
+		if(tileCol == Tile.COL_TILE_DIRT) return Tile.TILE_DIRT;
+		if(tileCol == Tile.COL_TILE_GRASS) return Tile.TILE_GRASS;
+		if(tileCol == Tile.COL_TILE_FLOWER_0) return Tile.TILE_FLOWER_0;
+		if(tileCol == Tile.COL_TILE_FLOWER_1) return Tile.TILE_FLOWER_1;
+		if(tileCol == Tile.COL_TILE_FLOWER_2) return Tile.TILE_FLOWER_2;
+		if(tileCol == Tile.COL_TILE_FLOWER_3) return Tile.TILE_FLOWER_3;
+		if(tileCol == Tile.COL_TILE_ROCK_GRASS) return Tile.TILE_ROCK_GRASS;
+		if(tileCol == Tile.COL_TILE_ROCK_SAND) return Tile.TILE_ROCK_SAND;
+		if(tileCol == Tile.COL_TILE_SAND) return Tile.TILE_SAND;
+		if(tileCol == Tile.COL_TILE_WATER) return Tile.TILE_WATER;
+
+		if(tileCol == Tile.COL_TILE_BOOSTER) return Tile.TILE_BOOSTER;
+		if(tileCol == Tile.COL_TILE_CHECKPOINT) return Tile.TILE_CHECKPOINT;
+		if(tileCol == Tile.COL_TILE_ICE) return Tile.TILE_ICE;
+		if(tileCol == Tile.COL_TILE_KILLER) return Tile.TILE_KILLER;
+		if(tileCol == Tile.COL_TILE_VOID) return Tile.TILE_VOID;
+		if(tileCol == Tile.COL_TILE_QUARTZ) return Tile.TILE_QUARTZ;
+		if(tileCol == Tile.COL_TILE_QUARTZ_WALL) return Tile.TILE_QUARTZ_WALL;
 
 		//Unknown colour
 		return Tile.TILE_ERROR;

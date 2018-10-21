@@ -27,7 +27,7 @@ public class Settings
 	private static Setting[] settings = {
 
 			//Video settings
-			new SettingBoolean("Multi monitor configuration", false), new SettingBoolean("Maximum graphics quality", true),
+			new SettingBoolean("Maximum graphics quality", true),
 			new SettingBoolean("Fullscreen", false), new SettingIntegerRange("Buffer strategy", 2, 4, 2),
 			
 			//Audio settings

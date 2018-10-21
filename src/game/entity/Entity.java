@@ -44,7 +44,12 @@ public abstract class Entity
 	//Remove from level
 	public void remove()
 	{
+		onRemove();
 		removed = true;
+	}
+
+	public void onRemove()
+	{
 	}
 
 	public boolean isRemoved()

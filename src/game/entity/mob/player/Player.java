@@ -91,6 +91,8 @@ public class Player extends Mob
 
 	public void tickMob()
 	{
+		handlePlayersLantern();
+
 		if(respawning)
 		{
 			respawn();
@@ -106,13 +108,6 @@ public class Player extends Mob
 			anim++;
 		}
 		else anim = 0;
-
-		if(playersLantern == null)
-		{
-			playersLantern = new LightSource(this.x, this.y, 50, null);
-			level.add(playersLantern);
-		}
-		playersLantern.setPosition(this.x, this.y);
 
 		if(!isClient) return;
 
@@ -153,6 +148,32 @@ public class Player extends Mob
 		}
 	}
 
+	public void onRemove()
+	{
+		playersLantern.remove();
+	}
+
+	private void handlePlayersLantern()
+	{
+		if(playersLantern != null)
+		{
+			if(this.isDead())
+			{
+				playersLantern.remove();
+				playersLantern = null;
+			}
+			else
+			{
+				playersLantern.setPosition(this.x, this.y);
+			}
+		}
+		else if(playersLantern == null && !this.isDead())
+		{
+			playersLantern = new LightSource(this.x, this.y, 50, null);
+			level.add(playersLantern);
+		}
+	}
+
 	private void handleChat()
 	{
 		if(input.enterToggle && !typingMessage)
@@ -184,7 +205,7 @@ public class Player extends Mob
 		screen.renderSprite(x - Tile.DEFAULT_TILE_SIZE / 2, y - Tile.DEFAULT_TILE_SIZE / 2, sprite, true);
 	}
 
-	protected void getWalkingSprite()
+	private void getWalkingSprite()
 	{
 		if(getDirectionFacing() == 0)
 		{

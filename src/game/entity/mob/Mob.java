@@ -290,49 +290,51 @@ public abstract class Mob extends Entity
 	public boolean isInLiquid()
 	{
 		return Game.getLevel()
-				.getTile((x - hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING).liquid()
-				|| Game.getLevel()
-						.getTile((x + hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
-						.liquid();
+				.getTile((x - hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING,
+						(y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
+				.liquid()
+				|| Game.getLevel().getTile((x + hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING,
+						(y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING).liquid();
 	}
 
 	public boolean isOnBooster()
 	{
 		return Game.getLevel()
-				.getTile((x - hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
+				.getTile((x - hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING,
+						(y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
 				.booster()
-				|| Game.getLevel()
-						.getTile((x + hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
-						.booster();
+				|| Game.getLevel().getTile((x + hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING,
+						(y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING).booster();
 	}
 
 	public boolean isOnIce()
 	{
 		return Game.getLevel()
-				.getTile((x - hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
+				.getTile((x - hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING,
+						(y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
 				.sliding()
-				|| Game.getLevel()
-						.getTile((x + hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
-						.sliding();
+				|| Game.getLevel().getTile((x + hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING,
+						(y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING).sliding();
 	}
 
 	public boolean isOnDeadly()
 	{
 		return Game.getLevel()
-				.getTile((x - hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING).deadly()
-				|| Game.getLevel()
-						.getTile((x + hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
-						.deadly();
+				.getTile((x - hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING,
+						(y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
+				.deadly()
+				|| Game.getLevel().getTile((x + hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING,
+						(y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING).deadly();
 	}
 
 	public boolean isOnCheckpoint()
 	{
 		return Game.getLevel()
-				.getTile((x - hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
+				.getTile((x - hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING,
+						(y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
 				.checkpoint()
-				&& Game.getLevel()
-						.getTile((x + hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING, (y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING)
-						.checkpoint();
+				&& Game.getLevel().getTile((x + hitbox.getWidth() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING,
+						(y + hitbox.getHeight() / 2) >> Game.getScreen().TILE_SIZE_SHIFTING).checkpoint();
 	}
 
 	public boolean isDead()
@@ -372,8 +374,13 @@ public abstract class Mob extends Entity
 		currentHealth = maxHealth;
 	}
 
+	/**
+	 * The smoothness defines how fast a mobs motion decreases. Ranging from 0
+	 * (stop motion immediately) to 1 (motion won't stop)
+	 */
 	public void setMovementSmoothness(float movementSmoothness)
 	{
+		if(movementSmoothness < 0 || movementSmoothness > 1) return;
 		this.movementSmoothness = movementSmoothness;
 	}
 

@@ -32,6 +32,7 @@ import game.graphics.Sprite;
 import game.level.tile.Tile;
 import game.util.Hitbox;
 import game.util.Node;
+import game.util.PathFinder;
 import game.util.Vector2i;
 
 public class Slime extends Mob
@@ -49,15 +50,19 @@ public class Slime extends Mob
 	private byte jumpDelay = 0;
 
 	private List<Node> path = null;
+	private PathFinder pathFinder;
 
 	public Slime(int x, int y, UUID uuid)
 	{
 		super(x, y, new Hitbox(-7, -1, 13, 7), Sprite.SLIME_DOWN, 20.0F, 0.75F, 10.0F, 30, uuid);
+
 		getItemDrop().addItem(new ItemCoin(x, y), 3, 50);
 		getItemDrop().addItem(new ItemAbilityProjectileGranade(x, y), 1, 5);
 		getItemDrop().addItem(new ItemAbilityProjectileBoomerang(x, y), 1, 5);
 		getItemDrop().addItem(new ItemAbilityProjectileBullet(x, y), 1, 5);
 		getItemDrop().addItem(new ItemAbilityTrapExplosive(x, y), 1, 5);
+
+		this.setMovementSmoothness(0.8F);
 
 		xGoal = x;
 		yGoal = y;
@@ -69,20 +74,25 @@ public class Slime extends Mob
 		yChange = 0;
 
 		Player target = level.getNearestPlayer(this);
+		if(pathFinder == null) pathFinder = new PathFinder(level);
 
 		if(target != null)
 		{
-			if(Game.getGameStateTicksPassed() % 20 == rand.nextInt(20)) //Randomness to not make all slimes tick at the same time
+			if(rand.nextInt(100) == 0) //Randomness: don't execute performance costly calculation every tick
 			{
 				Vector2i start = new Vector2i(this.getX() >> Game.getScreen().TILE_SIZE_SHIFTING, this.getY() >> Game.getScreen().TILE_SIZE_SHIFTING);
-				Vector2i end = new Vector2i(target.getX() >> Game.getScreen().TILE_SIZE_SHIFTING, target.getY() >> Game.getScreen().TILE_SIZE_SHIFTING);
-				path = level.findPath(start, end);
+				Vector2i end = new Vector2i(target.getX() >> Game.getScreen().TILE_SIZE_SHIFTING,
+						target.getY() >> Game.getScreen().TILE_SIZE_SHIFTING);
+
+				path = pathFinder.findPath(start, end);
 				if(path == null) return;
 				if(path.size() > 0)
 				{
 					Vector2i pathVector = path.get(path.size() - 1).tile;
-					xGoal = (pathVector.getX() << Game.getScreen().TILE_SIZE_SHIFTING) + this.getHitbox().getXOffset() + this.getHitbox().getWidth() + 1;
-					yGoal = (pathVector.getY() << Game.getScreen().TILE_SIZE_SHIFTING) + this.getHitbox().getYOffset() + this.getHitbox().getHeight() + 1;
+					xGoal = (pathVector.getX() << Game.getScreen().TILE_SIZE_SHIFTING) + this.getHitbox().getXOffset() + this.getHitbox().getWidth()
+							+ 1;
+					yGoal = (pathVector.getY() << Game.getScreen().TILE_SIZE_SHIFTING) + this.getHitbox().getYOffset() + this.getHitbox().getHeight()
+							+ 1;
 				}
 			}
 		}
@@ -113,7 +123,7 @@ public class Slime extends Mob
 		if(yGoal < y) shouldIncreaseY = true;
 		else shouldIncreaseY = false;
 
-		if(shouldIncreaseY) jumpHeightOffset = -1.5F;
+		if(shouldIncreaseY) jumpHeightOffset = -2.0F;
 		else if(shouldDecreaseY) jumpHeightOffset = 1.0F;
 		else jumpHeightOffset = 0.0F;
 
@@ -122,13 +132,15 @@ public class Slime extends Mob
 		else
 		{
 			resetJump();
-			jumpDelay = (byte) (5 + rand.nextInt(40));
-			level.add(new ParticleSpawner((int) (x), (int) (y + 15), 0.01F, 0.01F, 20, 3, level, Sprite.PARTICLE_SLIME));
-			level.add(new ParticleSpawner((int) (x + 4), (int) (y + 15), 0.5F, 0.15F, 20, 3, level, Sprite.PARTICLE_SLIME));
-			level.add(new ParticleSpawner((int) (x - 4), (int) (y + 15), 0.5F, 0.15F, 20, 3, level, Sprite.PARTICLE_SLIME));
+			jumpDelay = (byte) (5 + rand.nextInt(30));
+			level.add(new ParticleSpawner(x, y + 15, 0.01F, 0.01F, 20, 3, level, Sprite.PARTICLE_SLIME));
+			level.add(new ParticleSpawner(x + 4, y + 15, 0.5F, 0.15F, 20, 3, level, Sprite.PARTICLE_SLIME));
+			level.add(new ParticleSpawner(x - 4, y + 15, 0.5F, 0.15F, 20, 3, level, Sprite.PARTICLE_SLIME));
 		}
+
 		if(xGoal <= x) xChange -= getSpeed();
 		else xChange += getSpeed();
+
 		this.motion(xChange, yChange);
 
 		//Attacking

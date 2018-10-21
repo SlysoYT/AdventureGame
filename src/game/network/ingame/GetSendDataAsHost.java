@@ -39,7 +39,7 @@ public class GetSendDataAsHost
 			SString kickPlayer;
 
 			if(Server.isClientBanned(IPAddress)) kickPlayer = SString.String("kickPlayer", "you are banned from this server");
-			else kickPlayer = SString.String("kickPlayer", "you got kicked from this server");
+			else kickPlayer = SString.String("kickPlayer", "join failed");
 
 			object.addString(kickPlayer);
 

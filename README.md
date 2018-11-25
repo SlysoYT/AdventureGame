@@ -1,3 +1,9 @@
+<h1>Important note</h1>
+
+<h2>This project moved to GitLab: https://gitlab.com/Slyso/AdventureGame</h2>
+<h2>This project is outdated!</h2>
+
+
 <h1>AdventureGame</h1>
 
 This is the repository of a 2D Java Indie Game. <br>

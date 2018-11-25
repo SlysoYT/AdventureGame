@@ -1,7 +1,7 @@
 <h1>Important note</h1>
 
-<h2>This project moved to GitLab: https://gitlab.com/Slyso/AdventureGame</h2>
-<h2>This project is outdated!</h2>
+<b>This project moved to GitLab: https://gitlab.com/Slyso/AdventureGame</b>
+<b>This project is outdated!</b>
 
 
 <h1>AdventureGame</h1>
